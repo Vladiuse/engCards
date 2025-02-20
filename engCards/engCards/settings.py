@@ -95,10 +95,10 @@ WSGI_APPLICATION = "engCards.wsgi.application"
 DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.mysql',
-         'NAME': get_secrets('DB_NAME'),
-         'USER': get_secrets('DB_USER'),
-         'PASSWORD': get_secrets('DB_PASSWORD'),
-         'HOST': get_secrets('DB_HOST'),
+         'NAME': SECRETS['DB_NAME'],
+         'USER': SECRETS['DB_USER'],
+         'PASSWORD': SECRETS['DB_PASSWORD'],
+         'HOST': SECRETS['DB_HOST'],
          'PORT': '3306',
 
      }
