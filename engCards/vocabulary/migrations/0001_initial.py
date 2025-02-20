@@ -4,29 +4,27 @@ from django.db import migrations, models
 
 
 def create_english_levels(apps, schema_editor):
-    # Получаем модель из исторической версии
     EnglishLevel = apps.get_model('vocabulary', 'EnglishLevel')
-
-    # Создаём записи
-    EnglishLevel.objects.create(id='A0', name='Beginner', start=1, end=500)
-    EnglishLevel.objects.create(id='A1', name='Elementary', start=501, end=1000)
-    EnglishLevel.objects.create(id='A2', name='Pre Intermediate', start=1001, end=2000)
-    EnglishLevel.objects.create(id='B1', name='Intermediate', start=2001, end=3500)
-    EnglishLevel.objects.create(id='B2', name='Upper Intermediate', start=3501, end=5000)
-    EnglishLevel.objects.create(id='C1', name='Advanced', start=5001, end=8000)
-    EnglishLevel.objects.create(id='C2', name='Proficient', start=8001, end=20000)
-
-
+    EnglishLevel.objects.bulk_create([
+        EnglishLevel(id='A0', name='Beginner', start=1, end=500),
+        EnglishLevel(id='A1', name='Elementary', start=501, end=1000),
+        EnglishLevel(id='A2', name='Pre Intermediate', start=1001, end=2000),
+        EnglishLevel(id='B1', name='Intermediate', start=2001, end=3500),
+        EnglishLevel(id='B2', name='Upper Intermediate', start=3501, end=5000),
+        EnglishLevel(id='C1', name='Advanced', start=5001, end=8000),
+        EnglishLevel(id='C2', name='Proficient', start=8001, end=20000),
+    ])
 
 def delete_english_levels(apps, schema_editor):
-    # Функция для отката миграции (опционально)
     EnglishLevel = apps.get_model('vocabulary', 'EnglishLevel')
     EnglishLevel.objects.all().delete()
+
 
 
 class Migration(migrations.Migration):
 
     initial = True
+    atomic = True
 
     dependencies = []
 
