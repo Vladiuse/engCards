@@ -27,7 +27,7 @@ class WordPair(models.Model):
     ru = models.CharField(max_length=100)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='words', related_query_name='word')
     created = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUSES)
+    status = models.CharField(max_length=20, choices=STATUSES, default=LEARNING)
 
     class Meta:
         unique_together = ('owner', 'en', 'ru')
