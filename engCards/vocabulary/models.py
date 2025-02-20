@@ -6,9 +6,8 @@ class EnglishLevel(models.Model):
     start = models.PositiveIntegerField()
     end = models.PositiveIntegerField()
 
-#
-# class DefaultWord(models.Model):
-#     number_in_dict = models.PositiveIntegerField()
-#     en = models.CharField(max_length=100)
-#     ru = models.CharField(max_length=100)
-#     level = models.CharField(max_length=10)
+
+class DefaultWord(models.Model):
+    number_in_dict = models.PositiveIntegerField()
+    en = models.CharField(max_length=100)
+    ru = models.CharField(max_length=100)
