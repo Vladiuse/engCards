@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django_extensions',
     #apps
     'vocabulary.apps.VocabularyConfig',
+    'card_trainer.apps.CardTrainerConfig',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +73,7 @@ ROOT_URLCONF = "engCards.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

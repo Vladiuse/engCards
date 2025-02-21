@@ -3,7 +3,7 @@ from card_trainer.types import LangDirection
 
 @dataclass
 class CardWord:
-    word_id: int
+    id: int
     word: str
     translation: str
 
