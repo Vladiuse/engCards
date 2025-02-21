@@ -21,4 +21,5 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('vocabulary.urls')),
+    path('card-trainer/', include('card_trainer.urls')),
 ]
