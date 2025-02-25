@@ -11,5 +11,5 @@ class CardWord:
 @dataclass
 class Card:
     target: CardWord
-    answers = list[CardWord]
+    answers: list[CardWord]
     lang_direction: LangDirection
