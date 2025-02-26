@@ -29,7 +29,7 @@ class CardTrainer:
         return WordPair.objects.filter(owner=user).order_by('?').first()
 
     def _get_answers(self, user: User, word_to_exclude: WordPair) -> list[WordPair]:
-        words_qs = WordPair.objects.filter(owner=user).exclude(pk=word_to_exclude.pk).order_by('?')[5]
+        words_qs = WordPair.objects.filter(owner=user).exclude(pk=word_to_exclude.pk).order_by('?')[:5]
         return list(words_qs)
 
     def _add_target_word_to_answers_and_shufle(self, answers: list[WordPair], target_word: WordPair):

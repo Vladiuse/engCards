@@ -9,7 +9,7 @@ class TranslationDirectionSerializer(serializers.Serializer):
         return LangDirection(validated_data['direction'])
 
 class CardWordSerializer(serializers.Serializer):
-    word_id = serializers.CharField()
+    id = serializers.CharField()
     word = serializers.CharField()
     translation = serializers.CharField()
 

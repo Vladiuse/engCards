@@ -1,0 +1,8 @@
+#screen {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px);
+    justify-content: center;
+    overflow-y: scroll;
+    padding-top: 56px;
+}

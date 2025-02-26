@@ -178,15 +178,15 @@
 </style>
 <div id="screen">
     <div class="d-flex justify-content-center">
-        <div id="chose-lang-direction" data-lang-direction="en-ru">
+        <div id="chose-lang-direction" data-lang-direction="en_ru">
             <div>
-                <img src="{%static 'vocabulary/img/gb.svg'%}" alt="">
+                <img src="{%static 'card_trainer/img/gb.svg'%}" alt="">
             </div>
             <div>
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </div>
             <div>
-                <img src="{%static 'vocabulary/img/ru.svg'%}" alt="">
+                <img src="{%static 'card_trainer/img/ru.svg'%}" alt="">
             </div>
         </div>
     </div>
@@ -409,7 +409,7 @@
     class CardsApi {
 
         async loadCard(regime, landDirection) {
-            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'trainer:get_card'%}?direction=${landDirection}&regime=${regime}`
+            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}?direction=${landDirection}&regime=${regime}`
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -468,7 +468,7 @@
             this.target = cardData['target']
             this.answersList = cardData['answers']
             this.sentence = cardData['sentence']
-            this.lang_direction = cardData['lang_direction']['direction']
+            this.lang_direction = cardData['lang_direction']
             this._answers = {}
 
             this._init()
@@ -672,7 +672,7 @@
         }
         _drawUserWrondAnswer(word) {
             // отобразить перевод слова выбраного пользователем (неправильный ответ)
-            var text = `${word['translate']} - ${word['word']}`
+            var text = `${word['translation']} - ${word['word']}`
             this.wrongAnswerBlock.innerText = text
         }
 
@@ -693,11 +693,12 @@
         _drawTargetWord(word) {
             // отрисовать переводимое слово
             this.wordElem.innerText = word['word']
-            var text = `${word['word']} - ${word['translate']}`
+            var text = `${word['word']} - ${word['translation']}`
             this.wordTranslateElem.innerText = text
         }
 
         _drawAnswerButtons(answers) {
+            console.log(answers)
             // отрисовать кнопки с ответами перевода
             this.asnwerBlock.innerHTML = ''
             answers.forEach(word => {
@@ -714,7 +715,7 @@
         _drawAnswerBtn(word) {
             //  отрисовка кнопку с вариантами ответа перевода
             var btn = document.createElement('button')
-            btn.innerText = word['translate']
+            btn.innerText = word['translation']
             btn.classList.add('btn', 'btn-outline-primary', 'answer-option')
             btn.dataset.wordId = word['id']
             btn.setAttribute('type', 'bytton')
@@ -787,14 +788,14 @@
         clickLangDirectionEvent(e) {
 
             var curDirection = e.currentTarget.dataset.langDirection
-            if (curDirection == 'en-ru') {
-                this.langDirectionElem.dataset.langDirection = 'ru-en'
+            if (curDirection == 'en_ru') {
+                this.langDirectionElem.dataset.langDirection = 'ru_en'
                 this.langDirectionElem.style.flexDirection = 'row-reverse'
-                cardTrainer.langDirection = 'ru-en'
+                cardTrainer.langDirection = 'ru_en'
             } else {
-                this.langDirectionElem.dataset.langDirection = 'en-ru'
+                this.langDirectionElem.dataset.langDirection = 'en_ru'
                 this.langDirectionElem.style.flexDirection = 'row'
-                cardTrainer.langDirection = 'en-ru'
+                cardTrainer.langDirection = 'en_ru'
             }
         }
 
@@ -824,8 +825,8 @@
 
         ]
         static LANG_DIRECTIONS = [
-            'en-ru',
-            'ru-en',
+            'en_ru',
+            'ru_en',
         ]
         constructor(regime) {
             this.cardView = new cardView()
