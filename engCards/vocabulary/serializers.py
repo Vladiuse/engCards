@@ -1,8 +1,14 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from .models import WordPair
+from .models import WordPair, EnglishLevel
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.exceptions import ValidationError
+
+class EnglishLevelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EnglishLevel
+        fields = '__all__'
 
 class WordPairSerializer(serializers.ModelSerializer):
 
@@ -12,8 +18,8 @@ class WordPairSerializer(serializers.ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=WordPair.objects.all(),
-                fields=['owner', 'ru', 'en']
-            )
+                fields=['owner', 'ru', 'en'],
+            ),
         ]
 
     def to_internal_value(self, data):
