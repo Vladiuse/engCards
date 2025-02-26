@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+
 from card_trainer.types import LangDirection
+
 
 @dataclass
 class CardWord:
