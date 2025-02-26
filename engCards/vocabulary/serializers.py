@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from .models import WordPair
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.exceptions import ValidationError
 
 class WordPairSerializer(serializers.ModelSerializer):
 
@@ -15,6 +17,8 @@ class WordPairSerializer(serializers.ModelSerializer):
         ]
 
     def to_internal_value(self, data):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            raise ValidationError('Auth need')
         data['owner'] = self.context['request'].user.pk
-        ret = super().to_internal_value(data)
-        return ret
+        return super().to_internal_value(data)

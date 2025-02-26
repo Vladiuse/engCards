@@ -9,15 +9,15 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
-from pathlib import Path
-import os
 import json
+import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-def get_secrets():
+
+def get_secrets() -> dict:
     file_name = 'secrets.json'
     secrets_path = os.path.join(BASE_DIR, file_name)
     with open(secrets_path) as file:
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     #apps
     'vocabulary.apps.VocabularyConfig',
     'card_trainer.apps.CardTrainerConfig',
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -102,7 +103,7 @@ DATABASES = {
          'HOST': SECRETS['DB_HOST'],
          'PORT': '3306',
 
-     }
+     },
  }
 
 

@@ -1,0 +1,41 @@
+{%extends 'base.html'%}
+{%block content%}
+<style>
+  .login-form-wrap{
+    display: flex;
+    justify-content: center;
+    padding: 30px 10px;
+  }
+  .login-form-wrap form{
+    width: 400px;
+  }
+  .login-form-wrap form button[type=submit]{
+    width: 100%;
+  }
+  input[name="username"]{
+    text-transform: lowercase;
+  }
+</style>
+<div class="login-form-wrap">
+  <form method="POST" action="{%url 'users:sign_up'%}">
+    {%csrf_token%}
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Регистрация</label>
+      <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+      {{ form.username.errors }}
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Password</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" name="password1"  required value="20003000Ab%">
+      {{ form.password1.errors }}
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Repit Password</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" name="password2"  required value="20003000Ab%">
+      {{ form.password2.errors }}
+    </div>
+  
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+  </form>
+</div>
+{%endblock%}
