@@ -20,6 +20,11 @@
     }
 
     .card {}
+    .card-header{
+    display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
     .card-body {
         min-height: 200px;
@@ -409,7 +414,7 @@
     class CardsApi {
 
         async loadCard(regime, landDirection) {
-            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}?direction=${landDirection}&regime=${regime}`
+            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}?lang_direction=${landDirection}&level=${regime}`
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
