@@ -261,8 +261,11 @@
                             <label for="ru-word" class="form-label">Перевод на русский</label>
                             <input type="text" class="form-control" id="ru-word" name="ru" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <button type="submit" class="btn btn-primary submit">
+                            Сохранить</button>
                     </form>
+
+
                     <form action="">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">@</span>
@@ -1069,7 +1072,7 @@
                 if (!response.ok) {
                     var msg = `Response status: ${response.status}\n`
                     for (const [key, value] of Object.entries(await response.json())) {
-                        msg  = msg + `${key}:${value}\n`
+                        msg = msg + `${key}:${value}\n`
                     }
                     throw new Error(msg);
                 }
@@ -1086,7 +1089,7 @@
                 return undefined;
             }
         }
-        function formDataToDict(formData){
+        function formDataToDict(formData) {
             return Object.fromEntries(formData.entries());
         }
     </script>
@@ -1099,6 +1102,34 @@
             var responce = await requestJson(e.target.action, 'POST', data)
             console.log(responce)
         })
+
+
+
+    </script>
+    <script>
+        var spiner = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="false" ></span>'
+        function toggleForm(form, disable = true) {
+            const elements = form.querySelectorAll("input, textarea, select, button");
+            elements.forEach(el => el.disabled = disable);
+        }
+
+        // Отключить форму
+        function disableForm(form) {
+            toggleForm(form, true);
+        }
+
+        // Включить форму
+        function enableForm(form) {
+            toggleForm(form, false);
+        }
+        function addSpinerInSubmitButton(button){
+            var currentText = button.innerHTML
+            button.innerHTML = spiner + 'Загрузка'
+            return currentText
+        }
+        function removeSpinerFromButton(button, text){
+            button.innerHTML = text
+        }
     </script>
     <script>
         const leftBarBlock = document.getElementById('left-bar')
