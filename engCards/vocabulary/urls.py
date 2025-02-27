@@ -10,6 +10,7 @@ app_name = 'vocabulary'
 urlpatterns = [
     path('', views.api_root, name='index'),
     path('',include(router.urls)),
+    path('test/', views.test),
 ]
 
 for url in router.urls:

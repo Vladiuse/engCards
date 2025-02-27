@@ -249,6 +249,58 @@
             </div>
         </div>
         <div id="main-content" class="w-full">
+            <div class="content-center">
+                <div class="content-inner">
+                    <form method="POST" action="http://127.0.0.1:8000/vocabulary/words/" id="create-word-form">
+                        <div class="mb-3">
+                            <label for="en-word" class="form-label">Слово на английском</label>
+                            <input type="text" class="form-control" id="en-word" name="en" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="ru-word" class="form-label">Перевод на русский</label>
+                            <input type="text" class="form-control" id="ru-word" name="ru" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </form>
+                    <form action="">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" placeholder="Username" aria-label="Username"
+                                aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Recipient's username"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <span class="input-group-text" id="basic-addon2">@example.com</span>
+                        </div>
+
+                        <label for="basic-url" class="form-label">Your vanity URL</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+                            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                            <span class="input-group-text">.00</span>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Username" aria-label="Username">
+                            <span class="input-group-text">@</span>
+                            <input type="text" class="form-control" placeholder="Server" aria-label="Server">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-text">With textarea</span>
+                            <textarea class="form-control" aria-label="With textarea"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <div class="content w-full">
                 <div class="content-header">
@@ -1002,10 +1054,57 @@
         </div>
     </div>
     <script>
+        async function requestJson(url, method, data) {
+            try {
+                let headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic " + btoa(`admin:2030`)
+                };
+                var response = await fetch(url, {
+                    method: method,
+                    headers: headers,
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    var msg = `Response status: ${response.status}\n`
+                    for (const [key, value] of Object.entries(await response.json())) {
+                        msg  = msg + `${key}:${value}\n`
+                    }
+                    throw new Error(msg);
+                }
+
+                const text = await response.text();
+                try {
+                    return JSON.parse(text);
+                } catch {
+                    return text;
+                }
+            } catch (error) {
+                console.error(error);
+                window.alert(error);
+                return undefined;
+            }
+        }
+        function formDataToDict(formData){
+            return Object.fromEntries(formData.entries());
+        }
+    </script>
+    <script>
+        const createForm = document.getElementById('create-word-form')
+        createForm.addEventListener('submit', async function (e) {
+            e.preventDefault()
+            let formData = new FormData(this);
+            var data = formDataToDict(formData)
+            var responce = await requestJson(e.target.action, 'POST', data)
+            console.log(responce)
+        })
+    </script>
+    <script>
         const leftBarBlock = document.getElementById('left-bar')
         const mainBlock = document.getElementById('main-content')
         const openHideLeftBarBlock = document.getElementById('open-close-left-bar-mobile')
-        
+
     </script>
 
 
@@ -1015,8 +1114,8 @@
         const openLeftBarIcon = '<i class="fa-solid fa-bars"></i>'
         var isLeftBarOpen = false
 
-        
-        function insertIcon(icon){
+
+        function insertIcon(icon) {
             openHideLeftBarBlock.querySelector('.round-button-wrap').innerHTML = ''
             openHideLeftBarBlock.querySelector('.round-button-wrap').innerHTML = icon
         }

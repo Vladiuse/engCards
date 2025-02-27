@@ -53,13 +53,19 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_extensions',
+    "corsheaders",
     #apps
     'vocabulary.apps.VocabularyConfig',
     'card_trainer.apps.CardTrainerConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
