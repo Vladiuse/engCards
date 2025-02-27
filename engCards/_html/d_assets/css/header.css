@@ -45,9 +45,6 @@
   scale: .96;
 }
 
-#header-settings:hover {
-  background-color: var(--secondary-color-hover);
-}
 #header-settings-window{
   display: flex;
   flex-direction: column;
@@ -130,9 +127,23 @@
   color: #65676b;
 }
 
-@media screen and (max-width: 1000px) {
-  header .header-item:last-child{
+#open-close-left-bar-mobile{
+  cursor: pointer;
+}
+#open-close-left-bar-mobile i{
+  font-size: 16px;
+}
+@media screen and (min-width: 1000px) {
+  #open-close-left-bar-mobile{
     display: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #header-search-block{
+    display: none;
+  }
+  #open-close-left-bar-mobile{
+    display: block;
   }
 }
 

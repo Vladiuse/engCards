@@ -90,7 +90,7 @@
                 <span class="header-logo-text">Английский по карточкам</span>
             </div>
         </div>
-        <div class="header-item">
+        <div class="header-item" id="header-search-block">
             <div id="header-tools">
                 <div id="header-search">
                     <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"
@@ -117,7 +117,7 @@
                 <button class="btn-grey btn-large">
                     <h3>English (US)</h3>
                 </button>
-                <div id="header-settings" class="">
+                <div id="header-settings" class="grey-hover">
                     <svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor"
                         class="x19dipnz x1lliihq x1k90msu x2h7rmj x1qfuztq" style="--color: var(--primary-icon);">
                         <path
@@ -126,6 +126,11 @@
                     </svg>
 
                 </div>
+            </div>
+        </div>
+        <div class="header-item " id="open-close-left-bar-mobile">
+            <div class="round-button-wrap">
+                <i class="fa-solid fa-bars"></i>
             </div>
         </div>
     </header>
@@ -996,10 +1001,44 @@
             </div>
         </div>
     </div>
-
+    <script>
+        const leftBarBlock = document.getElementById('left-bar')
+        const mainBlock = document.getElementById('main-content')
+        const openHideLeftBarBlock = document.getElementById('open-close-left-bar-mobile')
+        
+    </script>
 
 
     <!-- <script src="/d_assets/js/main.js"></script> -->
+    <script>
+        const closeLeftBarIcon = '<i class="fa-solid fa-xmark"></i>'
+        const openLeftBarIcon = '<i class="fa-solid fa-bars"></i>'
+        var isLeftBarOpen = false
+
+        
+        function insertIcon(icon){
+            openHideLeftBarBlock.querySelector('.round-button-wrap').innerHTML = ''
+            openHideLeftBarBlock.querySelector('.round-button-wrap').innerHTML = icon
+        }
+        function openCloseLeftBar() {
+            console.log('click')
+            if (!isLeftBarOpen) {
+                mainBlock.classList.remove('open')
+                mainBlock.classList.add('hide')
+                leftBarBlock.classList.add('open')
+                isLeftBarOpen = true
+                insertIcon(closeLeftBarIcon)
+            } else {
+                mainBlock.classList.remove('hide')
+                mainBlock.classList.add('open')
+                leftBarBlock.classList.remove('open')
+                isLeftBarOpen = false
+                insertIcon(openLeftBarIcon)
+            }
+        }
+        openHideLeftBarBlock.addEventListener('click', openCloseLeftBar)
+
+    </script>
     <script>
         // HEADER SETTINGS
         // setting tool
@@ -1063,9 +1102,6 @@
                 standartsModal.show()
             })
         })
-
-
-
         document.querySelectorAll('.password-input').forEach(elem => {
             elem.addEventListener('click', function (e) {
                 if (e.target.id != 'show-hide-pass') {
@@ -1074,17 +1110,6 @@
                 }
             })
         })
-
-
-
-
-
-
-
-
-
-
-
 
         function startTimer() {
             // TIMER
@@ -1103,8 +1128,6 @@
                 }
             }, 1000);
         }
-
-
         function addSvgInLinks() {
             var svg = `
             <svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"
@@ -1123,9 +1146,6 @@
             })
         }
         addSvgInLinks()
-
-
-
     </script>
 </body>
 
