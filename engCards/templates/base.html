@@ -266,6 +266,7 @@
                         </div>
                     </div>
                 </div>
+                {%if user.is_authenticated%}
                 <div class="item-link ">
                     <div class="item-inner">
                         <div class="item-link-content" data-href="{%url 'vocabulary:word_create'%}">
@@ -278,7 +279,19 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="item-link ">
+                    <div class="item-inner">
+                        <div class="item-link-content" data-href="{%url 'vocabulary:user_vocabulary'%}">
+                            <div class="icon-wrap">
+                                <i class="fa-solid fa-book"></i>
+                            </div>
+                            <div class="text-block">
+                                <h4>Мой словарь</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
             </div>
         </div>
         <div id="main-content" class="w-full">

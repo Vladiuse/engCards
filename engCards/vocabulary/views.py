@@ -9,7 +9,8 @@ from rest_framework.reverse import reverse
 from rest_framework.permissions import  IsAuthenticated
 from .permisions import IsOwnerPermission
 from rest_framework.response import Response
-
+from django.contrib.auth.decorators import login_required
+from .models import WordPair
 
 @api_view()
 def api_root(request, format=None): # noqa: A002
@@ -21,6 +22,14 @@ def api_root(request, format=None): # noqa: A002
 
 def create_word_pair(request):
     return render(request, 'vocabulary/word_create.html')
+
+@login_required
+def user_vocabulary(request):
+    content = {
+        'words': WordPair.objects.filter(owner=request.user),
+    }
+    return render(request, 'vocabulary/user_vocabulary.html', content)
+
 
 
 class UserVocabularyView(ModelViewSet):
