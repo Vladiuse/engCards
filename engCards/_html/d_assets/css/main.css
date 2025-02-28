@@ -224,6 +224,10 @@
 #start:active{
   scale: 1;
 }
+
+#create-word-form{
+  width: 520px;
+}
 @media screen and (max-width: 1000px) {
   .content-header-container {
     padding: 12px;

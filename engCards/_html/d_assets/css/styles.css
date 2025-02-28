@@ -637,7 +637,7 @@ header {
 .grey-hover:hover{
   background-color: var(--secondary-color-hover) !important;
 }
-.grey{
+.bg-grey{
   background-color: var(--secondary-color);
 }
 
