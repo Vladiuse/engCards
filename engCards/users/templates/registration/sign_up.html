@@ -1,41 +1,43 @@
 {%extends 'base.html'%}
+{%load static%}
+{%block head%}
+<link rel="stylesheet" href="{% static 'users/css/auth_form.css' %}">
+{%endblock%}
 {%block content%}
-<style>
-  .login-form-wrap{
-    display: flex;
-    justify-content: center;
-    padding: 30px 10px;
-  }
-  .login-form-wrap form{
-    width: 400px;
-  }
-  .login-form-wrap form button[type=submit]{
-    width: 100%;
-  }
-  input[name="username"]{
-    text-transform: lowercase;
-  }
-</style>
 <div class="login-form-wrap">
   <form method="POST" action="{%url 'users:sign_up'%}">
     {%csrf_token%}
+    <div class="invalid-feedback" {%if form.non_field_errors %}style="display:block"{%endif%}>
+      <div class="invalid-feedback">
+        {{ form.non_field_errors }}
+      </div>
+    </div>
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Регистрация</label>
-      <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-      {{ form.username.errors }}
+      <input type="text" name="username" class="form-control {%if form.username.errors %} is-invalid{%endif%}" id="exampleInputEmail1" aria-describedby="emailHelp" required value="{{ form.username.value }}">
+      <div class="invalid-feedback">
+        {{ form.username.errors }}
+      </div>
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" name="password1"  required value="20003000Ab%">
-      {{ form.password1.errors }}
+      <input type="password" class="form-control {%if form.password1.errors %} is-invalid{%endif%}" id="exampleInputPassword1" name="password1"  required value="20003000Ab%">
+      <div class="invalid-feedback">
+        {{ form.password1.errors }}
+      </div>
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Repit Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" name="password2"  required value="20003000Ab%">
-      {{ form.password2.errors }}
+      <input type="password" class="form-control {%if form.password2.errors %} is-invalid{%endif%}" id="exampleInputPassword1" name="password2"  required value="20003000Ab%">
+      <div class="invalid-feedback">
+        {{ form.password2.errors }}
+      </div>
     </div>
   
     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    <div class="" id="registry">
+      <a href="{%url 'users:login' %}" class="link-primary">Уже есть аккаунт? Войти</a>
+    </div>
   </form>
 </div>
 {%endblock%}
