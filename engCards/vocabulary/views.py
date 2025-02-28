@@ -19,6 +19,9 @@ def api_root(request, format=None): # noqa: A002
     }
     return Response(data)
 
+def create_word_pair(request):
+    return render(request, 'vocabulary/word_create.html')
+
 
 class UserVocabularyView(ModelViewSet):
 
@@ -28,15 +31,6 @@ class UserVocabularyView(ModelViewSet):
     def get_queryset(self):
         return WordPair.objects.filter(owner=self.request.user)
 
-@api_view(http_method_names=['GET', 'POST'])
-def test(request):
 
-    return Response({'data': 1})
-    # if request.method != 'POST':
-    #     # return Response({'method': 'not allowed', 'data': str(request)})
-    #     return render(request, 'index.html')
-    # data = {
-    #     '1': 1,
-    # }
-    # print(request.data, type(request.data))
-    # return Response(data)
+def test(request):
+    return render(request, 'base.html')
