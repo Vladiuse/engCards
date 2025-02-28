@@ -109,7 +109,7 @@
 
     <header>
         <div class="header-item">
-            <div class="header-logo-wrap">
+            <div class="header-logo-wrap" data-href="{%url 'index'%}">
                 <img src="{% static 'img/logo.png' %}" alt="">
                 <span class="header-logo-text">Английский по карточкам</span>
             </div>
@@ -267,9 +267,9 @@
                     </div>
                 </div>
                 {%if user.is_authenticated%}
-                <div class="item-link ">
+                <div class="item-link " data-href="{%url 'vocabulary:word_create'%}">
                     <div class="item-inner">
-                        <div class="item-link-content" data-href="{%url 'vocabulary:word_create'%}">
+                        <div class="item-link-content" >
                             <div class="icon-wrap">
                                 <i class="fa-solid fa-square-plus"></i>
                             </div>
@@ -279,9 +279,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="item-link ">
+                <div class="item-link " data-href="{%url 'vocabulary:user_vocabulary'%}">
                     <div class="item-inner">
-                        <div class="item-link-content" data-href="{%url 'vocabulary:user_vocabulary'%}">
+                        <div class="item-link-content" >
                             <div class="icon-wrap">
                                 <i class="fa-solid fa-book"></i>
                             </div>

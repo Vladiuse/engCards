@@ -581,10 +581,9 @@ li p{
 .hide{
   display: none !important;
 }
-.open{
-
+*[data-href]{
+  cursor: pointer;
 }
-
 body {
   background-color: white;
   height: 100vh;

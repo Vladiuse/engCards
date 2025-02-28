@@ -4,9 +4,67 @@
 
 {%endblock%}
 {%block content%}
-<div class="content-center">
-    <div class="content-inner">
-        <h1>Your booking</h1>
+<style>
+    .card{
+        min-height: 150px;
+        cursor: pointer;
+        position: relative;
+        background-size: 300px;
+        background-image: url({%static 'vocabulary/img/card_background.jpg'%});
+        
+    }
+    .card:hover{
+        transform: scale(1.03); /* Используйте transform вместо scale */
+        box-shadow: 4px 4px 4px -4px var(--media-inner-border);
+    }
+    .card-body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .card-text{
+        text-align: center;
+        font-size: 20px;
+        margin: 4px;
+    }
+    .card .edit{
+        opacity: 0; /* Видимое состояние */
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        color: var(--fds-gray-70);
+        transition: opacity 0.2s ease;
+    }
+    .card:hover .edit{
+        opacity: 1; /* Видимое состояние */
+    }
+    @media screen  and (max-width: 1000px){
+        .card .edit{
+            opacity: 1; /* Видимое состояние */
+        }
+    }
+</style>
+<div class="container ">
+    <h1 class="text-center m-4">Мой словарь</h1>
+</div>
+
+<div class="container ">
+    <div class="my-5">
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+        {%for word in words%}
+        <div class="col">
+            <div class="card ">
+                <i class="edit fa-solid fa-pen-to-square"></i>
+                <div class="card-body">
+                    <p class="card-text">{{word.en}}</p>
+                    <p class="card-text">{{word.ru}}</p>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
     </div>
 </div>
 {%endblock%}
