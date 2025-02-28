@@ -1,35 +1,41 @@
 {%extends 'base.html'%}
 {%load static%}
-{%block header%}
-
+{%block head%}
+<script src="{% static 'js/bs_form.js' %}"></script>
 {%endblock%}
 {%block content%}
 <style>
-    .card{
+    .card {
         min-height: 150px;
         cursor: pointer;
         position: relative;
         background-size: 300px;
         background-image: url({%static 'vocabulary/img/card_background.jpg'%});
-        
+
     }
-    .card:hover{
-        transform: scale(1.03); /* Используйте transform вместо scale */
+
+    .card:hover {
+        transform: scale(1.03);
+        /* Используйте transform вместо scale */
         box-shadow: 4px 4px 4px -4px var(--media-inner-border);
     }
-    .card-body{
+
+    .card-body {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
     }
-    .card-text{
+
+    .card-text {
         text-align: center;
         font-size: 20px;
         margin: 4px;
     }
-    .card .edit{
-        opacity: 0; /* Видимое состояние */
+
+    .card .edit {
+        opacity: 0;
+        /* Видимое состояние */
         position: absolute;
         top: 10px;
         right: 10px;
@@ -37,34 +43,149 @@
         color: var(--fds-gray-70);
         transition: opacity 0.2s ease;
     }
-    .card:hover .edit{
-        opacity: 1; /* Видимое состояние */
+
+    .card:hover .edit {
+        opacity: 1;
+        /* Видимое состояние */
     }
-    @media screen  and (max-width: 1000px){
-        .card .edit{
-            opacity: 1; /* Видимое состояние */
+
+    @media screen and (max-width: 1000px) {
+        .card .edit {
+            opacity: 1;
+            /* Видимое состояние */
         }
     }
 </style>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCardModal"
+    data-bs-backdrop="static">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="" id="editForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCardModalLabel">Редактировать карточку</h5>
+                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#CloseFormModal">
+                        <i class="_img_pack_3" style="background-position: 0px -606px"></i>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="invalid-feedback non-field-invalid-feedback"></div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Статус</label>
+
+                        <select id="status" name="status" class="form-select" aria-label="Default select example">
+                            {%for value, text in word_statuses%}
+                            <option value="{{value}}">{{text}}</option>
+                            {%endfor%}
+
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="en" class="form-label">Слово на английском</label>
+                        <input type="text" class="form-control" id="en" name="en" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ru" class="form-label">Перевод на русский</label>
+                        <input type="text" class="form-control" id="ru" name="ru" required value="1">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#CloseFormModal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 <div class="container ">
     <h1 class="text-center m-4">Мой словарь</h1>
 </div>
 
 <div class="container ">
     <div class="my-5">
-        <div class="row row-cols-1 row-cols-md-5 g-4">
-        {%for word in words%}
-        <div class="col">
-            <div class="card ">
-                <i class="edit fa-solid fa-pen-to-square"></i>
-                <div class="card-body">
-                    <p class="card-text">{{word.en}}</p>
-                    <p class="card-text">{{word.ru}}</p>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            {%for word in words%}
+            <div class="col">
+                <div class="card" data-word-id="{{word.pk}}">
+                    <i class="edit fa-solid fa-pen-to-square"></i>
+                    <div class="card-body">
+                        <p class="card-text" data-word-ru=""><b>{{word.en}}</b></p>
+                        <p class="card-text" data-word-en="">{{word.ru}}</p>
+                    </div>
                 </div>
             </div>
+            {%endfor%}
         </div>
-        {%endfor%}
-    </div>
     </div>
 </div>
+<script>
+    var editForm = document.getElementById('editForm')
+    var editWordModal = new bootstrap.Modal(document.getElementById('editCardModal'))
+
+
+
+    class Words {
+        constructor() {
+            this.height = 'height';
+
+        }
+        // Method
+        async getWord(wordId) {
+            var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
+            var responce = await requestJson(url, 'GET')
+            return responce
+        }
+
+        async updateWord(wordId, data){
+            var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
+            var responce = await requestJson(url, 'PUT', data)
+            return responce
+        }
+    }
+
+    
+
+    const words = new Words()
+    const cards = document.querySelectorAll('.card')
+    const editFormWrap = new BsJsonForm(editForm)
+
+    async function openEditModal(wordId) {
+        var word_data = await words.getWord(wordId)
+        var data = await word_data.json()
+        editFormWrap.feed(data)
+        editWordModal.show()
+    }
+    cards.forEach(card => {
+        var wordId = card.dataset.wordId
+        card.addEventListener('click', () => openEditModal(wordId))
+    })
+    editForm.addEventListener('submit',async function(e){
+        e.preventDefault()
+        var data = editFormWrap.toDict()
+        console.log(data, 'to send')
+        editFormWrap.disable()
+        var responce = await words.updateWord(data['id'], data)
+        if (responce.ok){
+            window.alert('Update object')
+        } else {
+            var errorData = await responce.json()
+            editFormWrap.showErrors(errorData)
+        }
+        editFormWrap.enable()
+    })
+
+
+</script>
 {%endblock%}
