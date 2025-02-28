@@ -9,7 +9,7 @@ def create_default_words(apps, schema_editor):
     words_to_create = []
     with open('_data/clean.csv') as csv_file:
         reader = csv.reader(csv_file)
-        for number_in_dict, ru, en in reader:
+        for number_in_dict, en, ru in reader:
             default_word = DefaultWord(
                 number_in_dict=number_in_dict,
                 ru=ru,
