@@ -914,6 +914,11 @@ button[type=submit] .spinner-grow {
   margin-right: 3px;
   margin-left: -4px;
 }
+button[type=submit] .spinner-grow.spinner-grow-sm {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
 .btn:active{
   scale: 0.96;
 }

@@ -10,6 +10,7 @@ from rest_framework.permissions import  IsAuthenticated
 from .permisions import IsOwnerPermission
 from rest_framework.response import Response
 
+
 @api_view()
 def api_root(request, format=None): # noqa: A002
     data = {

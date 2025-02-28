@@ -22,5 +22,7 @@ class WordPairSerializer(serializers.ModelSerializer):
         ]
 
     def to_internal_value(self, data) -> dict:
+        from time import sleep
+        sleep(0.5)
         data['owner'] = self.context['request'].user.pk
         return super().to_internal_value(data=data)

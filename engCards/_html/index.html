@@ -14,12 +14,15 @@
     <link rel="stylesheet" href="/d_assets/css/left-bar.css">
     <link rel="stylesheet" href="/d_assets/css/footer.css">
     <link rel="stylesheet" href="/d_assets/css/modal.css">
+    <link rel="stylesheet" href="/d_assets/css/bs_form.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!--ICONS-->
     <script src="https://kit.fontawesome.com/da43c2ea11.js" crossorigin="anonymous"></script>
+
+    <script src="/d_assets/js/bs_form.js"></script>
 </head>
 
 <body>
@@ -251,15 +254,17 @@
         <div id="main-content" class="w-full">
             <div class="content-center">
                 <div class="content-inner">
-                    <form method="POST" action="http://127.0.0.1:8000/vocabulary/words/" id="create-word-form">
+                    <form method="POST" action="http://127.0.0.1:8000/vocabulary/words/" id="create-word-form" class="">
+                        <div class="invalid-feedback non-field-invalid-feedback"></div>
                         <div class="mb-3">
-                            <label for="en-word" class="form-label">Слово на английском</label>
-                            <input type="text" class="form-control" id="en-word" name="en" required>
-
+                            <label for="en" class="form-label">Слово на английском</label>
+                            <input type="text" class="form-control" id="en" name="en" required>
+                            <div class="invalid-feedback"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="ru-word" class="form-label">Перевод на русский</label>
-                            <input type="text" class="form-control" id="ru-word" name="ru" required>
+                            <label for="ru" class="form-label">Перевод на русский</label>
+                            <input type="text" class="form-control" id="ru" name="ru" required value="1">
+                            <div class="invalid-feedback"></div>
                         </div>
                         <button type="submit" class="btn btn-primary submit">
                             Сохранить</button>
@@ -317,8 +322,6 @@
                     <div class="content-inner">
                         <div class="text-wrap">
                             <h2>
-                                <img id="block-img" src="/d_assets/img/block_lock.png" alt=""
-                                    style="margin-top:-20px; width: 40px;">
                                 Lorem ipsum dolor sit amet
                             </h2>
                         </div>
@@ -850,9 +853,6 @@
                     <h4 class="modal-title" id="policyModalLabel">Privacy Policy</h4>
                     <h5>What is the Privacy Policy and what does it cover?</h5>
                     <div class="action-button wide">
-                        <div class="action-button-img">
-                            <img src="/d_assets/img/star.png" alt="">
-                        </div>
                         <div class="action-button-text">
                             <span class="small-grey">The main thing in the section</span>
                         </div>
@@ -1008,9 +1008,6 @@
                     <br>
                     <h5>Data control</h5>
                     <div class="action-button wide">
-                        <div class="action-button-img">
-                            <img src="/d_assets/img/dir.png" alt="">
-                        </div>
                         <div class="action-button-text">
                             <span>Manage the information we collect about you</span>
                             <br>
@@ -1056,6 +1053,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         async function requestJson(url, method, data) {
             try {
@@ -1068,21 +1066,21 @@
                     headers: headers,
                     body: JSON.stringify(data),
                 });
+                return response
+                // if (!response.ok) {
+                //     var msg = `Response status: ${response.status}\n`
+                //     for (const [key, value] of Object.entries(await response.json())) {
+                //         msg = msg + `${key}:${value}\n`
+                //     }
+                //     throw new Error(msg);
+                // }
 
-                if (!response.ok) {
-                    var msg = `Response status: ${response.status}\n`
-                    for (const [key, value] of Object.entries(await response.json())) {
-                        msg = msg + `${key}:${value}\n`
-                    }
-                    throw new Error(msg);
-                }
-
-                const text = await response.text();
-                try {
-                    return JSON.parse(text);
-                } catch {
-                    return text;
-                }
+                // const text = await response.text();
+                // try {
+                //     return JSON.parse(text);
+                // } catch {
+                //     return text;
+                // }
             } catch (error) {
                 console.error(error);
                 window.alert(error);
@@ -1092,44 +1090,39 @@
         function formDataToDict(formData) {
             return Object.fromEntries(formData.entries());
         }
+
+
+
     </script>
+
     <script>
-        const createForm = document.getElementById('create-word-form')
-        createForm.addEventListener('submit', async function (e) {
+        const createWordPairForm = document.getElementById('create-word-form')
+        createWordPairForm.addEventListener('submit', async function (e) {
             e.preventDefault()
             let formData = new FormData(this);
             var data = formDataToDict(formData)
+            var form = e.target
+            var submitButton = form.querySelector('button')
+            var buttonText = addSpinerInSubmitButton(submitButton)
+            disableForm(form)
             var responce = await requestJson(e.target.action, 'POST', data)
-            console.log(responce)
+            enableForm(form)
+            removeSpinerFromButton(submitButton, buttonText)
+            if (responce.ok) {
+                window.alert('Created word' + await responce.json())
+            } else {
+                var error_data = await responce.json()
+                addErrorsInForm(form, error_data)
+            }            
         })
 
 
 
     </script>
     <script>
-        var spiner = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="false" ></span>'
-        function toggleForm(form, disable = true) {
-            const elements = form.querySelectorAll("input, textarea, select, button");
-            elements.forEach(el => el.disabled = disable);
-        }
-
-        // Отключить форму
-        function disableForm(form) {
-            toggleForm(form, true);
-        }
-
-        // Включить форму
-        function enableForm(form) {
-            toggleForm(form, false);
-        }
-        function addSpinerInSubmitButton(button){
-            var currentText = button.innerHTML
-            button.innerHTML = spiner + 'Загрузка'
-            return currentText
-        }
-        function removeSpinerFromButton(button, text){
-            button.innerHTML = text
-        }
+        document.querySelectorAll('input.form-control').forEach(elem => {  // нет поддержки других типов элементов
+            elem.addEventListener('input', () => removeIsInvalid(elem))
+        })
     </script>
     <script>
         const leftBarBlock = document.getElementById('left-bar')
@@ -1139,13 +1132,12 @@
     </script>
 
 
-    <!-- <script src="/d_assets/js/main.js"></script> -->
+
     <script>
+        // header show/hide sidebar in mobile
         const closeLeftBarIcon = '<i class="fa-solid fa-xmark"></i>'
         const openLeftBarIcon = '<i class="fa-solid fa-bars"></i>'
         var isLeftBarOpen = false
-
-
         function insertIcon(icon) {
             openHideLeftBarBlock.querySelector('.round-button-wrap').innerHTML = ''
             openHideLeftBarBlock.querySelector('.round-button-wrap').innerHTML = icon
