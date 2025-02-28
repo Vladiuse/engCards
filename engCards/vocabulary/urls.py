@@ -11,6 +11,7 @@ urlpatterns = [
     path('', views.api_root, name='index'),
     path('',include(router.urls)),
     path('test/', views.test),
+    path('word-create/', views.create_word_pair, name='word_create'),
 ]
 
 for url in router.urls:

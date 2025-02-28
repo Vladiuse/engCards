@@ -76,7 +76,7 @@ MIDDLEWARE = [
 
 ]
 if DEBUG:
-    MIDDLEWARE.append('users.middleware.DisableCacheMiddleware',)
+    MIDDLEWARE.append('users.middleware.DisableCacheMiddleware')
 
 ROOT_URLCONF = "engCards.urls"
 

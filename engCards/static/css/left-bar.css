@@ -3,7 +3,9 @@
   min-width: 360px;
   box-shadow: 4px 0 4px -2px var(--media-inner-border);
 }
-
+.item-link i[class^=fa]{
+  font-size: 20px;
+}
 
 .left-bar-inner {
   margin: 6px 10px;

@@ -1,5 +1,4 @@
 // добавить из обьекта ошибки в форму
-
 function addErrorsInForm(form, data) {
     // non_field_errors
     for (var [key, value] of Object.entries(data)) {
@@ -14,7 +13,7 @@ function addErrorsInForm(form, data) {
             errorTextBlock.innerHTML = value
             inputElem.classList.add('is-invalid')
         } else {
-            console.info(`Error_block for key "${key}"" not found`)
+            console.info(`Error_block for key "${key}"" not found\n${value}`)
         }
         
     }
