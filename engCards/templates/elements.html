@@ -1,0 +1,294 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block content%}
+
+
+<div class="content w-full">
+    <div class="content-header">
+        <div class="content-header-container">
+            <img src="{% static 'img/main_image.png' %}" alt="">
+            <h1>Html Example</h1>
+        </div>
+    </div>
+    <div class="container d-flex justify-content-center">
+        <div class="content-inner">
+            <div class="alert alert-primary" role="alert">
+                A simple primary alert—check it out!
+            </div>
+            <div class="alert alert-secondary" role="alert">
+                A simple secondary alert—check it out!
+            </div>
+            <div class="alert alert-success" role="alert">
+                A simple success alert—check it out!
+            </div>
+            <div class="alert alert-danger" role="alert">
+                A simple danger alert—check it out!
+            </div>
+            <div class="alert alert-warning" role="alert">
+                A simple warning alert—check it out!
+            </div>
+            <div class="alert alert-info" role="alert">
+                A simple info alert—check it out!
+            </div>
+            <div class="alert alert-light" role="alert">
+                A simple light alert—check it out!
+            </div>
+            <div class="alert alert-dark" role="alert">
+                A simple dark alert—check it out!
+            </div>
+        </div>
+    </div>
+    <div class="container d-flex justify-content-center">
+        <!-- CONTAINER -->
+    </div>
+    <div class="container content-inner">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                            additional content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container content-inner">
+        <div class="card text-center">
+            <div class="card-header">
+                Featured
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+            <div class="card-footer text-muted">
+                2 days ago
+            </div>
+        </div>
+    </div>
+
+    <div class="container d-flex justify-content-center">
+        <button type="button" class="btn btn-primary">Primary</button>
+        <button type="button" class="btn btn-secondary">Secondary</button>
+        <button type="button" class="btn btn-success">Success</button>
+        <button type="button" class="btn btn-danger">Danger</button>
+        <button type="button" class="btn btn-warning">Warning</button>
+        <button type="button" class="btn btn-info">Info</button>
+        <button type="button" class="btn btn-light">Light</button>
+        <button type="button" class="btn btn-dark">Dark</button>
+
+        <button type="button" class="btn btn-link">Link</button>
+    </div>
+    <div class="content-center">
+        <div class="content-inner">
+            <div class="text-wrap">
+                <h2>
+                    Lorem ipsum dolor sit amet
+                </h2>
+            </div>
+            <div class="text-wrap">
+
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur voluptate optio
+                    porro praesentium quisquam magnam autem ratione rerum, molestiae explicabo error et qui
+                    odit officia sequi voluptates asperiores necessitatibus exercitationem.</p>
+            </div>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <span>Lorem ipsum dolor sit amet</span>
+                            <div class="icon-wrap">
+                                <i class="_img_pack_9" style="background-position: 0px -451px"></i>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne">
+                        <h3>Lorem ipsum dolor sit amet</h3>
+                        <div class="text-wrap">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id consectetur
+                                porro in perspiciatis fugiat iure sit adipisci <a href="#"
+                                    class="standartsLink">Community Standards</a> corporis mollitia
+                                eligendi, dolores voluptas dolor ullam dicta. Hic quis maiores incidunt!</p>
+
+                            <ul>
+                                <li>
+                                    <p>Lorem ipsum dolor sit amet
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            <span>Lorem ipsum dolor sit amet</span>
+                            <div class="icon-wrap">
+                                <i class="_img_pack_9" style="background-position: 0px -451px"></i>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo">
+                        <h3>Lorem ipsum dolor sit amet</h3>
+                        <div class="text-wrap">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id consectetur
+                                porro in perspiciatis fugiat iure sit adipisci <a href="#"
+                                    class="standartsLink">Community Standards</a> corporis mollitia
+                                eligendi, dolores voluptas dolor ullam dicta. Hic quis maiores incidunt!</p>
+
+                            <ul>
+                                <li>
+                                    <p>Lorem ipsum dolor sit amet
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <h3>Lorem ipsum</h3>
+            <div class="text-wrap apeal-list">
+                <ul>
+                    <li>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eum vitae quasi fugit
+                        suscipit? Consequuntur perferendis fugiat sunt mollitia praesentium amet at
+                        repudiandae alias nostrum, ab recusandae. Consequatur ratione dolor facere?</li>
+                </ul>
+            </div>
+            <div class="note">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia nulla harum
+                    consectetur rem, aliquid nostrum dolorem cumque sapiente molestias soluta! Ab libero
+                    quibusdam ut soluta maiores aperiam consequatur voluptate quaerat?</p>
+            </div>
+            <div class="text-wrap">
+                <!-- Button trigger modal -->
+                <button id="start" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal1">
+                    Contact Us
+                </button>
+            </div>
+
+
+            <hr>
+
+            <div id="popular-articles">
+
+                <h2 class="title">
+                    <div class="icon-wrap">
+                        <i class="_img_pack_5 w-24" style="background-position: 0px -3326px"></i>
+                    </div>
+                    Lorem ipsum
+                </h2>
+                <a class="h4" href="#">What should I consider before submitting a report of intellectual
+                    property infringement to Facebook?
+                    <div class="arrow-block">
+                        <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                    </div>
+                </a>
+                <a class="h4" href="#">Report inappropriate or abusive things on Facebook (example: nudity,
+                    hate speech, threats)
+                    <div class="arrow-block">
+                        <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                    </div>
+                </a>
+                <a class="h4" href="#">Report Content on Facebook
+                    <div class="arrow-block">
+                        <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                    </div>
+                </a>
+                <a class="h4" href="#">Reporting a Privacy Violation
+                    <div class="arrow-block">
+                        <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                    </div>
+                </a>
+            </div>
+            <hr>
+            <div id="popular-topics">
+                <h2 class="title">Related Topics</h2>
+                <div class="cards">
+                    <div class="card-wrap">
+                        <div class="card">
+                            <div class="img-wrap">
+                                <img src="{% static 'img/card-1.png' %}" alt="">
+                            </div>
+                            <h3 class="title">Staying Safe</h3>
+                            <p class="description">Learn what you or someone you know can do to stay safe on
+                                Facebook.</p>
+                            <div class="arrow-block">
+                                <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card">
+                            <div class="img-wrap">
+                                <img src="{% static 'img/card-2.png' %}" alt="">
+                            </div>
+                            <h3 class="title">Your Privacy</h3>
+                            <p class="description">Learn how privacy settings help you connect and share
+                                with people you know and trust.</p>
+                            <div class="arrow-block">
+                                <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card">
+                            <div class="img-wrap">
+                                <img src="{% static 'img/card-3.png' %}" alt="">
+                            </div>
+                            <h3 class="title">Keeping Your Account Secure</h3>
+                            <p class="description">Use our security features to add an extra layer of
+                                protection to your account.</p>
+                            <div class="arrow-block">
+                                <i class="_img_pack_3 w-20" style="background-position: 0px -460px"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
