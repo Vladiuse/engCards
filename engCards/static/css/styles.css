@@ -863,17 +863,20 @@ background-color: #F2F2F2;
 .modal .icon-wrap:hover{
   opacity: 1;
 }
-input{
+input,select{
   border-color: rgb(206, 208, 212);
   height: 48px;
 }
-input:hover{
+input:hover,
+select:hover{
   border-color: rgb(34, 34, 34);
 }
-input:disabled:hover{
+input:disabled:hover,
+select:disabled:hover{
   border-color: rgb(206, 208, 212);
 }
-input:focus{
+input:focus,
+select:focus{
   box-shadow: none !important;
   outline: 1px solid hsl(214, 87%, 44%)  !important;
   border: 1px solid black;
