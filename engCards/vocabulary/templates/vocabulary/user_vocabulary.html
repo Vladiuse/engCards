@@ -56,12 +56,6 @@
         }
     }
 </style>
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCardModal"
-    data-bs-backdrop="static">
-    Launch demo modal
-</button>
-
 <!-- Modal -->
 <div class="modal" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -79,10 +73,11 @@
                         <label for="status" class="form-label">Статус</label>
 
                         <select id="status" name="status" class="form-select" aria-label="Default select example">
-                            {%for value, text in word_statuses%}
-                            <option value="{{value}}">{{text}}</option>
-                            {%endfor%}
-
+                            {% for value, label in form.status.field.choices %}
+                            <option value="{{ value }}" {% if form.status.value == value %}selected data-default="true"{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>
@@ -93,7 +88,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="ru" class="form-label">Перевод на русский</label>
-                        <input type="text" class="form-control" id="ru" name="ru" required value="1">
+                        <input type="text" class="form-control" id="ru" name="ru" required value="">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>
@@ -112,7 +107,12 @@
 <div class="container ">
     <h1 class="text-center m-4">Мой словарь</h1>
 </div>
-
+<div class="container">
+    <button class="btn btn-primary" id="add-new-card">
+        <i class="fa-solid fa-square-plus" aria-hidden="true"></i>
+        Добавить новую карточку
+    </button>
+</div>
 <div class="container ">
     <div class="my-5">
         <div class="row row-cols-1 row-cols-md-4 g-4">
@@ -131,11 +131,6 @@
     </div>
 </div>
 <script>
-    var editForm = document.getElementById('editForm')
-    var editWordModal = new bootstrap.Modal(document.getElementById('editCardModal'))
-
-
-
     class Words {
         constructor() {
             this.height = 'height';
@@ -155,14 +150,24 @@
         }
     }
 
-
-
     const words = new Words()
     const cards = document.querySelectorAll('.card')
     cards.forEach(card => {
         var wordId = card.dataset.wordId
         card.addEventListener('click', () => openEditModal(wordId))
     })
+
+    var editForm = document.getElementById('editForm')
+    var editCardModalBlock = document.getElementById('editCardModal')
+    var editWordModal = new bootstrap.Modal(editCardModalBlock)
+
+    editForm.addEventListener('submit', editFormSubmitEvent)
+    editCardModalBlock.addEventListener('hide.bs.modal', function (e) {
+        var formWrap = BsJsonForm.getInstance(editForm)
+        if (formWrap.was_changed) {
+            discardModal.open(editWordModal)
+        }
+    });
 
     async function openEditModal(wordId) {
         var editFormWrap = new BsJsonForm(editForm)
@@ -171,6 +176,7 @@
         editFormWrap.feed(data)
         editWordModal.show(editWordModal)
     }
+
     function closeIfNotEditedEvent() {
         console.log('closeIfNotEditedEvent')
         var formWrap = BsJsonForm.getInstance(form)
@@ -178,14 +184,6 @@
             discardModal.open()
         }
     }
-    document.getElementById('editCardModal').addEventListener('hide.bs.modal', function(e){
-        // e.preventDefault()
-        var formWrap = BsJsonForm.getInstance(editForm)
-        if (formWrap.was_changed) {
-            discardModal.open(editWordModal)
-        } 
-    });
-
 
     async function editFormSubmitEvent(event) {
         event.preventDefault()
@@ -201,8 +199,13 @@
         }
         editFormWrap.enable()
     }
-    editForm.addEventListener('submit', editFormSubmitEvent)
 
-
+</script>
+<script>
+    var addNewCardButton = document.getElementById('add-new-card')
+    addNewCardButton.addEventListener('click', addNewCardEvent)
+    function addNewCardEvent() {
+        editWordModal.show()
+    }
 </script>
 {%endblock%}

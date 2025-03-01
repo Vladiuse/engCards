@@ -116,6 +116,20 @@ class BsJsonForm {
         this.is_disabled = false
     }
 
+    clearFields(){
+        this.elem.querySelectorAll('input,textarea').forEach(elem => {
+            elem.value = ''
+        })
+        this.elem.querySelectorAll('select').forEach(select => {
+            select.querySelectorAll('option').forEach(option => {
+                console.log(option.dataset.default)
+                if (option.dataset.default == 'true'){
+                    option.selected = true
+                }
+            })
+        })
+    }
+
     showErrors(data) {
         // non_field_errors
         for (var [key, value] of Object.entries(data)) {
