@@ -69,7 +69,7 @@
             <form action="" id="editForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editCardModalLabel">Редактировать карточку</h5>
-                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#CloseFormModal">
+                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#editCardModal">
                         <i class="_img_pack_3" style="background-position: 0px -606px"></i>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#CloseFormModal">Close</button>
+                        data-bs-target="#editCardModal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
@@ -148,43 +148,60 @@
             return responce
         }
 
-        async updateWord(wordId, data){
+        async updateWord(wordId, data) {
             var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
             var responce = await requestJson(url, 'PUT', data)
             return responce
         }
     }
 
-    
+
 
     const words = new Words()
     const cards = document.querySelectorAll('.card')
-    const editFormWrap = new BsJsonForm(editForm)
-
-    async function openEditModal(wordId) {
-        var word_data = await words.getWord(wordId)
-        var data = await word_data.json()
-        editFormWrap.feed(data)
-        editWordModal.show()
-    }
     cards.forEach(card => {
         var wordId = card.dataset.wordId
         card.addEventListener('click', () => openEditModal(wordId))
     })
-    editForm.addEventListener('submit',async function(e){
-        e.preventDefault()
+
+    async function openEditModal(wordId) {
+        var editFormWrap = new BsJsonForm(editForm)
+        var word_data = await words.getWord(wordId)
+        var data = await word_data.json()
+        editFormWrap.feed(data)
+        editWordModal.show(editWordModal)
+    }
+    function closeIfNotEditedEvent() {
+        console.log('closeIfNotEditedEvent')
+        var formWrap = BsJsonForm.getInstance(form)
+        if (formWrap.was_changed) {
+            discardModal.open()
+        }
+    }
+    document.getElementById('editCardModal').addEventListener('hide.bs.modal', function(e){
+        // e.preventDefault()
+        var formWrap = BsJsonForm.getInstance(editForm)
+        if (formWrap.was_changed) {
+            discardModal.open(editWordModal)
+        } 
+    });
+
+
+    async function editFormSubmitEvent(event) {
+        event.preventDefault()
+        var editFormWrap = BsJsonForm.getInstance(event.target)
         var data = editFormWrap.toDict()
-        console.log(data, 'to send')
         editFormWrap.disable()
         var responce = await words.updateWord(data['id'], data)
-        if (responce.ok){
+        if (responce.ok) {
             window.alert('Update object')
         } else {
             var errorData = await responce.json()
             editFormWrap.showErrors(errorData)
         }
         editFormWrap.enable()
-    })
+    }
+    editForm.addEventListener('submit', editFormSubmitEvent)
 
 
 </script>

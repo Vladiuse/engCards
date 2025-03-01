@@ -1,4 +1,4 @@
-
+console.info(new Date().toLocaleTimeString())
 
 // добавить из обьекта ошибки в форму
 function addErrorsInForm(form, data) {
@@ -11,13 +11,13 @@ function addErrorsInForm(form, data) {
             var errorTextBlock = form.querySelector(`input[name="${key}"] + .invalid-feedback`) // нет поддержки других типов элементов
             var inputElem = form.querySelector(`input[name="${key}"]`)
         }
-        if (errorTextBlock){
+        if (errorTextBlock) {
             errorTextBlock.innerHTML = value
             inputElem.classList.add('is-invalid')
         } else {
             console.info(`Error_block for key "${key}"" not found\n${value}`)
         }
-        
+
     }
 }
 
@@ -31,13 +31,6 @@ function addSpinerInSubmitButton(button) {
 }
 function removeSpinerFromButton(button, text) {
     button.innerHTML = text
-}
-
-// убрать клас is-invalid с элемента и также убрать с формы
-function removeIsInvalid(elem){
-    elem.classList.remove('is-invalid')
-    var form = elem.closest('form')
-    form.classList.remove('is-invalid')
 }
 
 
@@ -56,40 +49,68 @@ function enableForm(form) {
     toggleForm(form, false);
 }
 
+const formInstances = new WeakMap();
 
-class BsJsonForm{
-    constructor(elem){
+class BsJsonForm {
+    constructor(elem) {
         this.elem = elem
+        this.was_changed = false
         this.is_disabled = false
         this._btn_old_text = ''
+        this.object_id = undefined
+
         this._add_events()
+        formInstances.set(elem, this)
 
     }
 
-    _add_events(){
-        this.elem.querySelectorAll('input.form-control').forEach(elem => {  // нет поддержки других типов элементов
-            elem.addEventListener('input', () => removeIsInvalid(elem))
+    static getInstance(formElement) {
+        if (!(formElement instanceof HTMLElement) || formElement.tagName !== 'FORM') {
+            throw new Error('Argument must be a valid HTML form element');
+        }
+        const instance = formInstances.get(formElement);
+        if (!instance) {
+            throw new Error('No BsJsonForm instance found for this form element');
+        }
+        return instance;
+    }
+
+    _add_events() {
+        this.elem.querySelectorAll('.form-control,.form-select').forEach(elem => {  // нет поддержки других типов элементов
+            elem.addEventListener('input', () => this._removeIsInvalid(elem))  
         })
     }
 
-    get submitButton(){
+    get submitButton() {
         return this.elem.querySelector('button[type=submit]')
     }
 
+    // убрать клас is-invalid с элемента и также убрать с формы
+    _removeIsInvalid(elem) {
+        console.log(elem, 'xxxx')
+        elem.classList.remove('is-invalid')
+        this.elem.classList.remove('is-invalid')
+        this.was_changed = true
+    }
+
     toDict(formData) {
-        if (this.is_disabled){
+        if (this.is_disabled) {
             throw new Error("Cant get data - form disabled");
         }
         var formData = new FormData(this.elem)
-        return Object.fromEntries(formData.entries());
+        var object_data = Object.fromEntries(formData.entries());
+        if (this.object_id) {
+            object_data['id'] = this.object_id
+        }
+        return object_data
     }
-    
-    disable(){
+
+    disable() {
         this._btn_old_text = addSpinerInSubmitButton(this.submitButton)
         disableForm(this.elem)
         this.is_disabled = true
     }
-    enable(){
+    enable() {
         removeSpinerFromButton(this.submitButton, this._btn_old_text)
         enableForm(this.elem)
         this.is_disabled = false
@@ -102,20 +123,21 @@ class BsJsonForm{
                 var errorTextBlock = this.elem.querySelector('.non-field-invalid-feedback')
                 var inputElem = this.elem
             } else {
-                var errorTextBlock = this.elem.querySelector(`input[name="${key}"] + .invalid-feedback`) // нет поддержки других типов элементов
-                var inputElem = this.elem.querySelector(`input[name="${key}"]`)
+                var errorTextBlock = this.elem.querySelector(`[name="${key}"] + .invalid-feedback`)
+                var inputElem = this.elem.querySelector(`[name="${key}"]`)
             }
-            if (errorTextBlock){
+            if (errorTextBlock) {
                 errorTextBlock.innerHTML = value
                 inputElem.classList.add('is-invalid')
             } else {
-                console.info(`Error_block for key "${key}"" not found\n${value}`)
+                console.info(`Error_block for key "${key}"" not found`)
             }
-            
+
         }
     }
 
     feed(data) {
+        this.object_id = data['id']
         for (var [key, value] of Object.entries(data)) {
             var elem = this.elem.querySelector(`*[name="${key}"]`)
             if (elem) {
