@@ -1,27 +1,3 @@
-console.info(new Date().toLocaleTimeString())
-
-// добавить из обьекта ошибки в форму
-function addErrorsInForm(form, data) {
-    // non_field_errors
-    for (var [key, value] of Object.entries(data)) {
-        if (key == 'non_field_errors') {
-            var errorTextBlock = form.querySelector('.non-field-invalid-feedback')
-            var inputElem = form
-        } else {
-            var errorTextBlock = form.querySelector(`input[name="${key}"] + .invalid-feedback`) // нет поддержки других типов элементов
-            var inputElem = form.querySelector(`input[name="${key}"]`)
-        }
-        if (errorTextBlock) {
-            errorTextBlock.innerHTML = value
-            inputElem.classList.add('is-invalid')
-        } else {
-            console.info(`Error_block for key "${key}"" not found\n${value}`)
-        }
-
-    }
-}
-
-
 var bsSpiner = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="false" ></span>'
 
 function addSpinerInSubmitButton(button) {
@@ -48,7 +24,9 @@ function disableForm(form) {
 function enableForm(form) {
     toggleForm(form, false);
 }
-
+class SpinnerButton{
+    // TODO
+}
 const formInstances = new WeakMap();
 
 class BsJsonForm {
@@ -56,9 +34,10 @@ class BsJsonForm {
         this.elem = elem
         this.was_changed = false
         this.is_disabled = false
-        this._btn_old_text = ''
+        this._btn_old_text = '' // вынести логику в другой класс
         this.object_id = undefined
-
+        this._submitFunction = null
+        this._init()
         this._add_events()
         formInstances.set(elem, this)
 
@@ -75,19 +54,27 @@ class BsJsonForm {
         return instance;
     }
 
+    _init() {
+        this.clearFields()
+        this.hideErrors()
+    }
+
     _add_events() {
         this.elem.querySelectorAll('.form-control,.form-select').forEach(elem => {  // нет поддержки других типов элементов
-            elem.addEventListener('input', () => this._removeIsInvalid(elem))  
+            elem.addEventListener('input', () => this._removeIsInvalid(elem))
         })
     }
 
     get submitButton() {
         return this.elem.querySelector('button[type=submit]')
     }
+    set submitFunction(func) {
+        this._submitFunction = func
+        this.elem.addEventListener('submit', this._submitFunction)
+    }
 
     // убрать клас is-invalid с элемента и также убрать с формы
     _removeIsInvalid(elem) {
-        console.log(elem, 'xxxx')
         elem.classList.remove('is-invalid')
         this.elem.classList.remove('is-invalid')
         this.was_changed = true
@@ -116,17 +103,23 @@ class BsJsonForm {
         this.is_disabled = false
     }
 
-    clearFields(){
+    clearFields() {
         this.elem.querySelectorAll('input,textarea').forEach(elem => {
             elem.value = ''
         })
         this.elem.querySelectorAll('select').forEach(select => {
             select.querySelectorAll('option').forEach(option => {
-                console.log(option.dataset.default)
-                if (option.dataset.default == 'true'){
+                if (option.dataset.default == 'true') {
                     option.selected = true
                 }
             })
+        })
+    }
+
+    hideErrors() {
+        this.elem.classList.remove('is-invalid')
+        this.elem.querySelectorAll('.is-invalid').forEach(elem => {
+            elem.classList.remove('is-invalid')
         })
     }
 
@@ -156,12 +149,9 @@ class BsJsonForm {
             var elem = this.elem.querySelector(`*[name="${key}"]`)
             if (elem) {
                 if (elem.nodeName == 'SELECT') {
-                    console.log(key, value)
                     var options = elem.querySelectorAll('option')
                     options.forEach(option => {
-                        console.log(option, option.value, value)
                         if (option.value == value) {
-                            console.log('TRUE')
                             option.selected = true
                             return
                         }

@@ -148,6 +148,12 @@
             var responce = await requestJson(url, 'PUT', data)
             return responce
         }
+
+        async createWord(data){
+            var url = `http://127.0.0.1:8000/vocabulary/words/`
+            var responce = await requestJson(url, 'POST', data)
+            return responce
+        }
     }
 
     const words = new Words()
@@ -161,7 +167,6 @@
     var editCardModalBlock = document.getElementById('editCardModal')
     var editWordModal = new bootstrap.Modal(editCardModalBlock)
 
-    editForm.addEventListener('submit', editFormSubmitEvent)
     editCardModalBlock.addEventListener('hide.bs.modal', function (e) {
         var formWrap = BsJsonForm.getInstance(editForm)
         if (formWrap.was_changed) {
@@ -170,22 +175,17 @@
     });
 
     async function openEditModal(wordId) {
+        editCardModalBlock.querySelector('.modal-title').innerHTML = 'Редактировать карточку'
         var editFormWrap = new BsJsonForm(editForm)
+        editFormWrap.submitFunction = editFormSubmitEvent
         var word_data = await words.getWord(wordId)
         var data = await word_data.json()
         editFormWrap.feed(data)
         editWordModal.show(editWordModal)
     }
 
-    function closeIfNotEditedEvent() {
-        console.log('closeIfNotEditedEvent')
-        var formWrap = BsJsonForm.getInstance(form)
-        if (formWrap.was_changed) {
-            discardModal.open()
-        }
-    }
-
     async function editFormSubmitEvent(event) {
+        console.log('editFormSubmitEvent')
         event.preventDefault()
         var editFormWrap = BsJsonForm.getInstance(event.target)
         var data = editFormWrap.toDict()
@@ -200,12 +200,32 @@
         editFormWrap.enable()
     }
 
+    async function createFormSubmitEvent(event){
+        console.log('createFormSubmitEvent')
+        event.preventDefault()
+        var form = BsJsonForm.getInstance(event.target)
+        var data = form.toDict()
+        form.disable()
+        var responce = await words.createWord(data)
+        if (responce.ok) {
+            window.alert('Create object')
+            form.clearFields()
+        } else {
+            var errorData = await responce.json()
+            form.showErrors(errorData)
+        }
+        form.enable()
+    }
 </script>
 <script>
     var addNewCardButton = document.getElementById('add-new-card')
     addNewCardButton.addEventListener('click', addNewCardEvent)
+
     function addNewCardEvent() {
+        editCardModalBlock.querySelector('.modal-title').innerHTML = 'Добавить новую карточку'
+        var form = new BsJsonForm(editForm)
         editWordModal.show()
+        form.submitFunction = createFormSubmitEvent
     }
 </script>
 {%endblock%}
