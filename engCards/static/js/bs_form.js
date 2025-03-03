@@ -39,7 +39,7 @@ class BsJsonForm {
         this._submitFunction = null
         this._init()
         this._add_events()
-        formInstances.set(elem, this)
+        this.setInstance(elem)
 
     }
 
@@ -54,9 +54,18 @@ class BsJsonForm {
         return instance;
     }
 
+    setInstance(elem){
+        var instance = formInstances.get(elem);
+        if (instance){
+            instance.clearEvents()
+        }
+        formInstances.set(elem, this)
+    }
+
     _init() {
         this.clearFields()
         this.hideErrors()
+        this.elem.addEventListener('submit', this._submit)
     }
 
     _add_events() {
@@ -78,6 +87,13 @@ class BsJsonForm {
         elem.classList.remove('is-invalid')
         this.elem.classList.remove('is-invalid')
         this.was_changed = true
+    }
+
+    clearEvents(){
+        this.elem.removeEventListener('submit', this._submitFunction)
+        this.elem.querySelectorAll('.form-control,.form-select').forEach(elem => {  // нет поддержки других типов элементов
+            elem.removeEventListener('input', () => this._removeIsInvalid(elem))
+        })
     }
 
     toDict(formData) {

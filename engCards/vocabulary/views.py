@@ -11,12 +11,13 @@ from .permisions import IsOwnerPermission
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from .models import WordPair
+from .forms import WordPairForm
 
 @api_view()
 def api_root(request, format=None): # noqa: A002
     data = {
-        "some": reverse('vocabulary:index', request=request, format=format),
-        'words': reverse('vocabulary:wordpair-list', request=request, format=format),
+        "some": reverse('vocabulary:api_root', request=request, format=format),
+        'words': reverse('vocabulary:words-list', request=request, format=format),
     }
     return Response(data)
 
@@ -27,6 +28,8 @@ def create_word_pair(request):
 def user_vocabulary(request):
     content = {
         'words': WordPair.objects.filter(owner=request.user),
+        'word_statuses': WordPair.STATUSES,
+        'form': WordPairForm(),
     }
     return render(request, 'vocabulary/user_vocabulary.html', content)
 

@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {%load static%}
+{%load vocabulary_tags%}
 {%block head%}
 <script src="{% static 'js/bs_form.js' %}"></script>
 {%endblock%}
@@ -74,13 +75,14 @@
 
                         <select id="status" name="status" class="form-select" aria-label="Default select example">
                             {% for value, label in form.status.field.choices %}
-                            <option value="{{ value }}" {% if form.status.value == value %}selected data-default="true"{% endif %}>
+                            <option value="{{ value }}" {% if form.status.value == value %}selected data-default="true" {%endif %}>
                                 {{ label }}
                             </option>
                             {% endfor %}
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <div class="mb-3">
                         <label for="en" class="form-label">Слово на английском</label>
                         <input type="text" class="form-control" id="en" name="en" required>
@@ -93,17 +95,45 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-light" id="delete-card-button"
+                    data-bs-toggle="modal"
+                    data-bs-dismiss="modal"
+                    data-bs-target="#deleteCardModal"
+                    >Удалить</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#editCardModal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                        data-bs-target="#editCardModal">Закрыть</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-
-
+<div class="modal" id="deleteCardModal" tabindex="-1" aria-labelledby="deleteCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="" id="deleteCardForm">
+                <div class="modal-header">
+                    <!-- <h5 class="modal-title" id="deleteCardModalLabel">Удаление карточки</h5> -->
+                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-dismiss="modal"
+                        data-bs-target="#editCardModal">
+                        <i class="_img_pack_3" style="background-position: 0px -606px"></i>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="id">
+                    <div class="invalid-feedback non-field-invalid-feedback"></div>
+                    <p class="card-text">Удалить карточку?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+                        data-bs-target="#editCardModal">Закрыть</button>
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="container ">
     <h1 class="text-center m-4">Мой словарь</h1>
 </div>
@@ -115,9 +145,10 @@
 </div>
 <div class="container ">
     <div class="my-5">
-        <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-list">
             {%for word in words%}
-            <div class="col">
+            {% show_card word %}
+            <!-- <div class="col card-id-{{word.pk}}">
                 <div class="card" data-word-id="{{word.pk}}">
                     <i class="edit fa-solid fa-pen-to-square"></i>
                     <div class="card-body">
@@ -125,10 +156,13 @@
                         <p class="card-text" data-word-en="">{{word.ru}}</p>
                     </div>
                 </div>
-            </div>
+            </div> -->
             {%endfor%}
         </div>
     </div>
+</div>
+<div id="card-template" style="display: none;">
+    {%show_card%}
 </div>
 <script>
     class Words {
@@ -149,16 +183,44 @@
             return responce
         }
 
-        async createWord(data){
+        async createWord(data) {
             var url = `http://127.0.0.1:8000/vocabulary/words/`
             var responce = await requestJson(url, 'POST', data)
             return responce
         }
+
+        async deleteWord(wordId) {
+            var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
+            var responce = await requestJson(url, 'DELETE', {})
+            return responce
+        }
+    }
+
+    class Card{
+        constructor(){
+
+        }
+
+        _get_template(){
+            return document.querySelector('#card-template').innerHTML
+        }
+
+        addCard(data){
+            var template = this._get_template()
+            for (var [key,value] of Object.entries(data)){
+                template = template.replaceAll('{' + key +'}', value)
+            }
+            var tempBlock = document.createElement('div')
+            tempBlock.innerHTML = template
+            var newCard = tempBlock.children[0]
+            document.getElementById('cards-list').prepend(newCard)
+            newCard.addEventListener('click', () => openEditModal(data['id']))
+        }
     }
 
     const words = new Words()
-    const cards = document.querySelectorAll('.card')
-    cards.forEach(card => {
+    const cards = new Card()
+    document.querySelectorAll('.card').forEach(card => {
         var wordId = card.dataset.wordId
         card.addEventListener('click', () => openEditModal(wordId))
     })
@@ -193,6 +255,7 @@
         var responce = await words.updateWord(data['id'], data)
         if (responce.ok) {
             window.alert('Update object')
+            editFormWrap.was_changed = false
         } else {
             var errorData = await responce.json()
             editFormWrap.showErrors(errorData)
@@ -200,7 +263,7 @@
         editFormWrap.enable()
     }
 
-    async function createFormSubmitEvent(event){
+    async function createFormSubmitEvent(event) {
         console.log('createFormSubmitEvent')
         event.preventDefault()
         var form = BsJsonForm.getInstance(event.target)
@@ -208,8 +271,12 @@
         form.disable()
         var responce = await words.createWord(data)
         if (responce.ok) {
-            window.alert('Create object')
+            // window.alert('Create object')
             form.clearFields()
+            form.was_changed = false
+            editWordModal.hide()
+            var cardData = await responce.json()
+            cards.addCard(cardData)
         } else {
             var errorData = await responce.json()
             form.showErrors(errorData)
@@ -226,6 +293,38 @@
         var form = new BsJsonForm(editForm)
         editWordModal.show()
         form.submitFunction = createFormSubmitEvent
+    }
+</script>
+<script>
+    var deletecardButton = document.getElementById('delete-card-button')
+    var deleteCardModalBlock = document.getElementById('deleteCardModal')
+    var deleteCardModal = new bootstrap.Modal(deleteCardModalBlock)
+    deletecardButton.addEventListener('click', function () {
+        var cardForm = BsJsonForm.getInstance(editForm)
+        var cardId = cardForm.toDict()
+        var deleteForm = new BsJsonForm(document.getElementById('deleteCardForm'))
+        deleteForm.feed(cardForm.toDict())
+        // editWordModal.hide()
+        deleteForm.submitFunction = deleteCardEvent
+    })
+
+    async function deleteCardEvent(event) {
+        event.preventDefault()
+        var deleteForm = BsJsonForm.getInstance(event.target)
+        
+        var data = deleteForm.toDict()
+        deleteForm.disable()
+        var responce = await words.deleteWord(data['id'])
+        if (responce.ok) {
+            window.alert('Delete object')
+            deleteForm.clearFields()
+            document.querySelector('.card-id-'+ data['id']).remove()
+        } else {
+            var errorData = await responce.json()
+            deleteForm.showErrors(errorData)
+        }
+        deleteForm.enable()
+        deleteCardModal.hide()
     }
 </script>
 {%endblock%}
