@@ -75,9 +75,11 @@
 
                         <select id="status" name="status" class="form-select" aria-label="Default select example">
                             {% for value, label in form.status.field.choices %}
-                            <option value="{{ value }}" {% if form.status.value == value %}selected data-default="true" {%endif %}>
-                                {{ label }}
-                            </option>
+                            {% if form.status.value == value %}
+                            <option value="{{ value }}" selected data-default="true">{{ label }}</option>
+                            {%else%}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {%endif%}
                             {% endfor %}
                         </select>
                         <div class="invalid-feedback"></div>
@@ -95,11 +97,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" id="delete-card-button"
-                    data-bs-toggle="modal"
-                    data-bs-dismiss="modal"
-                    data-bs-target="#deleteCardModal"
-                    >Удалить</button>
+                    <button type="button" class="btn btn-light" id="delete-card-button" data-bs-toggle="modal"
+                        data-bs-dismiss="modal" data-bs-target="#deleteCardModal">Удалить</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                         data-bs-target="#editCardModal">Закрыть</button>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -121,7 +120,7 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="id">
+                    <input type="hidden" name="id">
                     <div class="invalid-feedback non-field-invalid-feedback"></div>
                     <p class="card-text">Удалить карточку?</p>
                 </div>
@@ -134,6 +133,36 @@
         </div>
     </div>
 </div>
+<div class="modal" id="confirmCloseEditeedModal" tabindex="-1" aria-labelledby="confirmCloseEditeedModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmCloseEditeedModalLabel"></h5>
+                <div class="icon-wrap close" data-bs-dismiss="modal" aria-label="Close"
+                    data-bs-target="#confirmCloseEditeedModal">
+                    <i class="_img_pack_3" style="background-position: 0px -606px"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p>Были внесены изменения, продолжить редактирование?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+                    data-bs-target="#editCardModal">Продолжить
+                    редактирование</button>
+                <div class="form-btn-wrapper">
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close"
+                        data-bs-target="#confirmCloseEditeedModal">
+                        <span class="button-text">Закрыть</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container ">
     <h1 class="text-center m-4">Мой словарь</h1>
 </div>
@@ -148,15 +177,6 @@
         <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-list">
             {%for word in words%}
             {% show_card word %}
-            <!-- <div class="col card-id-{{word.pk}}">
-                <div class="card" data-word-id="{{word.pk}}">
-                    <i class="edit fa-solid fa-pen-to-square"></i>
-                    <div class="card-body">
-                        <p class="card-text" data-word-ru=""><b>{{word.en}}</b></p>
-                        <p class="card-text" data-word-en="">{{word.ru}}</p>
-                    </div>
-                </div>
-            </div> -->
             {%endfor%}
         </div>
     </div>
@@ -196,19 +216,19 @@
         }
     }
 
-    class Card{
-        constructor(){
+    class Card {
+        constructor() {
 
         }
 
-        _get_template(){
+        _get_template() {
             return document.querySelector('#card-template').innerHTML
         }
 
-        addCard(data){
+        addCard(data) {
             var template = this._get_template()
-            for (var [key,value] of Object.entries(data)){
-                template = template.replaceAll('{' + key +'}', value)
+            for (var [key, value] of Object.entries(data)) {
+                template = template.replaceAll('{' + key + '}', value)
             }
             var tempBlock = document.createElement('div')
             tempBlock.innerHTML = template
@@ -224,7 +244,8 @@
         var wordId = card.dataset.wordId
         card.addEventListener('click', () => openEditModal(wordId))
     })
-
+    var confirmCloseEditeedModalBlock = document.getElementById('confirmCloseEditeedModal')
+    var confirmCloseEditeedModal = new bootstrap.Modal(confirmCloseEditeedModalBlock)
     var editForm = document.getElementById('editForm')
     var editCardModalBlock = document.getElementById('editCardModal')
     var editWordModal = new bootstrap.Modal(editCardModalBlock)
@@ -232,7 +253,7 @@
     editCardModalBlock.addEventListener('hide.bs.modal', function (e) {
         var formWrap = BsJsonForm.getInstance(editForm)
         if (formWrap.was_changed) {
-            discardModal.open(editWordModal)
+            confirmCloseEditeedModal.show()
         }
     });
 
@@ -311,14 +332,12 @@
     async function deleteCardEvent(event) {
         event.preventDefault()
         var deleteForm = BsJsonForm.getInstance(event.target)
-        
         var data = deleteForm.toDict()
         deleteForm.disable()
         var responce = await words.deleteWord(data['id'])
         if (responce.ok) {
-            window.alert('Delete object')
             deleteForm.clearFields()
-            document.querySelector('.card-id-'+ data['id']).remove()
+            document.querySelector('.card-id-' + data['id']).remove()
         } else {
             var errorData = await responce.json()
             deleteForm.showErrors(errorData)

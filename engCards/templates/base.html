@@ -810,32 +810,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal -->
-    <div class="modal" id="CloseFormModal" tabindex="-1" aria-labelledby="CloseFormModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="CloseFormModalLabel"></h5>
-                    <div class="icon-wrap close" data-bs-dismiss="modal" aria-label="Close">
-                        <i class="_img_pack_3" style="background-position: 0px -606px"></i>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <p></p>
-                </div>
-                <div class="modal-footer">
-                    <button id="continue" type="button" class="btn btn-outline-primary"
-                        data-bs-dismiss="modal"></button>
-                    <div class="form-btn-wrapper">
-                        <button id="discard" type="submit" class="btn btn-primary">
-                            <span class="button-text"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     {%block bottom%}
     {%endblock%}
 
@@ -882,40 +856,7 @@
     </script>
 
     <script>
-        class DiscardModal {
-            constructor(modalBlock) {
-                this.modalBlock = modalBlock
-                this.bs_modal = new bootstrap.Modal(modalBlock)
-                this.linkedModal = null
-                this._events()
-            }
-
-            _events() {
-                document.getElementById('continue').addEventListener('click', this.continueEditing.bind(this))
-                document.getElementById('discard').addEventListener('click', this.discard.bind(this))
-            }
-
-            open(closedModal) {
-                if (closedModal instanceof bootstrap.Modal) {
-                    this.bs_modal.show()
-                    this.linkedModal = closedModal
-                } else {
-                    throw Error('closedModal must be bootstrap.Modal instanse')
-                }
-            }
-            continueEditing() {
-                this.bs_modal.hide()
-                this.linkedModal.show()
-                this.linkedModal = null
-            }
-
-            discard() {
-                console.log(this.linkedModal)
-                this.linkedModal.hide()
-                this.bs_modal.hide()
-                this.linkedModal = null
-            }
-        }
+        
 
         var firstModalBlock = document.getElementById('exampleModal1')
         var firstModal = new bootstrap.Modal(firstModalBlock)
@@ -923,19 +864,12 @@
         var successModal = new bootstrap.Modal(document.getElementById('successModal'))
         var termsModal = new bootstrap.Modal(document.getElementById('TermsModal'))
         var policyModal = new bootstrap.Modal(document.getElementById('policyModal'))
-        var CloseFormModalBlock = document.getElementById('CloseFormModal')
+        
         // var CloseFormModal = new bootstrap.Modal(CloseFormModalBlock)
         var standartsModal = new bootstrap.Modal(document.getElementById('StandartsModal'))
 
         var firstForm = document.getElementById('first-form')
 
-        const discardModal = new DiscardModal(CloseFormModalBlock)
-        CloseFormModalBlock.addEventListener('show.bs.modal', function () {
-            firstModalBlock.style.zIndex = 1000
-        })
-        CloseFormModalBlock.addEventListener('hide.bs.modal', function () {
-            firstModalBlock.style.zIndex = 1060
-        })
         
     </script>
     <script src="{%static 'js/main.js'%}"></script>
