@@ -65,7 +65,6 @@ class BsJsonForm {
     _init() {
         this.clearFields()
         this.hideErrors()
-        this.elem.addEventListener('submit', this._submit)
     }
 
     _add_events() {
@@ -74,12 +73,13 @@ class BsJsonForm {
         })
     }
 
-    get submitButton() {
-        return this.elem.querySelector('button[type=submit]')
-    }
-    set submitFunction(func) {
+    set submitFunction(func){
         this._submitFunction = func
         this.elem.addEventListener('submit', this._submitFunction)
+    }
+
+    get submitButton() {
+        return this.elem.querySelector('button[type=submit]')
     }
 
     // убрать клас is-invalid с элемента и также убрать с формы

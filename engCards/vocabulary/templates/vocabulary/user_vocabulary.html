@@ -61,7 +61,7 @@
 <div class="modal" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="" id="editForm">
+            <form action="" id="editCardForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editCardModalLabel">Редактировать карточку</h5>
                     <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#editCardModal">
@@ -185,165 +185,290 @@
     {%show_card%}
 </div>
 <script>
-    class Words {
-        constructor() {
-            this.height = 'height';
-
+    class CardsAPI {
+        constructor(baseUrl = 'http://127.0.0.1:8000/vocabulary/words/') {
+            this.baseUrl = baseUrl;
         }
-        // Method
+
         async getWord(wordId) {
-            var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
-            var responce = await requestJson(url, 'GET')
-            return responce
+            return await this._request(`${this.baseUrl}${wordId}/`, 'GET',);
         }
 
         async updateWord(wordId, data) {
-            var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
-            var responce = await requestJson(url, 'PUT', data)
-            return responce
+            return await this._request(`${this.baseUrl}${wordId}/`, 'PUT', data);
         }
 
         async createWord(data) {
-            var url = `http://127.0.0.1:8000/vocabulary/words/`
-            var responce = await requestJson(url, 'POST', data)
-            return responce
+            return await this._request(`${this.baseUrl}`, 'POST', data);
         }
 
         async deleteWord(wordId) {
-            var url = `http://127.0.0.1:8000/vocabulary/words/${wordId}/`
-            var responce = await requestJson(url, 'DELETE', {})
-            return responce
+            return await this._request(`${this.baseUrl}${wordId}/`, 'DELETE');
+        }
+
+        async _request(url, method, data = null) {
+            try {
+                const options = {
+                    method: method, // Указываем метод (GET, POST, PUT, DELETE)
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrf,
+                    },
+                };
+                // Если есть данные (для POST или PUT), добавляем их в body
+                if (data && (method === 'POST' || method === 'PUT')) {
+                    options.body = JSON.stringify(data);
+                }
+                const response = await fetch(url, options);
+                return response
+            } catch (error) {
+                console.error(`API Error (${method}):`, error);
+                throw error;
+            }
         }
     }
 
     class Card {
-        constructor() {
-
+        constructor(elem, onEditCallback) {
+            this.elem = elem;
+            this.onEditCallback = onEditCallback;
+            this._init();
         }
 
-        _get_template() {
-            return document.querySelector('#card-template').innerHTML
+        _init() {
+            this.elem.addEventListener('click', this.edit.bind(this));
         }
 
-        addCard(data) {
-            var template = this._get_template()
-            for (var [key, value] of Object.entries(data)) {
-                template = template.replaceAll('{' + key + '}', value)
+        get id() {
+            return this.elem.dataset.cardId;
+        }
+
+        edit() {
+            this.onEditCallback(this.id);
+        }
+
+        remove() {
+            this.elem.remove();
+        }
+
+        update(data) {
+            this.elem.querySelector('[data-card-en]').textContent = data.en;
+            this.elem.querySelector('[data-card-ru]').textContent = data.ru;
+        }
+    }
+    class CardView {
+        constructor(templateSelector, containerSelector) {
+            this.template = document.getElementById(templateSelector).innerHTML;
+            this.container = document.getElementById(containerSelector);
+            this.cards = new Map()
+        }
+
+        addCardsFromPage(onEditCallback) {
+            this.container.querySelectorAll('.col').forEach(card => {
+                this._addCardInstance(card, onEditCallback);
+            });
+        }
+
+        addCard(data, onEditCallback) {
+            var html = this._renderTemplate(data)
+            var elem = this.createWord(html)
+            this._addCardInstance(elem, onEditCallback)
+        }
+
+        updateCard(cardId, data) {
+            var card = this.cards.get(cardId + '')
+            card.update(data)
+        }
+
+        _renderTemplate(data) {
+            let result = template;
+            for (const [key, value] of Object.entries(data)) {
+                result = result.replaceAll(`{${key}}`, value);
             }
-            var tempBlock = document.createElement('div')
-            tempBlock.innerHTML = template
-            var newCard = tempBlock.children[0]
-            document.getElementById('cards-list').prepend(newCard)
-            newCard.addEventListener('click', () => openEditModal(data['id']))
+            return result;
+        }
+
+        _createElementFormHtml(html) {
+            let result = this.template;
+            for (const [key, value] of Object.entries(data)) {
+                result = result.replaceAll(`{${key}}`, value);
+            }
+            return result;
+        }
+
+        _addCardInstance(elem, onEditCallback) {
+            const card = new Card(elem, onEditCallback);
+            this.cards.set(card.id, card);
+        }
+
+        // async edit() {
+        //     editCardModalBlock.querySelector('.modal-title').innerHTML = 'Редактировать карточку'
+        //     var editFormWrap = new BsJsonForm(editForm)
+        //     editFormWrap.submitFunction = editFormSubmitEvent
+        //     var word_data = await words.getWord(this.id)
+        //     var data = await word_data.json()
+        //     editFormWrap.feed(data)
+        //     editWordModal.show(editWordModal)
+        // }
+
+    }
+
+    class ModalController {
+        constructor(editModalId, deleteModalId, editFormSelector, deleteFormSelector) {
+            this.editModalBlock = document.getElementById(editModalId)
+            this.editModal = new bootstrap.Modal(this.editModalBlock)
+            this.deleteModal = new bootstrap.Modal(document.getElementById(deleteModalId))
+            this.editForm = document.getElementById(editFormSelector)
+            this.deleteForm = document.getElementById(deleteFormSelector)
+            this.confirmCloseEditeedModal = new bootstrap.Modal(document.getElementById('confirmCloseEditeedModal'))
+
+            this.addEvents()
+        }
+
+        addEvents() {
+            this.editModalBlock.addEventListener('hide.bs.modal', (event) => {
+                var formWrap = BsJsonForm.getInstance(this.editForm);
+                if (formWrap.was_changed) {
+                    this.confirmCloseEditeedModal.show();
+                }
+            });
+        }
+
+
+        showEditModal(data, submitCallback) {
+            var form = new BsJsonForm(this.editForm)
+            form.feed(data)
+            form.submitFunction = submitCallback
+            this.editModal.show()
+        }
+
+        hideEditModal() {
+            this.editModal.hide()
         }
     }
 
-    const words = new Words()
-    const cards = new Card()
-    document.querySelectorAll('.card').forEach(card => {
-        var wordId = card.dataset.wordId
-        card.addEventListener('click', () => openEditModal(wordId))
-    })
-    var confirmCloseEditeedModalBlock = document.getElementById('confirmCloseEditeedModal')
-    var confirmCloseEditeedModal = new bootstrap.Modal(confirmCloseEditeedModalBlock)
-    var editForm = document.getElementById('editForm')
+    class CardManager {
+        constructor(cardsAPI, cardsView, modalController) {
+            this.cardsAPI = cardsAPI
+            this.cardsView = cardsView
+            this.modalController = modalController
+        }
+
+        async handleEdit(cardId) {
+            const response = await this.cardsAPI.getWord(cardId);
+            const data = await response.json();
+            modalController.showEditModal(data, this.update.bind(this))
+        }
+
+        async update(e) {
+            e.preventDefault()
+            var form = BsJsonForm.getInstance(e.target)
+            var data = form.toDict()
+            var cardId = data['id']
+            const response = await this.cardsAPI.updateWord(cardId, data);
+            var updated_card_data = await response.json();
+            this.cardsView.updateCard(cardId, updated_card_data)
+            modalController.hideEditModal()
+        }
+
+        async create() { }
+
+        async delete() { }
+    }
+    const cardsApi = new CardsAPI()
+    const modalController = new ModalController('editCardModal', 'deleteCardModal', 'editCardForm', 'deleteCardForm')
+    const cardsView = new CardView('card-template', 'cards-list')
+    const cardManager = new CardManager(cardsApi, cardsView, modalController)
+    cardsView.addCardsFromPage(cardManager.handleEdit.bind(cardManager))
+
+    // const words = new CardsAPI()
+    // const cards = new CardsView()
+
+    // var confirmCloseEditeedModalBlock = document.getElementById('confirmCloseEditeedModal')
+    // var confirmCloseEditeedModal = new bootstrap.Modal(confirmCloseEditeedModalBlock)
+    var editForm = document.getElementById('editCardForm')
     var editCardModalBlock = document.getElementById('editCardModal')
-    var editWordModal = new bootstrap.Modal(editCardModalBlock)
+    // var editWordModal = new bootstrap.Modal(editCardModalBlock)
 
-    editCardModalBlock.addEventListener('hide.bs.modal', function (e) {
-        var formWrap = BsJsonForm.getInstance(editForm)
-        if (formWrap.was_changed) {
-            confirmCloseEditeedModal.show()
-        }
-    });
 
-    async function openEditModal(wordId) {
-        editCardModalBlock.querySelector('.modal-title').innerHTML = 'Редактировать карточку'
-        var editFormWrap = new BsJsonForm(editForm)
-        editFormWrap.submitFunction = editFormSubmitEvent
-        var word_data = await words.getWord(wordId)
-        var data = await word_data.json()
-        editFormWrap.feed(data)
-        editWordModal.show(editWordModal)
-    }
 
-    async function editFormSubmitEvent(event) {
-        console.log('editFormSubmitEvent')
-        event.preventDefault()
-        var editFormWrap = BsJsonForm.getInstance(event.target)
-        var data = editFormWrap.toDict()
-        editFormWrap.disable()
-        var responce = await words.updateWord(data['id'], data)
-        if (responce.ok) {
-            window.alert('Update object')
-            editFormWrap.was_changed = false
-        } else {
-            var errorData = await responce.json()
-            editFormWrap.showErrors(errorData)
-        }
-        editFormWrap.enable()
-    }
+    // async function editFormSubmitEvent(event) {
+    //     console.log('editFormSubmitEvent')
+    //     event.preventDefault()
+    //     var editFormWrap = BsJsonForm.getInstance(event.target)
+    //     var data = editFormWrap.toDict()
+    //     editFormWrap.disable()
+    //     var responce = await words.updateWord(data['id'], data)
+    //     if (responce.ok) {
+    //         window.alert('Update object')
+    //         editFormWrap.was_changed = false
+    //     } else {
+    //         var errorData = await responce.json()
+    //         editFormWrap.showErrors(errorData)
+    //     }
+    //     editFormWrap.enable()
+    // }
 
-    async function createFormSubmitEvent(event) {
-        console.log('createFormSubmitEvent')
-        event.preventDefault()
-        var form = BsJsonForm.getInstance(event.target)
-        var data = form.toDict()
-        form.disable()
-        var responce = await words.createWord(data)
-        if (responce.ok) {
-            // window.alert('Create object')
-            form.clearFields()
-            form.was_changed = false
-            editWordModal.hide()
-            var cardData = await responce.json()
-            cards.addCard(cardData)
-        } else {
-            var errorData = await responce.json()
-            form.showErrors(errorData)
-        }
-        form.enable()
-    }
+    // async function createFormSubmitEvent(event) {
+    //     console.log('createFormSubmitEvent')
+    //     event.preventDefault()
+    //     var form = BsJsonForm.getInstance(event.target)
+    //     var data = form.toDict()
+    //     form.disable()
+    //     var responce = await words.createWord(data)
+    //     if (responce.ok) {
+    //         // window.alert('Create object')
+    //         form.clearFields()
+    //         form.was_changed = false
+    //         editWordModal.hide()
+    //         var cardData = await responce.json()
+    //         cards.addCard(cardData)
+    //     } else {
+    //         var errorData = await responce.json()
+    //         form.showErrors(errorData)
+    //     }
+    //     form.enable()
+    // }
 </script>
 <script>
-    var addNewCardButton = document.getElementById('add-new-card')
-    addNewCardButton.addEventListener('click', addNewCardEvent)
+    // var addNewCardButton = document.getElementById('add-new-card')
+    // addNewCardButton.addEventListener('click', addNewCardEvent)
 
-    function addNewCardEvent() {
-        editCardModalBlock.querySelector('.modal-title').innerHTML = 'Добавить новую карточку'
-        var form = new BsJsonForm(editForm)
-        editWordModal.show()
-        form.submitFunction = createFormSubmitEvent
-    }
+    // function addNewCardEvent() {
+    //     editCardModalBlock.querySelector('.modal-title').innerHTML = 'Добавить новую карточку'
+    //     var form = new BsJsonForm(editForm)
+    //     editWordModal.show()
+    //     form.submitFunction = createFormSubmitEvent
+    // }
 </script>
 <script>
-    var deletecardButton = document.getElementById('delete-card-button')
-    var deleteCardModalBlock = document.getElementById('deleteCardModal')
-    var deleteCardModal = new bootstrap.Modal(deleteCardModalBlock)
-    deletecardButton.addEventListener('click', function () {
-        var cardForm = BsJsonForm.getInstance(editForm)
-        var cardId = cardForm.toDict()
-        var deleteForm = new BsJsonForm(document.getElementById('deleteCardForm'))
-        deleteForm.feed(cardForm.toDict())
-        // editWordModal.hide()
-        deleteForm.submitFunction = deleteCardEvent
-    })
+    // var deletecardButton = document.getElementById('delete-card-button')
+    // var deleteCardModalBlock = document.getElementById('deleteCardModal')
+    // var deleteCardModal = new bootstrap.Modal(deleteCardModalBlock)
+    // deletecardButton.addEventListener('click', function () {
+    //     var cardForm = BsJsonForm.getInstance(editForm)
+    //     var cardId = cardForm.toDict()
+    //     var deleteForm = new BsJsonForm(document.getElementById('deleteCardForm'))
+    //     deleteForm.feed(cardForm.toDict())
+    //     // editWordModal.hide()
+    //     deleteForm.submitFunction = deleteCardEvent
+    // })
 
-    async function deleteCardEvent(event) {
-        event.preventDefault()
-        var deleteForm = BsJsonForm.getInstance(event.target)
-        var data = deleteForm.toDict()
-        deleteForm.disable()
-        var responce = await words.deleteWord(data['id'])
-        if (responce.ok) {
-            deleteForm.clearFields()
-            document.querySelector('.card-id-' + data['id']).remove()
-        } else {
-            var errorData = await responce.json()
-            deleteForm.showErrors(errorData)
-        }
-        deleteForm.enable()
-        deleteCardModal.hide()
-    }
+    // async function deleteCardEvent(event) {
+    //     event.preventDefault()
+    //     var deleteForm = BsJsonForm.getInstance(event.target)
+    //     var data = deleteForm.toDict()
+    //     deleteForm.disable()
+    //     var responce = await words.deleteWord(data['id'])
+    //     if (responce.ok) {
+    //         deleteForm.clearFields()
+    //         cards.deleteCard(data['id'])
+    //     } else {
+    //         var errorData = await responce.json()
+    //         deleteForm.showErrors(errorData)
+    //     }
+    //     deleteForm.enable()
+    //     deleteCardModal.hide()
+    // }
 </script>
 {%endblock%}
