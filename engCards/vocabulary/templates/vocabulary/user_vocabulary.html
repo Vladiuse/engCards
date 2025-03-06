@@ -265,7 +265,7 @@
         async _request(url, method, data = null) {
             try {
                 const options = {
-                    method: method, // Указываем метод (GET, POST, PUT, DELETE)
+                    method: method,
                     headers: {
                         "Content-Type": "application/json",
                         "X-CSRFToken": csrf,
@@ -368,17 +368,6 @@
             const card = new Card(elem, onEditCallback);
             this.cards.set(card.id, card);
         }
-
-        // async edit() {
-        //     editCardModalBlock.querySelector('.modal-title').innerHTML = 'Редактировать карточку'
-        //     var editFormWrap = new BsJsonForm(editForm)
-        //     editFormWrap.submitFunction = editFormSubmitEvent
-        //     var word_data = await words.getWord(this.id)
-        //     var data = await word_data.json()
-        //     editFormWrap.feed(data)
-        //     editWordModal.show(editWordModal)
-        // }
-
     }
 
     class ModalController {
@@ -454,6 +443,7 @@
             e.preventDefault()
             var form = BsJsonForm.getInstance(e.target)
             var data = form.toDict()
+            form.disable()
             var cardId = data['id']
             const response = await this.cardsAPI.updateWord(cardId, data);
             var updated_card_data = await response.json();
@@ -464,6 +454,7 @@
             } else {
                 form.showErrors(updated_card_data)
             }
+            form.enable()
 
         }
 
@@ -471,21 +462,24 @@
             e.preventDefault()
             var form = BsJsonForm.getInstance(e.target)
             var data = form.toDict()
+            form.disable()
             const response = await this.cardsAPI.createWord(data);
             var responce_json = await response.json()
             if (response.ok) {
                 this.cardsView.addCardElemToContainer(responce_json, this.handleEdit.bind(this))
                 form.was_changed = false
-                modalController.hideEditModal()
+                modalController.createModal.hide()
             } else {
                 form.showErrors(responce_json)
             }
+            form.enable()
         }
 
         async delete(e) {
             e.preventDefault()
             var form = BsJsonForm.getInstance(e.target)
             var data = form.toDict()
+            form.disable()
             var wordId = data['id']
             const response = await this.cardsAPI.deleteWord(wordId);
             if (response.ok) {
@@ -494,6 +488,7 @@
             } else {
                 alert('Error')
             }
+            form.enable()
         }
     }
     var createModalButton = document.getElementById('add-new-card')
@@ -509,98 +504,6 @@
     deleteCardButton.addEventListener('click', (e) => {
         const formData = BsJsonForm.getInstance(modalController.editForm)
         modalController.showDeleteModal(formData.toDict(), cardManager.delete.bind(cardManager))
-    })
-
-
-    // const words = new CardsAPI()
-    // const cards = new CardsView()
-
-    // var confirmCloseEditeedModalBlock = document.getElementById('confirmCloseEditeedModal')
-    // var confirmCloseEditeedModal = new bootstrap.Modal(confirmCloseEditeedModalBlock)
-    var createForm = document.getElementById('createCardForm')
-    var editForm = document.getElementById('editCardForm')
-    var editCardModalBlock = document.getElementById('editCardModal')
-    // var editWordModal = new bootstrap.Modal(editCardModalBlock)
-
-
-
-    // async function editFormSubmitEvent(event) {
-    //     console.log('editFormSubmitEvent')
-    //     event.preventDefault()
-    //     var editFormWrap = BsJsonForm.getInstance(event.target)
-    //     var data = editFormWrap.toDict()
-    //     editFormWrap.disable()
-    //     var responce = await words.updateWord(data['id'], data)
-    //     if (responce.ok) {
-    //         window.alert('Update object')
-    //         editFormWrap.was_changed = false
-    //     } else {
-    //         var errorData = await responce.json()
-    //         editFormWrap.showErrors(errorData)
-    //     }
-    //     editFormWrap.enable()
-    // }
-
-    // async function createFormSubmitEvent(event) {
-    //     console.log('createFormSubmitEvent')
-    //     event.preventDefault()
-    //     var form = BsJsonForm.getInstance(event.target)
-    //     var data = form.toDict()
-    //     form.disable()
-    //     var responce = await words.createWord(data)
-    //     if (responce.ok) {
-    //         // window.alert('Create object')
-    //         form.clearFields()
-    //         form.was_changed = false
-    //         editWordModal.hide()
-    //         var cardData = await responce.json()
-    //         cards.addCard(cardData)
-    //     } else {
-    //         var errorData = await responce.json()
-    //         form.showErrors(errorData)
-    //     }
-    //     form.enable()
-    // }
-</script>
-<script>
-    // var addNewCardButton = document.getElementById('add-new-card')
-    // addNewCardButton.addEventListener('click', addNewCardEvent)
-
-    // function addNewCardEvent() {
-    //     editCardModalBlock.querySelector('.modal-title').innerHTML = 'Добавить новую карточку'
-    //     var form = new BsJsonForm(editForm)
-    //     editWordModal.show()
-    //     form.submitFunction = createFormSubmitEvent
-    // }
-</script>
-<script>
-    // var deletecardButton = document.getElementById('delete-card-button')
-    // var deleteCardModalBlock = document.getElementById('deleteCardModal')
-    // var deleteCardModal = new bootstrap.Modal(deleteCardModalBlock)
-    // deletecardButton.addEventListener('click', function () {
-    //     var cardForm = BsJsonForm.getInstance(editForm)
-    //     var cardId = cardForm.toDict()
-    //     var deleteForm = new BsJsonForm(document.getElementById('deleteCardForm'))
-    //     deleteForm.feed(cardForm.toDict())
-    //     // editWordModal.hide()
-    //     deleteForm.submitFunction = deleteCardEvent
-    // })
-
-    // async function deleteCardEvent(event) {
-    //     event.preventDefault()
-    //     var deleteForm = BsJsonForm.getInstance(event.target)
-    //     var data = deleteForm.toDict()
-    //     deleteForm.disable()
-    //     var responce = await words.deleteWord(data['id'])
-    //     if (responce.ok) {
-    //         deleteForm.clearFields()
-    //         cards.deleteCard(data['id'])
-    //     } else {
-    //         var errorData = await responce.json()
-    //         deleteForm.showErrors(errorData)
-    //     }
-    //     deleteForm.enable()
-    //     deleteCardModal.hide()
-    // }
+    })    
 </script>
 {%endblock%}
