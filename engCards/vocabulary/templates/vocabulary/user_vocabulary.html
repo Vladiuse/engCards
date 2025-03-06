@@ -269,10 +269,12 @@
             });
         }
 
-        addCard(data, onEditCallback) {
+        addCardElemToContainer(data, onEditCallback) {
+            console.log(data)
             var html = this._renderTemplate(data)
-            var elem = this.createWord(html)
+            var elem = this._createElementFormHtml(html)
             this._addCardInstance(elem, onEditCallback)
+            this.container.prepend(elem)
         }
 
         updateCard(cardId, data) {
@@ -281,7 +283,7 @@
         }
 
         _renderTemplate(data) {
-            let result = template;
+            let result = this.template;
             for (const [key, value] of Object.entries(data)) {
                 result = result.replaceAll(`{${key}}`, value);
             }
@@ -289,11 +291,9 @@
         }
 
         _createElementFormHtml(html) {
-            let result = this.template;
-            for (const [key, value] of Object.entries(data)) {
-                result = result.replaceAll(`{${key}}`, value);
-            }
-            return result;
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.children[0];
         }
 
         _addCardInstance(elem, onEditCallback) {
@@ -345,7 +345,7 @@
             this.editModal.hide()
         }
 
-        showCreateModal(submitCallback){
+        showCreateModal(submitCallback) {
             var form = new BsJsonForm(this.editForm)
             form.submitFunction = submitCallback
             this.editModal.show()
@@ -372,17 +372,24 @@
             var cardId = data['id']
             const response = await this.cardsAPI.updateWord(cardId, data);
             var updated_card_data = await response.json();
-            this.cardsView.updateCard(cardId, updated_card_data)
-            modalController.hideEditModal()
+            if (response.ok) {
+                form.was_changed = false
+                this.cardsView.updateCard(cardId, updated_card_data)
+                modalController.hideEditModal()
+            } else {
+                form.showErrors(updated_card_data)
+            }
+
         }
 
-        async create(e) { 
+        async create(e) {
             e.preventDefault()
             var form = BsJsonForm.getInstance(e.target)
             var data = form.toDict()
             const response = await this.cardsAPI.createWord(data);
             var responce_json = await response.json()
-            if (response.ok){
+            if (response.ok) {
+                this.cardsView.addCardElemToContainer(responce_json, this.handleEdit.bind(this))
                 form.was_changed = false
                 modalController.hideEditModal()
             } else {
@@ -401,7 +408,7 @@
     createModalButton.addEventListener('click', () => {
         modalController.showCreateModal(cardManager.create.bind(cardManager))
     })
-    
+
 
     // const words = new CardsAPI()
     // const cards = new CardsView()
