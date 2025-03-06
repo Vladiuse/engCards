@@ -34,6 +34,10 @@
         margin: 4px;
     }
 
+    .modal-footer {
+        justify-content: space-between;
+    }
+
     .card .edit {
         opacity: 0;
         /* Видимое состояние */
@@ -57,7 +61,56 @@
         }
     }
 </style>
-<!-- Modal -->
+<!-- CREATE CARD MODAL -->
+<div class="modal" id="createCardModal" tabindex="-1" aria-labelledby="createCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="" id="createCardForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCardModalLabel">Создать карточку</h5>
+                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#createCardModal">
+                        <i class="_img_pack_3" style="background-position: 0px -606px"></i>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="invalid-feedback non-field-invalid-feedback"></div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Статус</label>
+                        <select id="status" name="status" class="form-select" aria-label="Default select example">
+                            {% for value, label in form.status.field.choices %}
+                            {% if form.status.value == value %}
+                            <option value="{{ value }}" selected data-default="true">{{ label }}</option>
+                            {%else%}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {%endif%}
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <input type="hidden" class="form-control" id="id" name="id">
+                    <div class="mb-3">
+                        <label for="en" class="form-label">Слово на английском</label>
+                        <input type="text" class="form-control" id="en" name="en" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ru" class="form-label">Перевод на русский</label>
+                        <input type="text" class="form-control" id="ru" name="ru" required value="">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#createCardModal">Закрыть</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- EDIT CARD MODAL -->
 <div class="modal" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -72,7 +125,6 @@
                     <div class="invalid-feedback non-field-invalid-feedback"></div>
                     <div class="mb-3">
                         <label for="status" class="form-label">Статус</label>
-
                         <select id="status" name="status" class="form-select" aria-label="Default select example">
                             {% for value, label in form.status.field.choices %}
                             {% if form.status.value == value %}
@@ -98,15 +150,18 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" id="delete-card-button">Удалить</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#editCardModal">Закрыть</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <div>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#editCardModal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- DELETE CARD MODAL -->
 <div class="modal" id="deleteCardModal" tabindex="-1" aria-labelledby="deleteCardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -132,6 +187,8 @@
         </div>
     </div>
 </div>
+
+<!-- CONFIRM MODAL -->
 <div class="modal" id="confirmCloseEditeedModal" tabindex="-1" aria-labelledby="confirmCloseEditeedModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -325,10 +382,13 @@
     }
 
     class ModalController {
-        constructor(editModalId, deleteModalId, editFormSelector, deleteFormSelector) {
+        constructor(createModalId, editModalId, deleteModalId, createFormSelector, editFormSelector, deleteFormSelector) {
+            this.createModalBlock = document.getElementById(createModalId)
+            this.createModal = new bootstrap.Modal(this.createModalBlock)
             this.editModalBlock = document.getElementById(editModalId)
             this.editModal = new bootstrap.Modal(this.editModalBlock)
             this.deleteModal = new bootstrap.Modal(document.getElementById(deleteModalId))
+            this.createForm = document.getElementById(createFormSelector)
             this.editForm = document.getElementById(editFormSelector)
             this.deleteForm = document.getElementById(deleteFormSelector)
             this.confirmCloseEditeedModal = new bootstrap.Modal(document.getElementById('confirmCloseEditeedModal'))
@@ -357,12 +417,12 @@
         }
 
         showCreateModal(submitCallback) {
-            var form = new BsJsonForm(this.editForm)
+            var form = new BsJsonForm(this.createForm)
             form.submitFunction = submitCallback
-            this.editModal.show()
+            this.createModal.show()
         }
 
-        showDeleteModal(data, submitCallback){
+        showDeleteModal(data, submitCallback) {
             var form = new BsJsonForm(modalController.deleteForm)
             form.feed(data)
             form.submitFunction = submitCallback
@@ -422,7 +482,7 @@
             var data = form.toDict()
             var wordId = data['id']
             const response = await this.cardsAPI.deleteWord(wordId);
-            if (response.ok){
+            if (response.ok) {
                 this.cardsView.deleteCard(wordId)
                 this.modalController.deleteModal.hide()
             } else {
@@ -431,15 +491,16 @@
         }
     }
     var createModalButton = document.getElementById('add-new-card')
+    var deleteCardButton = document.getElementById('delete-card-button')
     const cardsApi = new CardsAPI()
-    const modalController = new ModalController('editCardModal', 'deleteCardModal', 'editCardForm', 'deleteCardForm')
+    const modalController = new ModalController('createCardModal','editCardModal', 'deleteCardModal', 'createCardForm','editCardForm', 'deleteCardForm')
     const cardsView = new CardView('card-template', 'cards-list')
     const cardManager = new CardManager(cardsApi, cardsView, modalController)
     cardsView.addCardsFromPage(cardManager.handleEdit.bind(cardManager))
     createModalButton.addEventListener('click', () => {
         modalController.showCreateModal(cardManager.create.bind(cardManager))
     })
-    document.getElementById('delete-card-button').addEventListener('click', (e) => {
+    deleteCardButton.addEventListener('click', (e) => {
         const formData = BsJsonForm.getInstance(modalController.editForm)
         modalController.showDeleteModal(formData.toDict(), cardManager.delete.bind(cardManager))
     })
@@ -450,6 +511,7 @@
 
     // var confirmCloseEditeedModalBlock = document.getElementById('confirmCloseEditeedModal')
     // var confirmCloseEditeedModal = new bootstrap.Modal(confirmCloseEditeedModalBlock)
+    var createForm = document.getElementById('createCardForm')
     var editForm = document.getElementById('editCardForm')
     var editCardModalBlock = document.getElementById('editCardModal')
     // var editWordModal = new bootstrap.Modal(editCardModalBlock)
