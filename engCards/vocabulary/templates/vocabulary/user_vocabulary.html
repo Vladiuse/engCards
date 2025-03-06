@@ -61,14 +61,14 @@
         }
     }
 </style>
-<!-- CREATE CARD MODAL -->
-<div class="modal" id="createCardModal" tabindex="-1" aria-labelledby="createCardModalLabel" aria-hidden="true">
+<!-- CARD MODAL -->
+<div class="modal" id="cardModal" tabindex="-1" aria-labelledby="cardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="" id="createCardForm">
+            <form action="" id="cardForm">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createCardModalLabel">Создать карточку</h5>
-                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#createCardModal">
+                    <h5 class="modal-title" id="cardModalLabel">Создать карточку</h5>
+                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#cardModal">
                         <i class="_img_pack_3" style="background-position: 0px -606px"></i>
                     </div>
                 </div>
@@ -100,59 +100,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#createCardModal">Закрыть</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-<!-- EDIT CARD MODAL -->
-<div class="modal" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form action="" id="editCardForm">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editCardModalLabel">Редактировать карточку</h5>
-                    <div class="icon-wrap close" data-bs-toggle="modal" data-bs-target="#editCardModal">
-                        <i class="_img_pack_3" style="background-position: 0px -606px"></i>
+                    <div>
+                        <button type="button" class="btn btn-light" id="delete-card-button">Удалить</button>
                     </div>
-                </div>
-                <div class="modal-body">
-                    <div class="invalid-feedback non-field-invalid-feedback"></div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Статус</label>
-                        <select id="status" name="status" class="form-select" aria-label="Default select example">
-                            {% for value, label in form.status.field.choices %}
-                            {% if form.status.value == value %}
-                            <option value="{{ value }}" selected data-default="true">{{ label }}</option>
-                            {%else%}
-                            <option value="{{ value }}">{{ label }}</option>
-                            {%endif%}
-                            {% endfor %}
-                        </select>
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <input type="hidden" class="form-control" id="id" name="id">
-                    <div class="mb-3">
-                        <label for="en" class="form-label">Слово на английском</label>
-                        <input type="text" class="form-control" id="en" name="en" required>
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ru" class="form-label">Перевод на русский</label>
-                        <input type="text" class="form-control" id="ru" name="ru" required value="">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" id="delete-card-button">Удалить</button>
                     <div>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                            data-bs-target="#editCardModal">Закрыть</button>
+                            data-bs-target="#cardModal">Закрыть</button>
                         <button type="submit" class="btn btn-primary">Сохранить</button>
                     </div>
                 </div>
@@ -160,6 +113,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- DELETE CARD MODAL -->
 <div class="modal" id="deleteCardModal" tabindex="-1" aria-labelledby="deleteCardModalLabel" aria-hidden="true">
@@ -169,7 +123,7 @@
                 <div class="modal-header">
                     <!-- <h5 class="modal-title" id="deleteCardModalLabel">Удаление карточки</h5> -->
                     <div class="icon-wrap close" data-bs-toggle="modal" data-bs-dismiss="modal"
-                        data-bs-target="#editCardModal">
+                        data-bs-target="#cardModal">
                         <i class="_img_pack_3" style="background-position: 0px -606px"></i>
                     </div>
                 </div>
@@ -180,7 +134,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
-                        data-bs-target="#editCardModal">Закрыть</button>
+                        data-bs-target="#cardModal">Закрыть</button>
                     <button type="submit" class="btn btn-danger">Удалить</button>
                 </div>
             </form>
@@ -205,7 +159,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
-                    data-bs-target="#editCardModal">Продолжить
+                    data-bs-target="#cardModal">Продолжить
                     редактирование</button>
                 <div class="form-btn-wrapper">
                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close"
@@ -371,57 +325,51 @@
     }
 
     class ModalController {
-        constructor(createModalId, editModalId, deleteModalId, createFormSelector, editFormSelector, deleteFormSelector) {
-            this.createModalBlock = document.getElementById(createModalId)
-            this.createModal = new bootstrap.Modal(this.createModalBlock)
-            this.editModalBlock = document.getElementById(editModalId)
-            this.editModal = new bootstrap.Modal(this.editModalBlock)
+        constructor(cardModalId, deleteModalId, cardFormSelector, deleteFormSelector, confirmCloseEditeedModalSelector) {
+            this.cardModalBlock = document.getElementById(cardModalId)
+            this.cardModal = new bootstrap.Modal(this.cardModalBlock)
             this.deleteModal = new bootstrap.Modal(document.getElementById(deleteModalId))
-            this.createForm = document.getElementById(createFormSelector)
-            this.editForm = document.getElementById(editFormSelector)
+            this.cardForm = document.getElementById(cardFormSelector)
             this.deleteForm = document.getElementById(deleteFormSelector)
-            this.confirmCloseEditeedModal = new bootstrap.Modal(document.getElementById('confirmCloseEditeedModal'))
+            this.confirmCloseEditeedModal = new bootstrap.Modal(document.getElementById(confirmCloseEditeedModalSelector))
 
             this.addEvents()
         }
 
         addEvents() {
-            this.editModalBlock.addEventListener('hide.bs.modal', (event) => {
-                var formWrap = BsJsonForm.getInstance(this.editForm);
+            this.cardModalBlock.addEventListener('hide.bs.modal', (event) => {
+                var formWrap = BsJsonForm.getInstance(this.cardForm);
                 if (formWrap.was_changed) {
                     this.confirmCloseEditeedModal.show();
                 }
             });
-            this.createModalBlock.addEventListener('hide.bs.modal', (event) => {
-                var formWrap = BsJsonForm.getInstance(this.createForm);
-                if (formWrap.was_changed) {
-                    this.confirmCloseEditeedModal.show();
-                }
-            });
+        }
+        showCreateModal(submitCallback){
+            this.cardModalBlock.querySelector('.modal-title').textContent = 'Создать карточку'
+            this.cardModalBlock.querySelector('#delete-card-button').style.display = 'none'
+            var form = new BsJsonForm(this.cardForm)
+            form.submitFunction = submitCallback
+            this.cardModal.show()
         }
 
         showEditModal(data, submitCallback) {
-            var form = new BsJsonForm(this.editForm)
+            this.cardModalBlock.querySelector('.modal-title').textContent = 'Редактировать карточку'
+            this.cardModalBlock.querySelector('#delete-card-button').style.display = 'block'
+            var form = new BsJsonForm(this.cardForm)
             form.feed(data)
             form.submitFunction = submitCallback
-            this.editModal.show()
+            this.cardModal.show()
         }
 
-        hideEditModal() {
-            this.editModal.hide()
-        }
-
-        showCreateModal(submitCallback) {
-            var form = new BsJsonForm(this.createForm)
-            form.submitFunction = submitCallback
-            this.createModal.show()
+        hideCardModal() {
+            this.cardModal.hide()
         }
 
         showDeleteModal(data, submitCallback) {
             var form = new BsJsonForm(modalController.deleteForm)
             form.feed(data)
             form.submitFunction = submitCallback
-            this.editModal.hide()
+            this.cardModal.hide()
             this.deleteModal.show()
         }
     }
@@ -450,7 +398,7 @@
             if (response.ok) {
                 form.was_changed = false
                 this.cardsView.updateCard(cardId, updated_card_data)
-                modalController.hideEditModal()
+                modalController.hideCardModal()
             } else {
                 form.showErrors(updated_card_data)
             }
@@ -468,7 +416,7 @@
             if (response.ok) {
                 this.cardsView.addCardElemToContainer(responce_json, this.handleEdit.bind(this))
                 form.was_changed = false
-                modalController.createModal.hide()
+                modalController.cardModal.hide()
             } else {
                 form.showErrors(responce_json)
             }
@@ -494,7 +442,7 @@
     var createModalButton = document.getElementById('add-new-card')
     var deleteCardButton = document.getElementById('delete-card-button')
     const cardsApi = new CardsAPI()
-    const modalController = new ModalController('createCardModal','editCardModal', 'deleteCardModal', 'createCardForm','editCardForm', 'deleteCardForm')
+    const modalController = new ModalController('cardModal','deleteCardModal', 'cardForm','deleteCardForm', 'confirmCloseEditeedModal')
     const cardsView = new CardView('card-template', 'cards-list')
     const cardManager = new CardManager(cardsApi, cardsView, modalController)
     cardsView.addCardsFromPage(cardManager.handleEdit.bind(cardManager))
@@ -502,7 +450,7 @@
         modalController.showCreateModal(cardManager.create.bind(cardManager))
     })
     deleteCardButton.addEventListener('click', (e) => {
-        const formData = BsJsonForm.getInstance(modalController.editForm)
+        const formData = BsJsonForm.getInstance(modalController.cardForm)
         modalController.showDeleteModal(formData.toDict(), cardManager.delete.bind(cardManager))
     })    
 </script>
