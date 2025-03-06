@@ -334,7 +334,6 @@
             });
         }
 
-
         showEditModal(data, submitCallback) {
             var form = new BsJsonForm(this.editForm)
             form.feed(data)
@@ -344,6 +343,12 @@
 
         hideEditModal() {
             this.editModal.hide()
+        }
+
+        showCreateModal(submitCallback){
+            var form = new BsJsonForm(this.editForm)
+            form.submitFunction = submitCallback
+            this.editModal.show()
         }
     }
 
@@ -371,15 +376,32 @@
             modalController.hideEditModal()
         }
 
-        async create() { }
+        async create(e) { 
+            e.preventDefault()
+            var form = BsJsonForm.getInstance(e.target)
+            var data = form.toDict()
+            const response = await this.cardsAPI.createWord(data);
+            var responce_json = await response.json()
+            if (response.ok){
+                form.was_changed = false
+                modalController.hideEditModal()
+            } else {
+                form.showErrors(responce_json)
+            }
+        }
 
         async delete() { }
     }
+    var createModalButton = document.getElementById('add-new-card')
     const cardsApi = new CardsAPI()
     const modalController = new ModalController('editCardModal', 'deleteCardModal', 'editCardForm', 'deleteCardForm')
     const cardsView = new CardView('card-template', 'cards-list')
     const cardManager = new CardManager(cardsApi, cardsView, modalController)
     cardsView.addCardsFromPage(cardManager.handleEdit.bind(cardManager))
+    createModalButton.addEventListener('click', () => {
+        modalController.showCreateModal(cardManager.create.bind(cardManager))
+    })
+    
 
     // const words = new CardsAPI()
     // const cards = new CardsView()
