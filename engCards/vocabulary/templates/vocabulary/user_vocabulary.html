@@ -97,8 +97,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" id="delete-card-button" data-bs-toggle="modal"
-                        data-bs-dismiss="modal" data-bs-target="#deleteCardModal">Удалить</button>
+                    <button type="button" class="btn btn-light" id="delete-card-button">Удалить</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                         data-bs-target="#editCardModal">Закрыть</button>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -282,6 +281,18 @@
             card.update(data)
         }
 
+        getCard(cardId) {
+            return this.cards.get(cardId + '');
+        }
+
+        deleteCard(cardId) {
+            const card = this.getCard(cardId);
+            if (card) {
+                card.remove();
+                this.cards.delete(cardId + '');
+            }
+        }
+
         _renderTemplate(data) {
             let result = this.template;
             for (const [key, value] of Object.entries(data)) {
@@ -350,6 +361,14 @@
             form.submitFunction = submitCallback
             this.editModal.show()
         }
+
+        showDeleteModal(data, submitCallback){
+            var form = new BsJsonForm(modalController.deleteForm)
+            form.feed(data)
+            form.submitFunction = submitCallback
+            this.editModal.hide()
+            this.deleteModal.show()
+        }
     }
 
     class CardManager {
@@ -397,7 +416,19 @@
             }
         }
 
-        async delete() { }
+        async delete(e) {
+            e.preventDefault()
+            var form = BsJsonForm.getInstance(e.target)
+            var data = form.toDict()
+            var wordId = data['id']
+            const response = await this.cardsAPI.deleteWord(wordId);
+            if (response.ok){
+                this.cardsView.deleteCard(wordId)
+                this.modalController.deleteModal.hide()
+            } else {
+                alert('Error')
+            }
+        }
     }
     var createModalButton = document.getElementById('add-new-card')
     const cardsApi = new CardsAPI()
@@ -407,6 +438,10 @@
     cardsView.addCardsFromPage(cardManager.handleEdit.bind(cardManager))
     createModalButton.addEventListener('click', () => {
         modalController.showCreateModal(cardManager.create.bind(cardManager))
+    })
+    document.getElementById('delete-card-button').addEventListener('click', (e) => {
+        const formData = BsJsonForm.getInstance(modalController.editForm)
+        modalController.showDeleteModal(formData.toDict(), cardManager.delete.bind(cardManager))
     })
 
 
