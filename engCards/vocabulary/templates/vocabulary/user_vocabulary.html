@@ -403,6 +403,12 @@
                     this.confirmCloseEditeedModal.show();
                 }
             });
+            this.createModalBlock.addEventListener('hide.bs.modal', (event) => {
+                var formWrap = BsJsonForm.getInstance(this.createForm);
+                if (formWrap.was_changed) {
+                    this.confirmCloseEditeedModal.show();
+                }
+            });
         }
 
         showEditModal(data, submitCallback) {
