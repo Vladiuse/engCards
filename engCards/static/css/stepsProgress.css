@@ -1,0 +1,38 @@
+:root {
+    --circle-size: 50px;
+    --circle-margin: calc(var(--circle-size) / 2 * -1);
+    --progres-top: calc(var(--circle-size) / 2 - 8px)
+}
+
+.custom-progress {
+    position: relative;
+    background-color: aquamarine;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 var(--circle-margin);
+}
+
+.step {
+    width: var(--circle-size);
+    height: var(--circle-size);
+    background-color: red;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px blue solid;
+    z-index: 2;
+}
+
+.step.active {
+    background-color: green;
+}
+
+.progress {
+    position: absolute;
+    top: var(--progres-top);
+    width: 100%;
+}
