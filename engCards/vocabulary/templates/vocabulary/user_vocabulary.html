@@ -197,7 +197,7 @@
 </div>
 <script>
     class CardsAPI {
-        constructor(baseUrl = 'http://127.0.0.1:8000/vocabulary/words/') {
+        constructor(baseUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:words-list'%}") {
             this.baseUrl = baseUrl;
         }
 
