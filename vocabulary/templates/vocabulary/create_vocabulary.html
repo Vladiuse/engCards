@@ -8,7 +8,12 @@
 {%block content%}
 <div class="content-center">
     <div class="content-inner">
-        <div class="container">
+        <div class="container text-center my-4" id="success" style="display: none;">
+            <h5 class="h5 fw-bold text-center text-success">Отлично!</h5>
+            <p class="text-center">Теперь давайте перейдем в ваши карточки</p>
+            <a class="btn btn-primary" href="{%url 'vocabulary:user_vocabulary'%}" role="button">Перейти в словарь</a>
+        </div>
+        <div class="container" id="create-block">
             <h5 class="h5 fw-bold text-center">Создание словаря</h5>
             <p class="text-center">Давайте создадим словарь и добавим в него первые 5 карточек</p>
             <hr>
@@ -16,36 +21,38 @@
                 <div class="progress-steps">
                 </div>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%" aria-valuenow="1"
-                        aria-valuemin="0" aria-valuemax="0"></div>
+                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%"
+                        aria-valuenow="1" aria-valuemin="0" aria-valuemax="0"></div>
                 </div>
             </div>
+            <div class="d-flex justify-content-center">
+                <form method="POST" action="" id="create-word-form" class="mt-4">
+                    <div class="invalid-feedback non-field-invalid-feedback"></div>
+                    <div class="mb-3">
+                        <label for="en" class="form-label">Слово на английском</label>
+                        <input type="text" class="form-control" id="en" name="en" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ru" class="form-label">Перевод на русский</label>
+                        <input type="text" class="form-control" id="ru" name="ru" required value="1">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary submit">
+                        Сохранить</button>
+                </form>
+            </div>
         </div>
-        <div class="d-flex justify-content-center">
-            <form method="POST" action="" id="create-word-form" class="mt-4">
-                <div class="invalid-feedback non-field-invalid-feedback"></div>
-                <div class="mb-3">
-                    <label for="en" class="form-label">Слово на английском</label>
-                    <input type="text" class="form-control" id="en" name="en" required>
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="mb-3">
-                    <label for="ru" class="form-label">Перевод на русский</label>
-                    <input type="text" class="form-control" id="ru" name="ru" required value="1">
-                    <div class="invalid-feedback"></div>
-                </div>
-                <button type="submit" class="btn btn-primary submit">
-                    Сохранить</button>
-            </form>
-        </div>
+
     </div>
 </div>
 {%endblock%}
 {%block bottom%}
 <script>
     var createVocabularyUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:create_vocabulary'%}"
-    var userCardsCount = {{cards_count}}
-    var cards_need = {{cards_need}}
+    var redirectUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:user_vocabulary'%}"
+    var userCardsCount = {{ cards_count }}
+    var cards_need = {{ cards_need }}
     var progress = new StepsProgress(document.getElementById('progress'), userCardsCount, cards_need)
     const createWordPairForm = document.getElementById('create-word-form')
     let form = new BsJsonForm(createWordPairForm)
@@ -63,10 +70,20 @@
             var error_data = await responce.json()
             form.showErrors(error_data)
         }
-
-        if (progress.step >= cards_need){
-            alert("REDIRECT")
+        if (progress.step >= cards_need) {
+            success()
         }
     })
+
+    function redirectInVocabulary() {
+        window.location.href = createVocabularyUrl
+    }
+    function success() {
+        $('#create-block').fadeOut(function () {
+            $('#success').fadeIn()
+            setInterval(redirectInVocabulary, 8000)
+        })
+    }
+
 </script>
 {%endblock%}
