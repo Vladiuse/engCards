@@ -21,8 +21,8 @@ def api_root(request, format=None): # noqa: A002
     }
     return Response(data)
 
-def create_word_pair(request):
-    return render(request, 'vocabulary/word_create.html')
+def create_vocabulary(request):
+    return render(request, 'vocabulary/create_vocabulary.html')
 
 @login_required
 def user_vocabulary(request):
