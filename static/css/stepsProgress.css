@@ -36,3 +36,13 @@
     top: var(--progres-top);
     width: 100%;
 }
+
+
+@media screen and (max-width: 1000px) {
+    :root {
+        --circle-size: 36px;
+    }
+    .step{
+        border: 3px white solid;
+    }
+  }

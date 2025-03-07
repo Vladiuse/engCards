@@ -28,6 +28,9 @@ def api_root(request, format=None):  # noqa: A002
 
 
 class CreateVocabularyView(APIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
     renderer_classes = [
         JSONRenderer,
         TemplateHTMLRenderer,
@@ -40,7 +43,7 @@ class CreateVocabularyView(APIView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_create_vocabulary:
-            return redirect('/')
+            return redirect(reverse('vocabulary:user_vocabulary'))
         cards_count = WordPair.objects.filter(owner=request.user).count()
         content = {
             'cards_count': cards_count,
@@ -60,6 +63,8 @@ class CreateVocabularyView(APIView):
 
 @login_required
 def user_vocabulary(request):
+    if not request.user.is_create_vocabulary:
+        return redirect(reverse('vocabulary:create_vocabulary'))
     content = {
         'words': WordPair.objects.filter(owner=request.user),
         'word_statuses': WordPair.STATUSES,
