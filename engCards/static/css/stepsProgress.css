@@ -6,7 +6,6 @@
 
 .custom-progress {
     position: relative;
-    background-color: aquamarine;
 }
 
 .progress-steps {
@@ -18,17 +17,18 @@
 .step {
     width: var(--circle-size);
     height: var(--circle-size);
-    background-color: red;
+    background-color: var(--fds-gray-30);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 5px blue solid;
+    border: 5px white solid;
     z-index: 2;
+    color: white;
 }
 
 .step.active {
-    background-color: green;
+    background-color: var(--base-blue);
 }
 
 .progress {
