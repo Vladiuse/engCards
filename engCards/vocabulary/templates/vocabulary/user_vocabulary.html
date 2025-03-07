@@ -106,7 +106,8 @@
                     <div>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                             data-bs-target="#cardModal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <button type="submit" class="btn btn-primary" id="save-card-and-add-another">Сохранить и добавить еще</button>
+                        <button type="submit" class="btn btn-primary" id="save-card">Сохранить</button>
                     </div>
                 </div>
             </form>
@@ -332,7 +333,7 @@
             this.cardForm = document.getElementById(cardFormSelector)
             this.deleteForm = document.getElementById(deleteFormSelector)
             this.confirmCloseEditeedModal = new bootstrap.Modal(document.getElementById(confirmCloseEditeedModalSelector))
-
+            this.saveCardAndAddAnotherButton = document.getElementById('save-card-and-add-another')
             this.addEvents()
         }
 
@@ -347,6 +348,7 @@
         showCreateModal(submitCallback){
             this.cardModalBlock.querySelector('.modal-title').textContent = 'Создать карточку'
             this.cardModalBlock.querySelector('#delete-card-button').style.display = 'none'
+            this.saveCardAndAddAnotherButton.style.display = 'inline-block'
             var form = new BsJsonForm(this.cardForm)
             form.submitFunction = submitCallback
             this.cardModal.show()
@@ -355,6 +357,7 @@
         showEditModal(data, submitCallback) {
             this.cardModalBlock.querySelector('.modal-title').textContent = 'Редактировать карточку'
             this.cardModalBlock.querySelector('#delete-card-button').style.display = 'block'
+            this.saveCardAndAddAnotherButton.style.display = 'none'
             var form = new BsJsonForm(this.cardForm)
             form.feed(data)
             form.submitFunction = submitCallback
@@ -408,6 +411,7 @@
 
         async create(e) {
             e.preventDefault()
+            console.log(e.submitter)
             var form = BsJsonForm.getInstance(e.target)
             var data = form.toDict()
             form.disable()
@@ -416,7 +420,12 @@
             if (response.ok) {
                 this.cardsView.addCardElemToContainer(responce_json, this.handleEdit.bind(this))
                 form.was_changed = false
-                modalController.cardModal.hide()
+                if (e.submitter.id == this.modalController.saveCardAndAddAnotherButton.id){
+                    form.clearFields()
+                } else {
+                    modalController.cardModal.hide()
+                }
+                
             } else {
                 form.showErrors(responce_json)
             }
