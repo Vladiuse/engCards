@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="d-flex justify-content-center">
-            <form method="POST" action="http://127.0.0.1:8000/vocabulary/words/" id="create-word-form" class="mt-4">
+            <form method="POST" action="" id="create-word-form" class="mt-4">
                 <div class="invalid-feedback non-field-invalid-feedback"></div>
                 <div class="mb-3">
                     <label for="en" class="form-label">Слово на английском</label>
@@ -43,8 +43,10 @@
 {%endblock%}
 {%block bottom%}
 <script>
+    var createVocabularyUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:create_vocabulary'%}"
     var userCardsCount = {{cards_count}}
-    var progress = new StepsProgress(document.getElementById('progress'), userCardsCount, 5)
+    var cards_need = {{cards_need}}
+    var progress = new StepsProgress(document.getElementById('progress'), userCardsCount, cards_need)
     const createWordPairForm = document.getElementById('create-word-form')
     let form = new BsJsonForm(createWordPairForm)
     createWordPairForm.addEventListener('submit', async function (e) {
@@ -54,13 +56,16 @@
         var responce = await requestJson(form.elem.action, 'POST', dataToSend)
         form.enable()
         if (responce.ok) {
-            window.alert('Created word' + await responce.json())
             form.was_changed = false
             form.clearFields()
             progress.next()
         } else {
             var error_data = await responce.json()
             form.showErrors(error_data)
+        }
+
+        if (progress.step >= cards_need){
+            alert("REDIRECT")
         }
     })
 </script>

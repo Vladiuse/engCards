@@ -1,12 +1,12 @@
 class StepsProgress {
-    constructor(elem, currentValue, max) {
+    constructor(elem, step, max) {
         this.elem = elem
         this.stepsContainer = this.elem.querySelector('.progress-steps')
         this.bar = this.elem.querySelector('.progress-bar')
         this.min = 0
         this.max = max
         this.progressMax = max - 1
-        this.currentValue = currentValue
+        this._step = step
 
         this._init()
     }
@@ -15,7 +15,7 @@ class StepsProgress {
         this._addStepElem()
         this.bar.setAttribute('aria-valuemin', this.min)
         this.bar.setAttribute('aria-valuemax', this.progressMax)
-        this.bar.setAttribute('aria-valuenow', this.currentValue)
+        this.bar.setAttribute('aria-valuenow', this._step)
         this.draw()
     }
 
@@ -29,12 +29,12 @@ class StepsProgress {
     }
 
     get progressWidth() {
-        if (this.currentValue == 0) {
+        if (this._step == 0) {
             return 0
-        } else if (this.currentValue == this.max) {
+        } else if (this._step == this.max) {
             return 100
         } else {
-            return Math.round((this.currentValue / this.progressMax ) * 100)
+            return Math.round((this._step / this.progressMax ) * 100)
         }
     }
 
@@ -55,7 +55,7 @@ class StepsProgress {
         var stepsElems = this.stepsElems
         for (var i = 0; i < this.max; i++) {
             var step = stepsElems[i]
-            if (this.currentValue > i) {
+            if (this.step > i) {
                 step.classList.add('active')
             } else {
                 step.classList.remove('active')
@@ -70,12 +70,17 @@ class StepsProgress {
         if (step > this.max) {
             throw new Error(`step can be more than max: ${this.max}`)
         }
-        this.currentValue = step
+        this._step = step
         this.draw()
     }
+
+    get step(){
+        return this._step
+    }
+    
     next() {
-        if (this.currentValue < this.max) {
-            this.currentValue++
+        if (this._step < this.max) {
+            this._step++
             this.draw()
         }
     }
