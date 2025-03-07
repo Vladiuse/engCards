@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from vocabulary.models import EnglishLevel
-
+from vocabulary.constants import USER_VOCABULARY, DEFAULT_VOCABULARY
 from .serializers import CardSerializer, CardTrainerSerializer
 
 
@@ -10,6 +10,8 @@ def card_trainer(request):
     content = {
         'regimes': EnglishLevel.objects.all(),
         'has_words_to_train': True,
+        'USER_VOCABULARY': USER_VOCABULARY,
+        'DEFAULT_VOCABULARY': DEFAULT_VOCABULARY,
     }
     return render(request, 'card_trainer/card_trainer.html', content)
 

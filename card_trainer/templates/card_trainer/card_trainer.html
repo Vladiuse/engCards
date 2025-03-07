@@ -3,7 +3,16 @@
 {%block content%}
 <style>
     #word-card {}
-
+    #screen{
+        height: calc(100vh - var(--header-height));
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    #footer{
+        height: 240px;
+        background-color: rgb(179, 179, 179);
+    }
     .card-wraper {
         min-width: 600px;
         max-width: 900px;
@@ -19,7 +28,10 @@
         /* transition: 1s; */
     }
 
-    .card {}
+    .card {
+        background-image: url({%static 'vocabulary/img/card_background.jpg'%});
+        background-size: 400px;
+    }
     .card-header{
     display: flex;
       justify-content: center;
@@ -182,175 +194,170 @@
     }
 </style>
 <div id="screen">
-    <div class="d-flex justify-content-center">
-        <div id="chose-lang-direction" data-lang-direction="en_ru">
-            <div>
-                <img src="{%static 'card_trainer/img/gb.svg'%}" alt="">
-            </div>
-            <div>
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </div>
-            <div>
-                <img src="{%static 'card_trainer/img/ru.svg'%}" alt="">
+    <div></div>
+    <div>
+        <div class="d-flex justify-content-center">
+            <div id="chose-lang-direction" data-lang-direction="en_ru">
+                <div>
+                    <img src="{%static 'card_trainer/img/gb.svg'%}" alt="">
+                </div>
+                <div>
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <img src="{%static 'card_trainer/img/ru.svg'%}" alt="">
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container  justify-content-center" id="regimes-block">
-
-        <div class="regimes-wrap ">
-            <!-- <div class="regime grey">
-                <div class="regime-title">
-                    
-                    <h1><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></h1>
+        <div class="container  justify-content-center" id="regimes-block">
+    
+            <div class="regimes-wrap ">
+    
+                {%if has_words_to_train%}
+                <div class="regime grey" data-regime-id="None" data-vocabulary-type="{{USER_VOCABULARY}}">
+                    <div class="regime-title">
+    
+                        <h1>
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </h1>
+                    </div>
+                    <div class="regime-body">
+                        <p>Мой словаpь</p>
+                    </div>
                 </div>
-                <div class="regime-body">
-                    <p>Назад</p>
-                    
+                {%endif%}
+    
+    
+                <div class="regime A0" data-regime-id="A0" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>A0</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Beginner</p>
+                        <p>(0, 500)</p>
+                    </div>
                 </div>
-            </div> -->
-            {%if has_words_to_train%}
-            <div class="regime grey" data-regime-id="user_vocabulary">
-                <div class="regime-title">
-
-                    <h1>
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </h1>
+    
+                <div class="regime A1" data-regime-id="A1" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>A1</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Elementary</p>
+                        <p>(500, 1000)</p>
+                    </div>
                 </div>
-                <div class="regime-body">
-                    <p>Мой словаpь</p>
+    
+                <div class="regime A2" data-regime-id="A2" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>A2</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Pre Intermediate</p>
+                        <p>(1000, 2000)</p>
+                    </div>
                 </div>
+    
+                <div class="regime B1" data-regime-id="B1" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>B1</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Intermediate</p>
+                        <p>(2000, 3500)</p>
+                    </div>
+                </div>
+    
+                <div class="regime B2" data-regime-id="B2" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>B2</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Upper Intermediate</p>
+                        <p>(3500, 5000)</p>
+                    </div>
+                </div>
+    
+                <div class="regime C1" data-regime-id="C1" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>C1</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Advanced</p>
+                        <p>(5000, 8000)</p>
+                    </div>
+                </div>
+    
+                <div class="regime C2" data-regime-id="C2" data-vocabulary-type="{{DEFAULT_VOCABULARY}}">
+                    <div class="regime-title">
+                        <h2>C2</h2>
+                    </div>
+                    <div class="regime-body">
+                        <p>Proficient</p>
+                        <p>(8000, 12000)</p>
+                    </div>
+                </div>
+    
             </div>
-            {%endif%}
-
-
-            <div class="regime A0" data-regime-id="A0">
-                <div class="regime-title">
-                    <h2>A0</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Beginner</p>
-                    <p>(0, 500)</p>
-                </div>
-            </div>
-
-            <div class="regime A1" data-regime-id="A1">
-                <div class="regime-title">
-                    <h2>A1</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Elementary</p>
-                    <p>(500, 1000)</p>
-                </div>
-            </div>
-
-            <div class="regime A2" data-regime-id="A2">
-                <div class="regime-title">
-                    <h2>A2</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Pre Intermediate</p>
-                    <p>(1000, 2000)</p>
-                </div>
-            </div>
-
-            <div class="regime B1" data-regime-id="B1">
-                <div class="regime-title">
-                    <h2>B1</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Intermediate</p>
-                    <p>(2000, 3500)</p>
-                </div>
-            </div>
-
-            <div class="regime B2" data-regime-id="B2">
-                <div class="regime-title">
-                    <h2>B2</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Upper Intermediate</p>
-                    <p>(3500, 5000)</p>
-                </div>
-            </div>
-
-            <div class="regime C1" data-regime-id="C1">
-                <div class="regime-title">
-                    <h2>C1</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Advanced</p>
-                    <p>(5000, 8000)</p>
-                </div>
-            </div>
-
-            <div class="regime C2" data-regime-id="C2">
-                <div class="regime-title">
-                    <h2>C2</h2>
-                </div>
-                <div class="regime-body">
-                    <p>Proficient</p>
-                    <p>(8000, 12000)</p>
-                </div>
-            </div>
-
         </div>
-    </div>
-    <div class="container ">
-        <div id="word-card" class=" justify-content-center" style="display: none;">
-            <div class="card-wraper">
-                <div id="front">
-                    <div class="card text-center">
-                        <div class="card-header">
-                            #0
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title" id="word">Front</h5>
-                            <p class="card-text" id="sentence" style="display: none;"></p>
-                            <div id="answers">
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 1</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 1</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 1</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
-                                <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
+        <div class="container ">
+            <div id="word-card" class=" justify-content-center" style="display: none;">
+                <div class="card-wraper">
+                    <div id="front">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                #0
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" id="word">Front</h5>
+                                <p class="card-text" id="sentence" style="display: none;"></p>
+                                <div id="answers">
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 1</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 1</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 1</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 2</button>
+                                    <button type="button" class="btn btn-outline-primary answer-option">Word 3</button>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <button type="button" class="btn btn-outline-secondary" id="dont-know-button">Не
+                                    знаю</button>
+                                <button id="help-50" type="button" class="btn btn-outline-secondary">50 на 50</button>
                             </div>
                         </div>
-                        <div class="card-footer text-muted">
-                            <button type="button" class="btn btn-outline-secondary" id="dont-know-button">Не
-                                знаю</button>
-                            <button id="help-50" type="button" class="btn btn-outline-secondary">50 на 50</button>
+                    </div>
+                    <div id="back">
+                        <div class="card text-center">
+                            <div class="card-header">
+                            </div>
+                            <div class="card-body">
+                                <h5 id="word-translate">Front - Лицевая сторона</h5>
+                                <p id="wrong-answer-translate" class="incorrect-answer"><b>Wrong</b> - Неправильный ответ
+                                </p>
+                                <p class="card-text" id="sentence-translate" style="display: none;"></p>
+                                <a id="next-card" href="#" class="btn btn-primary" id="next-word"><i class="fas fa-forward"
+                                        aria-hidden="true"></i></a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <!-- <button type="button" class="btn btn-outline-secondary">Не показывать</button> -->
+                                <button id="learn-word" type="button"
+                                    class="btn btn-outline-success correct-answer">Изучил</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="back">
-                    <div class="card text-center">
-                        <div class="card-header">
-                        </div>
-                        <div class="card-body">
-                            <h5 id="word-translate">Front - Лицевая сторона</h5>
-                            <p id="wrong-answer-translate" class="incorrect-answer"><b>Wrong</b> - Неправильный ответ
-                            </p>
-                            <p class="card-text" id="sentence-translate" style="display: none;"></p>
-                            <a id="next-card" href="#" class="btn btn-primary" id="next-word"><i class="fas fa-forward"
-                                    aria-hidden="true"></i></a>
-                        </div>
-                        <div class="card-footer text-muted">
-                            <!-- <button type="button" class="btn btn-outline-secondary">Не показывать</button> -->
-                            <button id="learn-word" type="button"
-                                class="btn btn-outline-success correct-answer">Изучил</button>
-                        </div>
-                    </div>
-                </div>
+    
+    
             </div>
-
-
         </div>
     </div>
+    <div id="footer"></div>
 </div>
 
 
@@ -413,8 +420,8 @@
 
     class CardsApi {
 
-        async loadCard(regime, landDirection) {
-            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}?lang_direction=${landDirection}&level=${regime}`
+        async loadCard(regime, landDirection, vocabulary_type) {
+            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}?lang_direction=${landDirection}&level=${regime}&vocabulary_type=${vocabulary_type}`
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -775,6 +782,7 @@
             this.elem = document.getElementById('regimes-block')
             this.regimesBtns = this.elem.querySelectorAll('.regime')
             this.langDirectionElem = document.getElementById('chose-lang-direction')
+            
 
             this._init()
         }
@@ -806,8 +814,10 @@
 
         clickRegimeEvent(e) {
             var regime = e.currentTarget.dataset.regimeId
+            var vocabularyType = e.currentTarget.dataset.vocabularyType
             cardTrainer.regime = regime
             cardTrainer.langDirection = this.langDirection
+            cardTrainer.vocabularyType = vocabularyType
             cardTrainer.start()
         }
 
@@ -838,6 +848,7 @@
             this.regimesView = new RegimesView()
             this._regime = regime
             this._langDirection = null
+            this._vocabularyType = null
             this.card = null
             this.nexCard = null
             this._init()
@@ -886,9 +897,17 @@
             }
         }
 
+        set vocabularyType(vocabularyType){
+            this._vocabularyType = vocabularyType
+        }
+
+        get vocabularyType(){
+            return this._vocabularyType
+        }
+
         getCard(draw) {
             // получить новую карточку с сервера
-            cardsApi.loadCard(this.regime, this.langDirection).then(card => {
+            cardsApi.loadCard(this.regime, this.langDirection, this.vocabularyType).then(card => {
                 if (card != undefined) {
                     this.nexCard = card
 
@@ -964,4 +983,7 @@
     const cardTrainer = new CardTrainer()
 
 </script>
+{%endblock%}
+{%block footer%}
+
 {%endblock%}
