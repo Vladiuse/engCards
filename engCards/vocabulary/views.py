@@ -22,7 +22,11 @@ def api_root(request, format=None): # noqa: A002
     return Response(data)
 
 def create_vocabulary(request):
-    return render(request, 'vocabulary/create_vocabulary.html')
+    cards_count = WordPair.objects.filter(owner=request.user).count()
+    content = {
+        'cards_count': cards_count,
+    }
+    return render(request, 'vocabulary/create_vocabulary.html', content)
 
 @login_required
 def user_vocabulary(request):
