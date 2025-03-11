@@ -1,7 +1,126 @@
 {%extends 'base.html'%}
 {%load static%}
 {%block content%}
-123
+<style>
+    :root {
+        --card-width: 500px;
+        --card-height: 300px;
+    }
+
+    /* SCREEN */
+    #card-screen {
+        height: calc(100vh - var(--header-height));
+        display: flex;
+        flex-direction: column;
+    }
+
+    .screen-top {
+        flex: 7;
+        align-items: center;
+        display: flex;
+    }
+
+    .screen-bottom {
+        background-color: var(--fds-gray-05);
+        flex: 3;
+        margin-top: auto;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    /* SCREEN */
+
+
+    /* CARD */
+    #front,
+    #back {
+        max-width: 100%;
+        position: absolute;
+        backface-visibility: hidden;
+        transition: 1s;
+    }
+    #back {
+        transform: rotateY(180deg);
+    }
+
+    .card {
+        width: var(--card-width);
+        height: var(--card-height);
+        max-width: 100%;
+        background-size: 400px; 
+        background-image: url('/static/vocabulary/img/card_background.jpg'); 
+
+    }
+    .card-wraper {
+        width: 100%;
+        position: relative;
+        perspective: 1000px;
+        display: flex;
+        justify-content: center;
+        margin-top: calc(var(--card-height) / -2);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: initial;
+        border-bottom: none;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    /* CARD */
+
+    /* BOTTOM INTERFACE */
+    #next-card-button {
+        width: 400px;
+    }
+</style>
+
+<div id="card-screen">
+    <div class="screen-top">
+        <div class="container">
+            <div class="card-wraper">
+                <div id="front">
+                    <div class="card text-center">
+                        <div class="card-header">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title" id="word">Front</h5>
+                            <p class="card-text" id="sentence"></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="back">
+                    <div class="card text-center">
+                        <div class="card-header">
+                        </div>
+                        <div class="card-body">
+                            <h5 id="word-translate">Front - Лицевая сторона</h5>
+                            <p id="wrong-answer-translate" class="incorrect-answer"><b>Wrong</b> - Неправильный
+                                ответ
+                            </p>
+                            <p class="card-text" id="sentence-translate" style="display: none;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="screen-bottom">
+        <div class="d-flex justify-content-center my-4">
+            <button id="next-card-button" href="#" class="btn btn-primary" ><i class="fas fa-forward"
+                    aria-hidden="true"></i></button>
+        </div>
+    </div>
+</div>
+<script>
+    $('#front').css("transform", "rotateY(0deg)");
+    $('#back').css("transform", "rotateY(180deg)");
+</script>
 {%endblock%}
 {%block footer%}
 
