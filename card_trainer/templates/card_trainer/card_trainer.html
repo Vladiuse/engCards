@@ -54,11 +54,11 @@
 
     .card-wraper {
         width: 100%;
+        height: var(--card-height);
         position: relative;
         perspective: 1000px;
         display: flex;
         justify-content: center;
-        margin-top: calc(var(--card-height) / -2);
     }
 
     .card-header {
@@ -200,6 +200,18 @@
             } else {
                 alert(`Incorrect card side: ${side}`)
             }
+        }
+        showNextCard(card) {
+            $(this.elem).slideUp(() => {
+                this.showFront(true)
+            }).slideDown()
+        }
+
+        slideUp(){
+            $(this.elem).slideUp()
+        }
+        slideDown(){
+            $(this.elem).slideDown()
         }
     }
     class CardTrainer {
