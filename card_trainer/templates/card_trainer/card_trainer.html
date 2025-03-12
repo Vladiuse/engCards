@@ -177,7 +177,7 @@
 <div id="card-screen">
     <div class="screen-top">
         <div class="container">
-            <div class="card-wraper" id="card">
+            <div class="card-wraper" id="card" style="display: none;">
                 <div class="front-card">
                     <div class="card text-center">
                         <!-- <div class="card-header">
@@ -286,7 +286,6 @@
                 vocabulary_type: vocabulary_type,
                 level: level
             }
-            console.log(data)
             var response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -295,16 +294,29 @@
                 },
                 body: JSON.stringify(data),
             })
+            if (response.ok) {
+                return await response.json()
+            } else {
+                await alert(response.json)
+            }
         }
     }
     class Card {
-        constructor(cardId, word, translate, langDirection) {
+        constructor(cardId, word, translation, langDirection) {
             this.cardId = cardId
             this.word = word
-            this.translate = translate
+            this.translate = translation
             this.langDirection = langDirection
         }
 
+        static dataToCard(cardData) {
+            return new Card(
+                cardData.id,
+                cardData.word,
+                cardData.translation,
+                cardData.lang_direction,
+            )
+        }
     }
     class CardView {
         static FLIP_TRANSITION = '1s'
@@ -373,10 +385,15 @@
             }).slideDown()
         }
 
-        slideUp() {
-            $(this.elem).slideUp()
+        // hide() {
+        //     $(this.elem).slideUp()
+        // }
+        hide() {
+            return new Promise(resolve => {
+                $(this.elem).slideUp(() => resolve());
+            });
         }
-        slideDown() {
+        show() {
             $(this.elem).slideDown()
         }
 
@@ -422,6 +439,10 @@
             this.lockNextButton()
         }
 
+        set nextCardClickEventCallback(callback){
+            this.nextCardButton.addEventListener('click', callback)
+        }
+
         set answerClickEventCallback(callback) {
             this._answerClickCallback = callback
         }
@@ -430,13 +451,16 @@
             this.button5050.addEventListener('click', callback)
         }
 
-        set dontKnowClickEventCallBack(callback){
+        set dontKnowClickEventCallBack(callback) {
             this.dontKnowButton.addEventListener('click', callback)
         }
 
         addAnswersButtons(answers) { // Cards list
             if (this._answerClickCallback != null) {
                 answers.forEach(card => {
+                    if (!(card instanceof Card)) {
+                        throw new Error('Answers must be Card instatce')
+                    }
                     var button = document.createElement('button')
                     button.classList.add('btn')
                     button.classList.add('btn-grey')
@@ -449,7 +473,7 @@
                 alert('No callback for answer button')
             }
         }
-        _removeAnswers(){
+        _removeAnswers() {
             this.answersButtonsContainer.innerHTML = ''
         }
 
@@ -468,24 +492,76 @@
             this.button5050.disabled = true
         }
 
-        unlockNextButton(){
+        unlockNextButton() {
             this.nextCardButton.disabled = false
             this.dontKnowButton.disabled = true
             this.button5050.disabled = true
-            this._removeAnswers()
         }
 
-        lockNextButton(){
+        lockNextButton() {
             this.nextCardButton.disabled = true
             this.dontKnowButton.disabled = false
             this.button5050.disabled = false
         }
     }
     class CardTrainer {
-        constructor(state, buttonView, cardView) {
+        constructor(state, buttonView, cardView, cardsApi) {
             this.state = state
+            this.cardsApi = cardsApi
             this.buttonView = buttonView
             this.cardView = cardView
+            this._nextCardData = null
+        }
+
+
+        async loadCardData() {
+            if (this._nextCardData) {
+                alert(`not empty next card: ${this._nextCardData}`)
+            }
+            var cardData = await this.cardsApi.getCardData('en_ru', 'default_vocabulary', 'A1')
+            this._nextCardData = cardData
+        }
+
+        async getCardData() {
+            var cardData;
+            if (this._nextCardData == null) {
+                console.info('Load Card')
+                await this.loadCardData()
+            } else {
+                console.info('GET EXISTS Card')
+            }
+            cardData = this._nextCardData
+            this._nextCardData = null
+            return cardData
+        }
+
+        async showCard() {
+            var cardData = await this.getCardData()
+            var card = Card.dataToCard(cardData.card)
+            var answersCards = []
+            cardData.answers.forEach(answerCardData => {
+                var answerCard = Card.dataToCard(answerCardData)
+                answersCards.push(answerCard)
+            })
+            this.state.setCardData(card, answersCards, cardData.lang_direction)
+            this.cardView.setCard(card)
+            this.cardView.show()
+            this.buttonView.addAnswersButtons(answersCards)
+            this.buttonView.lockNextButton()
+
+        }
+
+        // nextCard() {  /// как вариант сделать просто так
+        //     $(this.cardView.elem).slideUp(() => {
+        //         this.cardView.showFront(true);
+        //         this.showCard();
+        //     });
+        // }
+
+        async nextCard() {
+            await this.cardView.hide()
+            this.cardView.showFront(true)
+            this.showCard()
         }
 
         handle5050() {
@@ -505,7 +581,7 @@
             }
         }
 
-        hanleDontKnow(){
+        hanleDontKnow() {
             this.cardView.showBack()
         }
 
@@ -524,6 +600,7 @@
         }
 
         handleUserAnswer(event) {
+            this.loadCardData()
             var answerCardBlock = event.currentTarget
             var answerCardId = answerCardBlock.dataset.cardId
             var answerCardcard = this.getcardById(answerCardId)
@@ -537,6 +614,7 @@
             }
             this.cardView.showBack()
             this.buttonView.unlockNextButton()
+            this.buttonView._removeAnswers()
         }
 
 
@@ -553,7 +631,7 @@
             };
         }
 
-        setIsUse5050Used(flag) {
+        setIsUse5050Used() {
             this.state.isUse5050 = true
         }
 
@@ -562,11 +640,10 @@
         }
 
         setCardData(card, answers, langDirection) {
+            this.clear()
             this.state.currentCard = card;
             this.state.answers = answers;
             this.state.langDirection = langDirection;
-            this.state.userAnswer = null;
-            this.state.isCorrect = null;
         }
 
         setUserAnswer(userAnswer) {
@@ -603,6 +680,7 @@
             this.state.langDirection = null;
             this.state.isCorrect = null;
             this.state.userAnswer = null;
+            this.state.isUse5050 = null;
         }
     }
     const cardElem = document.getElementById('card')
@@ -611,20 +689,23 @@
     const cardTrainerApi = new CardTrainerApi()
     const buttonsView = new CardTrainerButtonsView(controlButtonsBlock)
     const trainerState = new StateManager()
-    const cardTrainer = new CardTrainer(trainerState, buttonsView, cardView)
+    const cardTrainer = new CardTrainer(trainerState, buttonsView, cardView, cardTrainerApi)
 
     buttonsView.button5050ClickEventCallback = cardTrainer.handle5050.bind(cardTrainer)
     buttonsView.answerClickEventCallback = cardTrainer.handleUserAnswer.bind(cardTrainer)
     buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
-    var answers = [
-        // {%for word in test_words%}
-        new Card({{ word.id }} , '{{word.ru}}', '{{word.en}}'),
-        // {%endfor%}
-    ]
-    cardView.setCard(answers[0])
-    trainerState.setCardData(answers[0])
-    trainerState.setAnswers(answers)
-    buttonsView.addAnswersButtons(answers)
+    buttonsView.nextCardClickEventCallback = cardTrainer.nextCard.bind(cardTrainer) /// ask about probkems with event async func
+
+    cardTrainer.showCard()
+    // var answers = [
+    //     // {%for word in test_words%}
+    //     new Card({{ word.id }} , '{{word.ru}}', '{{word.en}}'),
+    //     // {%endfor%}
+    // ]
+    // cardView.setCard(answers[0])
+    // trainerState.setCardData(answers[0])
+    // trainerState.setAnswers(answers)
+    // buttonsView.addAnswersButtons(answers)
 </script>
 {%endblock%}
 {%block footer%}
