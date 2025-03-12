@@ -26,6 +26,7 @@
         margin-top: auto;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
+
     /* SCREEN */
 
 
@@ -37,6 +38,7 @@
         backface-visibility: hidden;
         transition: 1s;
     }
+
     #back {
         transform: rotateY(180deg);
     }
@@ -45,10 +47,11 @@
         width: var(--card-width);
         height: var(--card-height);
         max-width: 100%;
-        background-size: 400px; 
-        background-image: url('/static/vocabulary/img/card_background.jpg'); 
+        background-size: 400px;
+        background-image: url('/static/vocabulary/img/card_background.jpg');
 
     }
+
     .card-wraper {
         width: 100%;
         position: relative;
@@ -72,6 +75,7 @@
         justify-content: center;
         align-items: center;
     }
+
     /* CARD */
 
     /* BOTTOM INTERFACE */
@@ -112,14 +116,105 @@
     </div>
     <div class="screen-bottom">
         <div class="d-flex justify-content-center my-4">
-            <button id="next-card-button" href="#" class="btn btn-primary" ><i class="fas fa-forward"
+            <button id="next-card-button" href="#" class="btn btn-primary"><i class="fas fa-forward"
                     aria-hidden="true"></i></button>
         </div>
     </div>
 </div>
 <script>
-    $('#front').css("transform", "rotateY(0deg)");
-    $('#back').css("transform", "rotateY(180deg)");
+    var csrf = '{{csrf_token}}'
+    class CardTrainerApi {
+        constructor() {
+        }
+
+        async getCardData(langDirection, vocabulary_type, level) {
+            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}`
+            var data = {
+                lang_direction: langDirection,
+                vocabulary_type: vocabulary_type,
+                level: level
+            }
+            console.log(data)
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrf,
+                },
+                body: JSON.stringify(data),
+            })
+        }
+    }
+    class Card {
+        constructor(cardId, word, translate, langDirection) {
+            this.cardId = cardId
+            this.word = word
+            this.translate = translate
+            this.langDirection = langDirection
+        }
+    }
+    class CardView {
+        constructor() {
+
+        }
+    }
+    class Cardtrainer {
+        constructor() {
+
+        }
+    }
+    class StateManager {
+        constructor() {
+            this.state = {
+                currentCard: null,
+                answers: [],
+                langDirection: null,
+                isCorrect: null,
+                userAnswer: null,
+            };
+        }
+
+        setCardData(card, answers, langDirection) {
+            this.state.currentCard = card;
+            this.state.answers = answers;
+            this.state.langDirection = langDirection;
+            this.state.userAnswer = null;
+            this.state.isCorrect = null;
+        }
+
+        setUserAnswer(userAnswer) {
+            this.state.userAnswer = userAnswer;
+        }
+
+        setIsCorrect(isCorrect) {
+            this.state.isCorrect = isCorrect;
+        }
+
+        getCurrentCard() {
+            return this.state.currentCard;
+        }
+
+        getAnswers() {
+            return this.state.answers;
+        }
+
+        getLangDirection() {
+            return this.state.langDirection;
+        }
+
+        getAnswerResult() {
+            return this.state.isCorrect;
+        }
+
+        clear() {
+            this.state.currentCard = null;
+            this.state.answers = [];
+            this.state.langDirection = null;
+            this.state.isCorrect = null;
+            this.state.userAnswer = null;
+        }
+    }
+    const cardTrainerApi = new CardTrainerApi()
 </script>
 {%endblock%}
 {%block footer%}
