@@ -47,7 +47,7 @@
     }
 
     /* FOR TEST */
-    .back-card {
+    /* .back-card {
         transform: 1;
     }
 
@@ -55,7 +55,7 @@
     .back-card {
         position: relative;
         transform: rotateY(0deg);
-    }
+    } */
 
     /* FOR TEST */
 
@@ -418,6 +418,8 @@
             this.dontKnowButton = document.getElementById('dont-know-btn')
             this.button5050 = document.getElementById('5050-btn')
             this._answerClickCallback = null
+
+            this.lockNextButton()
         }
 
         set answerClickEventCallback(callback) {
@@ -426,6 +428,10 @@
 
         set button5050ClickEventCallback(callback) {
             this.button5050.addEventListener('click', callback)
+        }
+
+        set dontKnowClickEventCallBack(callback){
+            this.dontKnowButton.addEventListener('click', callback)
         }
 
         addAnswersButtons(answers) { // Cards list
@@ -443,6 +449,9 @@
                 alert('No callback for answer button')
             }
         }
+        _removeAnswers(){
+            this.answersButtonsContainer.innerHTML = ''
+        }
 
         hideAnswerButtonsByIds(ids) { // list
             ids.forEach(id => {
@@ -457,6 +466,19 @@
 
         disable5050button() {
             this.button5050.disabled = true
+        }
+
+        unlockNextButton(){
+            this.nextCardButton.disabled = false
+            this.dontKnowButton.disabled = true
+            this.button5050.disabled = true
+            this._removeAnswers()
+        }
+
+        lockNextButton(){
+            this.nextCardButton.disabled = true
+            this.dontKnowButton.disabled = false
+            this.button5050.disabled = false
         }
     }
     class CardTrainer {
@@ -481,6 +503,10 @@
                 this.buttonView.disable5050button()
                 this.state.setIsUse5050Used()
             }
+        }
+
+        hanleDontKnow(){
+            this.cardView.showBack()
         }
 
         getcardById(cardId) {
@@ -509,6 +535,8 @@
                 this.state.setIsCorrect(false)
                 this.cardView.setWrongAnswer(answerCardcard)
             }
+            this.cardView.showBack()
+            this.buttonView.unlockNextButton()
         }
 
 
@@ -587,6 +615,7 @@
 
     buttonsView.button5050ClickEventCallback = cardTrainer.handle5050.bind(cardTrainer)
     buttonsView.answerClickEventCallback = cardTrainer.handleUserAnswer.bind(cardTrainer)
+    buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
     var answers = [
         // {%for word in test_words%}
         new Card({{ word.id }} , '{{word.ru}}', '{{word.en}}'),
