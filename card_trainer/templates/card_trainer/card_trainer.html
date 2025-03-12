@@ -117,7 +117,7 @@
         padding: 0 10px;
     }
 
-    #action-buttons{
+    #action-buttons {
         width: 100%;
     }
 
@@ -221,16 +221,39 @@
                 <div class="row">
                     <div class="col">
                         <button id="next-card-button" href="#" class="btn btn-primary my-2"><i class="fas fa-forward"
-                            aria-hidden="true"></i></button>
+                                aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
 <script>
     var csrf = '{{csrf_token}}'
+    function getRandomElementsFromArray(arr, num) {
+        if (typeof num !== 'number') {
+            console.error('Incorrect random elems count');
+            return [];
+        } else if (num < 0) {
+            console.error('Num must be positive');
+            return [];
+        } else if (num > arr.length) {
+            console.error('Num must be less than array length');
+            return [];
+        }
+
+        let result = [];
+        let tempArr = [...arr];
+
+        for (let i = 0; i < num; i++) {
+            let randomIndex = Math.floor(Math.random() * tempArr.length);
+            result.push(tempArr[randomIndex]);
+            tempArr.splice(randomIndex, 1);
+        }
+
+        return result;
+    }
     class CardTrainerApi {
         constructor() {
         }
@@ -259,6 +282,7 @@
             this.translate = translate
             this.langDirection = langDirection
         }
+
     }
     class CardView {
         static FLIP_TRANSITION = '1s'
@@ -365,8 +389,8 @@
             this.button5050 = document.getElementById('5050-btn')
 
         }
- 
-        addAnswersButtons(answers){ // Cards list
+
+        addAnswersButtons(answers) { // Cards list
             answers.forEach(card => {
                 var button = document.createElement('button')
                 button.classList.add('btn')
@@ -377,20 +401,36 @@
             });
         }
 
-        hideAnswerButtonsByIds(ids){ // list
+        hideAnswerButtonsByIds(ids) { // list
             ids.forEach(id => {
                 var button = this.getAnswerButtonById(id)
                 button.remove()
             })
         }
 
-        getAnswerButtonById(cardId){
+        getAnswerButtonById(cardId) {
             return this.answersButtonsContainer.querySelector(`[data-card-id="${cardId}"]`)
         }
     }
     class CardTrainer {
-        constructor() {
+        constructor(state, buttonView) {
+            this.state = state
+            this.buttonView = buttonView
+        }
 
+        handle5050() {
+            if (!this.state.getIsUse5050()) {
+                var answersIds = []
+                var answers = this.state.getAnswers()
+                answers.forEach(card => {
+                    if (card.cardId != this.state.getCurrentCard().cardId) {
+                        answersIds.push(card.cardId)
+                    }
+                })
+                var answersIdsTodelete = getRandomElementsFromArray(answersIds, answersIds.length - 1)
+                this.buttonView.hideAnswerButtonsByIds(answersIdsTodelete)
+                this.state.setIsUse5050Used()
+            }
         }
     }
     class StateManager {
@@ -401,7 +441,16 @@
                 langDirection: null,
                 isCorrect: null,
                 userAnswer: null,
+                isUse5050: false,
             };
+        }
+
+        setIsUse5050Used(flag) {
+            this.state.isUse5050 = true
+        }
+
+        getIsUse5050() {
+            return this.state.isUse5050
         }
 
         setCardData(card, answers, langDirection) {
@@ -418,6 +467,10 @@
 
         setIsCorrect(isCorrect) {
             this.state.isCorrect = isCorrect;
+        }
+
+        setAnswers(answers) {
+            this.state.answers = answers;
         }
 
         getCurrentCard() {
@@ -449,12 +502,16 @@
     const controlButtonsBlock = document.getElementById('control-buttons')
     const cardTrainerApi = new CardTrainerApi()
     const buttonsView = new CardTrainerButtonsView(controlButtonsBlock)
-
+    const trainerState = new StateManager()
+    const cardTrainer = new CardTrainer(trainerState, buttonsView)
     var answers = [
         // {%for word in test_words%}
-        new Card({{word.id}} ,'{{word.ru}}', '{{word.en}}'),
+        new Card({{ word.id }} , '{{word.ru}}', '{{word.en}}'),
         // {%endfor%}
     ]
+    cardView.setCard(answers[0])
+    trainerState.setCardData(answers[0])
+    trainerState.setAnswers(answers)
     buttonsView.addAnswersButtons(answers)
 </script>
 {%endblock%}

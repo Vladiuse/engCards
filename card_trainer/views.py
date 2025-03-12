@@ -14,7 +14,7 @@ def card_trainer(request):
         'has_words_to_train': True,
         'USER_VOCABULARY': USER_VOCABULARY,
         'DEFAULT_VOCABULARY': DEFAULT_VOCABULARY,
-        'test_words': DefaultWord.objects.order_by('?')[:random.randint(2, 10)],
+        'test_words': DefaultWord.objects.order_by('?')[:random.randint(9, 10)],
     }
     return render(request, 'card_trainer/card_trainer.html', content)
 
