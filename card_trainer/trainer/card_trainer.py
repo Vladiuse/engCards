@@ -53,7 +53,7 @@ class CardTrainer:
             card_word = converter.convert(item=answer, lang_direction=self.lang_direction.reverse())
             card_answers.append(card_word)
         return Card(
-            target=card_word,
+            card=card_word,
             answers=card_answers,
             lang_direction=self.lang_direction,
         )

@@ -12,7 +12,11 @@ from .types import LangDirection
 class CardTrainerSerializer(serializers.Serializer):
     lang_direction = serializers.ChoiceField(choices=LangDirection.choices)
     vocabulary_type = serializers.ChoiceField(choices=VOCABULARY_TYPES)
-    level = serializers.PrimaryKeyRelatedField(queryset=EnglishLevel.objects.all(), required=False)
+    level = serializers.PrimaryKeyRelatedField(queryset=EnglishLevel.objects.all(), required=False, allow_null=True)
+
+    def to_internal_value(self, data):
+        print(data)
+        return super().to_internal_value(data=data)
 
     def create(self, validated_data) -> CardTrainer:
         lang_direction = LangDirection(validated_data['lang_direction'])
@@ -30,7 +34,7 @@ class CardTrainerSerializer(serializers.Serializer):
         level = attrs.get('level', None)
         vocabulary_type = attrs.get('vocabulary_type')
         user = self.context['request'].user
-        if isinstance(user, AnonymousUser) and not vocabulary_type == DEFAULT_VOCABULARY:
+        if isinstance(user, AnonymousUser) and vocabulary_type != DEFAULT_VOCABULARY:
             raise ValidationError(f'AnonymousUser cat use only {DEFAULT_VOCABULARY}')
         if vocabulary_type == DEFAULT_VOCABULARY and not level:
             raise ValidationError(f'Set "level" for {DEFAULT_VOCABULARY}')
@@ -44,6 +48,6 @@ class CardWordSerializer(serializers.Serializer):
 
 
 class CardSerializer(serializers.Serializer):
-    target = CardWordSerializer()
+    card = CardWordSerializer()
     answers = CardWordSerializer(many=True)
     lang_direction = serializers.ChoiceField(choices=LangDirection.choices)

@@ -75,8 +75,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 
 ]
-if DEBUG:
-    MIDDLEWARE.append('users.middleware.DisableCacheMiddleware')
+# if DEBUG:
+#     MIDDLEWARE.append('users.middleware.DisableCacheMiddleware')
 
 ROOT_URLCONF = "engCards.urls"
 

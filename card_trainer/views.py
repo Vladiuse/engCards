@@ -16,9 +16,9 @@ def card_trainer(request):
     return render(request, 'card_trainer/card_trainer.html', content)
 
 
-@api_view()
+@api_view(['GET', 'POST', ])
 def get_card(request):
-    serializer = CardTrainerSerializer(data=request.query_params, context={'request': request})
+    serializer = CardTrainerSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
     card_trainer = serializer.save()
     card = card_trainer.create_card()
