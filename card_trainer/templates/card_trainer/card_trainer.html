@@ -23,6 +23,8 @@
     }
 
     .screen-bottom {
+        display: flex;
+        justify-content: center;
         background-color: var(--fds-gray-05);
         flex: 3;
         margin-top: auto;
@@ -68,7 +70,9 @@
         align-items: center;
 
     }
-    .card-header, .card-footer{
+
+    .card-header,
+    .card-footer {
         background-color: initial;
         border-bottom: none;
         border-top: none;
@@ -87,25 +91,52 @@
     .card-word-text {
         font-size: 1.6rem;
     }
-    .back-card .answer-badge{
+
+    .back-card .answer-badge {
         font-size: 1rem;
         font-weight: bold;
     }
-    .back-card .correct-badge{
-        color: var( --base-lime);
-    
+
+    .back-card .correct-badge {
+        color: var(--base-lime);
+
     }
-    .back-card .wronge-badge{
+
+    .back-card .wronge-badge {
         color: var(--base-cherry);
-        
+
     }
 
     /* CARD */
 
     /* BOTTOM INTERFACE */
-    #next-card-button {
-        width: 400px;
+    #control-buttons {
+        height: 100%;
+        width: 500px;
+        max-width: 100%;
+        padding: 0 10px;
     }
+
+    #action-buttons{
+        width: 100%;
+    }
+
+    #action-buttons button {
+        width: 100%;
+    }
+
+    #answers-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+
+    /* #next-card-button {
+        width: 100%;
+    } */
 
     @media screen and (max-width: 1000px) {
         .card-word-text {
@@ -113,10 +144,11 @@
             margin-bottom: 0.8rem;
         }
 
-        .card-wraper{
+        .card-wraper {
             height: var(--card-height-mob);
         }
-        .card{
+
+        .card {
             height: var(--card-height-mob);
         }
     }
@@ -134,7 +166,8 @@
                             <p class="card-word-text" id="card-word">
                                 <b>Maintain</b>
                             </p>
-                            <p class="card-text fs-5" id="sentense">Lorem ipsum dolor sit amet consectetur adipisicing elit exercitationem. </p>
+                            <p class="card-text fs-5" id="sentense">Lorem ipsum dolor sit amet consectetur adipisicing
+                                elit exercitationem. </p>
                         </div>
                         <div class="card-footer">
                         </div>
@@ -143,7 +176,7 @@
                 <div class="back-card">
                     <div class="card text-center">
                         <div class="card-header">
-                            <span class="answer-badge correct-badge">Правильно</span> 
+                            <span class="answer-badge correct-badge">Правильно</span>
                             <span class="answer-badge wronge-badge">Неправильно</span>
                         </div>
                         <div class="card-body">
@@ -154,7 +187,8 @@
                                 <b>Wrong</b> - Неправильный
                                 ответ
                             </p>
-                            <p class="card-text fs-5" id="sentense-translate">Lorem ipsum dolor sit amet consectetur adipisicing elit exercitationem. </p>
+                            <p class="card-text fs-5" id="sentense-translate">Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit exercitationem. </p>
                         </div>
                         <!-- <div class="card-footer">
                             ПОКА не нужен
@@ -165,9 +199,41 @@
         </div>
     </div>
     <div class="screen-bottom">
-        <div class="d-flex justify-content-center my-4">
-            <button id="next-card-button" href="#" class="btn btn-primary"><i class="fas fa-forward"
-                    aria-hidden="true"></i></button>
+        <!-- CARD TRAINER CONTROL BYUTTONS -->
+        <div id="control-buttons" class="d-flex flex-column align-items-center justify-content-between">
+            <div id="answers-buttons" class="my-4">
+                {%for word in test_words%}
+                <button class="btn btn-grey ">
+                    <b>{{word.ru}}</b>
+                </button>
+                <!-- <button class="btn btn-outline-primary">{{word.ru}}</button> -->
+                {%endfor%}
+                <!-- <button class="btn btn-outline-primary">Coleman</button>
+                <button class="btn btn-outline-primary">Javier Burke</button>
+                <button class="btn btn-outline-primary">Samantha Price</button>
+                <button class="btn btn-outline-primary">Zimmerman</button>
+                <button class="btn btn-outline-primary">some</button>
+                <button class="btn btn-outline-primary">Samantha Price</button>
+                <button class="btn btn-outline-primary">Coleman</button>
+                <button class="btn btn-outline-primary">BradGonzalez</button> -->
+            </div>
+            <div id="action-buttons">
+                <div class="row gx-2">
+                    <div class="col">
+                        <button class="btn btn-secondary" id="dont-know-btn">Не знаю</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-secondary" id="5050-btn">50 на 50</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button id="next-card-button" href="#" class="btn btn-primary my-2"><i class="fas fa-forward"
+                            aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>
@@ -265,6 +331,7 @@
         showNextCard(card) {
             $(this.elem).slideUp(() => {
                 this.showFront(true)
+                this.setCard(card)
             }).slideDown()
         }
 
@@ -275,22 +342,31 @@
             $(this.elem).slideDown()
         }
 
-        setCard(card){
+        setCard(card) {
             this.cardWord.innerHTML = `<b>${card.word}</b>`
             this.cardWordtranslate.innerHTML = `<b>${card.word}</b> - ${card.translate}`
             this.correctBadge.style.display = 'block'
             this.wrongeBadge.style.display = 'none'
         }
 
-        setWrongAnswer(wrongeCard){
+        setWrongAnswer(wrongeCard) {
             this.cardIncorrectAnswer.innerHTML = `<b>${wrongeCard.word}</b> - ${wrongeCard.translate}`
             this.correctBadge.style.display = 'none'
             this.wrongeBadge.style.display = 'block'
         }
 
-        setSentense(sentense){
+        setSentense(sentense) {
             this.sentense.innerHTML = sentense.text
             this.sentenseTranslate.innerHTML = sentense.translate
+        }
+
+        clean() {
+            //
+        }
+    }
+    class CardTrainerByttonsView {
+        constructor() {
+
         }
     }
     class CardTrainer {

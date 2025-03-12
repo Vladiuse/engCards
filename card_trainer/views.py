@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from vocabulary.models import EnglishLevel
 from vocabulary.constants import USER_VOCABULARY, DEFAULT_VOCABULARY
 from .serializers import CardSerializer, CardTrainerSerializer
+import random
+from vocabulary.models import DefaultWord
 
 
 def card_trainer(request):
@@ -12,6 +14,7 @@ def card_trainer(request):
         'has_words_to_train': True,
         'USER_VOCABULARY': USER_VOCABULARY,
         'DEFAULT_VOCABULARY': DEFAULT_VOCABULARY,
+        'test_words': DefaultWord.objects.order_by('?')[:random.randint(2, 10)],
     }
     return render(request, 'card_trainer/card_trainer.html', content)
 
