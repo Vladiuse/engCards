@@ -31,15 +31,15 @@
 
 
     /* CARD */
-    #front,
-    #back {
+    .front-card,
+    .back-card {
         max-width: 100%;
         position: absolute;
         backface-visibility: hidden;
-        transition: 1s;
+        /* transition: 1s; */
     }
 
-    #back {
+    .back-card {
         transform: rotateY(180deg);
     }
 
@@ -87,8 +87,8 @@
 <div id="card-screen">
     <div class="screen-top">
         <div class="container">
-            <div class="card-wraper">
-                <div id="front">
+            <div class="card-wraper" id="card">
+                <div class="front-card">
                     <div class="card text-center">
                         <div class="card-header">
                         </div>
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="back">
+                <div class="back-card">
                     <div class="card text-center">
                         <div class="card-header">
                         </div>
@@ -126,7 +126,6 @@
     class CardTrainerApi {
         constructor() {
         }
-
         async getCardData(langDirection, vocabulary_type, level) {
             var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}`
             var data = {
@@ -154,11 +153,56 @@
         }
     }
     class CardView {
-        constructor() {
+        static FLIP_TRANSITION = '1s'
+        static FRONT_SIDE = 'front'
+        static BACK_SIDE = 'back'
+        constructor(elem) {
+            this.elem = elem
+            this._currentSide = CardView.FRONT_SIDE
+            this.frontCard = this.elem.querySelector('.front-card')
+            this.backCard = this.elem.querySelector('.back-card')
+        }
 
+        set flipTransition(time) {
+            console.log(time)
+            this.frontCard.style.transition = time
+            this.backCard.style.transition = time
+        }
+
+        flip(quick = false) {
+            if (this._currentSide == CardView.FRONT_SIDE) {
+                this.showBack(quick)
+            } else {
+                this.showFront(quick)
+            }
+        }
+
+        showBack(quick = false) {
+            this._showSide(CardView.BACK_SIDE, quick)
+        }
+        showFront(quick = false) {
+            this._showSide(CardView.FRONT_SIDE, quick)
+        }
+        _showSide(side, quick = false) {
+            if (quick) {
+                this.flipTransition = '0s'
+            } else {
+                this.flipTransition = CardView.FLIP_TRANSITION
+            }
+            if (side == CardView.FRONT_SIDE) {
+                $(this.frontCard).css("transform", "rotateY(0deg)");
+                $(this.backCard).css("transform", "rotateY(180deg)");
+                this._currentSide = CardView.FRONT_SIDE
+            } else if (side == CardView.BACK_SIDE) {
+                $(this.frontCard).css("transform", "rotateY(180deg)");
+                $(this.backCard).css("transform", "rotateY(0deg)");
+                this._currentSide = CardView.BACK_SIDE
+            } else {
+                alert(`Incorrect card side: ${side}`)
+            }
         }
     }
-    class Cardtrainer {
+    class CardTrainer {
         constructor() {
 
         }
@@ -214,6 +258,8 @@
             this.state.userAnswer = null;
         }
     }
+    const cardElem = document.getElementById('card')
+    const cardView = new CardView(cardElem)
     const cardTrainerApi = new CardTrainerApi()
 </script>
 {%endblock%}
