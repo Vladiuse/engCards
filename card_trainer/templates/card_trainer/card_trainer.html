@@ -5,6 +5,8 @@
     :root {
         --card-width: 500px;
         --card-height: 300px;
+
+        --card-height-mob: 250px;
     }
 
     /* SCREEN */
@@ -85,15 +87,17 @@
     .card-word-text {
         font-size: 1.6rem;
     }
-    #answer-status{
+    .back-card .answer-badge{
         font-size: 1rem;
         font-weight: bold;
     }
-    #answer-status span:first-child{
+    .back-card .correct-badge{
         color: var( --base-lime);
+    
     }
-    #answer-status span:last-child{
+    .back-card .wronge-badge{
         color: var(--base-cherry);
+        
     }
 
     /* CARD */
@@ -107,6 +111,13 @@
         .card-word-text {
             font-size: 1.3rem;
             margin-bottom: 0.8rem;
+        }
+
+        .card-wraper{
+            height: var(--card-height-mob);
+        }
+        .card{
+            height: var(--card-height-mob);
         }
     }
 </style>
@@ -132,15 +143,14 @@
                 <div class="back-card">
                     <div class="card text-center">
                         <div class="card-header">
-                            <div id="answer-status">
-                                <span>Правильно </span>/ <span>Непрпвильно</span>
-                            </div>
+                            <span class="answer-badge correct-badge">Правильно</span> 
+                            <span class="answer-badge wronge-badge">Неправильно</span>
                         </div>
                         <div class="card-body">
-                            <p class="card-word-text" id="card-translate">
+                            <p class="card-word-text" id="card-word-translate">
                                 <b>Maintain</b> - поддерживать
                             </p>
-                            <p class="card-word-text" id="card-incorrect-chose-translate">
+                            <p class="card-word-text" id="card-incorrect-answer">
                                 <b>Wrong</b> - Неправильный
                                 ответ
                             </p>
@@ -202,6 +212,16 @@
             this._currentSide = CardView.FRONT_SIDE
             this.frontCard = this.elem.querySelector('.front-card')
             this.backCard = this.elem.querySelector('.back-card')
+
+            this.cardWord = document.getElementById('card-word')
+            this.cardWordtranslate = document.getElementById('card-word-translate')
+            this.cardIncorrectAnswer = document.getElementById('card-incorrect-answer')
+
+            this.sentense = document.getElementById('sentense')
+            this.sentenseTranslate = document.getElementById('sentense-translate')
+
+            this.correctBadge = document.querySelector('.correct-badge')
+            this.wrongeBadge = document.querySelector('.wronge-badge')
         }
 
         set flipTransition(time) {
@@ -253,6 +273,24 @@
         }
         slideDown() {
             $(this.elem).slideDown()
+        }
+
+        setCard(card){
+            this.cardWord.innerHTML = `<b>${card.word}</b>`
+            this.cardWordtranslate.innerHTML = `<b>${card.word}</b> - ${card.translate}`
+            this.correctBadge.style.display = 'block'
+            this.wrongeBadge.style.display = 'none'
+        }
+
+        setWrongAnswer(wrongeCard){
+            this.cardIncorrectAnswer.innerHTML = `<b>${wrongeCard.word}</b> - ${wrongeCard.translate}`
+            this.correctBadge.style.display = 'none'
+            this.wrongeBadge.style.display = 'block'
+        }
+
+        setSentense(sentense){
+            this.sentense.innerHTML = sentense.text
+            this.sentenseTranslate.innerHTML = sentense.translate
         }
     }
     class CardTrainer {
@@ -314,6 +352,11 @@
     const cardElem = document.getElementById('card')
     const cardView = new CardView(cardElem)
     const cardTrainerApi = new CardTrainerApi()
+
+    var card = new Card(1, 'some', 'чтото')
+    var wrongeCard = new Card(1, 'xxxx', 'yyyyy')
+    cardView.setCard(card)
+    cardView.setWrongAnswer(wrongeCard)
 </script>
 {%endblock%}
 {%block footer%}
