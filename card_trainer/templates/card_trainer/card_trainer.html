@@ -203,19 +203,11 @@
         <div id="control-buttons" class="d-flex flex-column align-items-center justify-content-between">
             <div id="answers-buttons" class="my-4">
                 {%for word in test_words%}
-                <button class="btn btn-grey ">
+                <!-- <button class="btn btn-grey ">
                     <b>{{word.ru}}</b>
-                </button>
-                <!-- <button class="btn btn-outline-primary">{{word.ru}}</button> -->
+                </button> -->
                 {%endfor%}
-                <!-- <button class="btn btn-outline-primary">Coleman</button>
-                <button class="btn btn-outline-primary">Javier Burke</button>
-                <button class="btn btn-outline-primary">Samantha Price</button>
-                <button class="btn btn-outline-primary">Zimmerman</button>
-                <button class="btn btn-outline-primary">some</button>
-                <button class="btn btn-outline-primary">Samantha Price</button>
-                <button class="btn btn-outline-primary">Coleman</button>
-                <button class="btn btn-outline-primary">BradGonzalez</button> -->
+
             </div>
             <div id="action-buttons">
                 <div class="row gx-2">
@@ -364,9 +356,36 @@
             //
         }
     }
-    class CardTrainerByttonsView {
-        constructor() {
+    class CardTrainerButtonsView {
+        constructor(elem) {
+            this.elem = elem
+            this.answersButtonsContainer = document.getElementById('answers-buttons')
+            this.nextCardButton = document.getElementById('next-card-button')
+            this.dontKnowButton = document.getElementById('dont-know-btn')
+            this.button5050 = document.getElementById('5050-btn')
 
+        }
+ 
+        addAnswersButtons(answers){ // Cards list
+            answers.forEach(card => {
+                var button = document.createElement('button')
+                button.classList.add('btn')
+                button.classList.add('btn-grey')
+                button.dataset.cardId = card.cardId
+                button.textContent = card.word + ' ' + card.cardId
+                this.answersButtonsContainer.append(button)
+            });
+        }
+
+        hideAnswerButtonsByIds(ids){ // list
+            ids.forEach(id => {
+                var button = this.getAnswerButtonById(id)
+                button.remove()
+            })
+        }
+
+        getAnswerButtonById(cardId){
+            return this.answersButtonsContainer.querySelector(`[data-card-id="${cardId}"]`)
         }
     }
     class CardTrainer {
@@ -427,12 +446,16 @@
     }
     const cardElem = document.getElementById('card')
     const cardView = new CardView(cardElem)
+    const controlButtonsBlock = document.getElementById('control-buttons')
     const cardTrainerApi = new CardTrainerApi()
+    const buttonsView = new CardTrainerButtonsView(controlButtonsBlock)
 
-    var card = new Card(1, 'some', 'чтото')
-    var wrongeCard = new Card(1, 'xxxx', 'yyyyy')
-    cardView.setCard(card)
-    cardView.setWrongAnswer(wrongeCard)
+    var answers = [
+        // {%for word in test_words%}
+        new Card({{word.id}} ,'{{word.ru}}', '{{word.en}}'),
+        // {%endfor%}
+    ]
+    buttonsView.addAnswersButtons(answers)
 </script>
 {%endblock%}
 {%block footer%}
