@@ -390,6 +390,10 @@
 
         }
 
+        set button5050ClickEventCallback(callback){
+            this.button5050.addEventListener('click', callback)
+        }
+
         addAnswersButtons(answers) { // Cards list
             answers.forEach(card => {
                 var button = document.createElement('button')
@@ -411,6 +415,10 @@
         getAnswerButtonById(cardId) {
             return this.answersButtonsContainer.querySelector(`[data-card-id="${cardId}"]`)
         }
+
+        disable5050button(){
+            this.button5050.disabled = true
+        }
     }
     class CardTrainer {
         constructor(state, buttonView) {
@@ -422,13 +430,15 @@
             if (!this.state.getIsUse5050()) {
                 var answersIds = []
                 var answers = this.state.getAnswers()
+                var currentCard = this.state.getCurrentCard()
                 answers.forEach(card => {
-                    if (card.cardId != this.state.getCurrentCard().cardId) {
+                    if (card.cardId != currentCard.cardId) {
                         answersIds.push(card.cardId)
                     }
                 })
                 var answersIdsTodelete = getRandomElementsFromArray(answersIds, answersIds.length - 1)
                 this.buttonView.hideAnswerButtonsByIds(answersIdsTodelete)
+                this.buttonView.disable5050button()
                 this.state.setIsUse5050Used()
             }
         }
@@ -504,6 +514,8 @@
     const buttonsView = new CardTrainerButtonsView(controlButtonsBlock)
     const trainerState = new StateManager()
     const cardTrainer = new CardTrainer(trainerState, buttonsView)
+
+    buttonsView.button5050ClickEventCallback = cardTrainer.handle5050.bind(cardTrainer)
     var answers = [
         // {%for word in test_words%}
         new Card({{ word.id }} , '{{word.ru}}', '{{word.en}}'),
