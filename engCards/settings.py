@@ -38,7 +38,7 @@ SECRET_KEY = SECRETS['django-secret-key']
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['eng-cards.vim-store.ru', '127.0.0.1']
 
 
 # Application definition
@@ -158,6 +158,7 @@ AUTH_USER_MODEL = 'users.User'
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = '/home/v/vladiuse/eng-cards.vim-store.ru/public_html/static'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # BASE_DIR — это путь к корню проекта
