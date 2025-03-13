@@ -5,7 +5,6 @@
     :root {
         --card-width: 500px;
         --card-height: 300px;
-
         --card-height-mob: 250px;
     }
 
@@ -154,10 +153,6 @@
     }
 
 
-    /* #next-card-button {
-        width: 100%;
-    } */
-
     @media screen and (max-width: 1000px) {
         .card-word-text {
             font-size: 1.3rem;
@@ -180,8 +175,6 @@
             <div class="card-wraper" id="card" style="display: none;">
                 <div class="front-card">
                     <div class="card text-center">
-                        <!-- <div class="card-header">
-                        </div> -->
                         <div class="card-body">
                             <p class="card-word-text" id="card-word">
                                 <b>Maintain</b>
@@ -189,16 +182,10 @@
                             <p class="card-text fs-5" id="sentense">Lorem ipsum dolor sit amet consectetur adipisicing
                                 elit exercitationem. </p>
                         </div>
-                        <!-- <div class="card-footer">
-                        </div> -->
                     </div>
                 </div>
                 <div class="back-card">
                     <div class="card text-center">
-                        <!-- <div class="card-header">
-                            <span class="answer-badge correct-badge">Правильно</span>
-                            <span class="answer-badge wronge-badge">Неправильно</span>
-                        </div> -->
                         <span class="answer-badge correct-badge">Правильно</span>
                         <span class="answer-badge wronge-badge">Неправильно</span>
                         <div class="card-body">
@@ -212,9 +199,6 @@
                             <p class="card-text fs-5" id="sentense-translate">Lorem ipsum dolor sit amet consectetur
                                 adipisicing elit exercitationem. </p>
                         </div>
-                        <!-- <div class="card-footer">
-                            ПОКА не нужен
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -223,14 +207,7 @@
     <div class="screen-bottom">
         <!-- CARD TRAINER CONTROL BYUTTONS -->
         <div id="control-buttons" class="d-flex flex-column align-items-center justify-content-between">
-            <div id="answers-buttons" class="my-4">
-                {%for word in test_words%}
-                <!-- <button class="btn btn-grey ">
-                    <b>{{word.ru}}</b>
-                </button> -->
-                {%endfor%}
-
-            </div>
+            <div id="answers-buttons" class="my-4"></div>
             <div id="action-buttons">
                 <div class="row gx-2">
                     <div class="col">
@@ -345,7 +322,6 @@
             this.frontCard.style.transition = time
             this.backCard.style.transition = time
         }
-
         flip(quick = false) {
             if (this._currentSide == CardView.FRONT_SIDE) {
                 this.showBack(quick)
@@ -385,9 +361,6 @@
             }).slideDown()
         }
 
-        // hide() {
-        //     $(this.elem).slideUp()
-        // }
         hide() {
             return new Promise(resolve => {
                 $(this.elem).slideUp(() => resolve());
@@ -477,11 +450,12 @@
                 });
                 $(this.answersButtons).fadeOut(0)
                 $(this.answersButtons).fadeIn()
-                
+
             } else {
                 alert('No callback for answer button')
             }
         }
+
         _removeAnswers() {
             $(this.answersButtons).fadeOut(() => {
                 this.answersButtonsContainer.innerHTML = ''
@@ -527,6 +501,7 @@
             button.classList.add('btn-primary')
         }
     }
+
     class CardTrainer {
         constructor(state, buttonView, cardView, cardsApi) {
             this.state = state
@@ -535,7 +510,6 @@
             this.cardView = cardView
             this._nextCardData = null
         }
-
 
         async loadCardData() {
             if (this.state.nextCardData) {
@@ -640,9 +614,8 @@
             this.buttonView.unlockNextButton()
             this.buttonView._removeAnswers()
         }
-
-
     }
+
     class StateManager {
         constructor() {
             this.nextCardData = null
@@ -722,15 +695,6 @@
     buttonsView.nextCardClickEventCallback = cardTrainer.nextCard.bind(cardTrainer) /// ask about probkems with event async func
 
     cardTrainer.showCard()
-    // var answers = [
-    //     // {%for word in test_words%}
-    //     new Card({{ word.id }} , '{{word.ru}}', '{{word.en}}'),
-    //     // {%endfor%}
-    // ]
-    // cardView.setCard(answers[0])
-    // trainerState.setCardData(answers[0])
-    // trainerState.setAnswers(answers)
-    // buttonsView.addAnswersButtons(answers)
 </script>
 {%endblock%}
 {%block footer%}
