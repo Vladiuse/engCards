@@ -546,7 +546,7 @@
                     button.classList.add('btn')
                     button.classList.add('btn-grey')
                     button.dataset.cardId = card.cardId
-                    button.textContent = card.word + ' ' + card.cardId
+                    button.textContent = card.word
                     button.style.display = 'none'
                     button.addEventListener('click', this._answerClickCallback)
                     this.answersButtonsContainer.append(button)
