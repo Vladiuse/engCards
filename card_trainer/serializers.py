@@ -14,9 +14,6 @@ class CardTrainerSerializer(serializers.Serializer):
     vocabulary_type = serializers.ChoiceField(choices=VOCABULARY_TYPES)
     level = serializers.PrimaryKeyRelatedField(queryset=EnglishLevel.objects.all(), required=False, allow_null=True)
 
-    def to_internal_value(self, data):
-        print(data)
-        return super().to_internal_value(data=data)
 
     def create(self, validated_data) -> CardTrainer:
         lang_direction = LangDirection(validated_data['lang_direction'])

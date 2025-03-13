@@ -12,10 +12,11 @@ from rest_framework.viewsets import ModelViewSet
 from config import config
 
 from .forms import WordPairForm
-from .models import WordPair
+from .models import WordPair, EnglishLevel
 from .permisions import IsOwnerPermission
 from .serializers import WordPairSerializer
 from .start_vocabulary_creator import StartVocabularyCreator
+from .constants import DEFAULT_VOCABULARY, USER_VOCABULARY
 
 
 @api_view()
@@ -25,6 +26,27 @@ def api_root(request, format=None):  # noqa: A002
         'words': reverse('vocabulary:words-list', request=request, format=format),
     }
     return Response(data)
+
+def vocabularys(request):
+    eng =  EnglishLevel.objects.all()
+    colors = [
+        '#90CAF9',
+        '#81D4FA',
+        '#A5D6A7',
+        '#C5E1A5',
+        '#FFF59D',
+        '#FFE082',
+        '#FFAB91',
+    ]
+    content = {
+        'levels': list( zip(eng, colors)),
+        'USER_VOCABULARY': USER_VOCABULARY,
+        'DEFAULT_VOCABULARY': DEFAULT_VOCABULARY,
+    }
+    if request.user.is_authenticated:
+        words_count = WordPair.objects.filter(owner=request.user).count
+        content['words_count'] = words_count
+    return render(request, 'vocabulary/vocabularys.html', content)
 
 
 class CreateVocabularyView(APIView):

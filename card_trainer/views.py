@@ -1,42 +1,30 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import HttpResponse
 from vocabulary.models import EnglishLevel
 from vocabulary.constants import USER_VOCABULARY, DEFAULT_VOCABULARY
 from .serializers import CardSerializer, CardTrainerSerializer
 import random
 from vocabulary.models import DefaultWord
+from django.views.decorators.http import require_http_methods
 
-def vocabularys(request):
-    eng =  EnglishLevel.objects.all()
-    colors = [
-        '#90CAF9',
-        '#81D4FA',
-        '#A5D6A7',
-        '#C5E1A5',
-        '#FFF59D',
-        '#FFE082',
-        '#FFAB91',
-    ]
-    content = {
-        'levels': list( zip(eng, colors)),
-    }
-    return render(request, 'card_trainer/vocabularys.html', content)
-
+@require_http_methods(['GET'])
 def card_trainer(request):
+    vocabulary_type = request.GET.get('vocabulary_type')
+    level = request.GET.get('level')
+    if level is None:
+        level = ''
     content = {
-        'regimes': EnglishLevel.objects.all(),
-        'has_words_to_train': True,
-        'USER_VOCABULARY': USER_VOCABULARY,
-        'DEFAULT_VOCABULARY': DEFAULT_VOCABULARY,
-        'test_words': DefaultWord.objects.order_by('?')[:random.randint(5, 15)],
+        'vocabulary_type': vocabulary_type,
+        'level': level,
     }
     return render(request, 'card_trainer/card_trainer.html', content)
 
 
-@api_view(['GET', 'POST', ])
+@api_view(['GET'])
 def get_card(request):
-    serializer = CardTrainerSerializer(data=request.data, context={'request': request})
+    serializer = CardTrainerSerializer(data=request.query_params, context={'request': request})
     serializer.is_valid(raise_exception=True)
     card_trainer = serializer.save()
     card = card_trainer.create_card()

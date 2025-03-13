@@ -356,19 +356,25 @@
         constructor() {
         }
         async getCardData(langDirection, vocabulary_type, level) {
-            var url = `{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}`
+            const url = new URL(`{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}`);
             var data = {
                 lang_direction: langDirection,
                 vocabulary_type: vocabulary_type,
                 level: level
             }
+            const params = {
+                lang_direction: langDirection,
+                vocabulary_type: vocabulary_type,
+                level: level
+            };
+            url.search = new URLSearchParams(params).toString();
             var response = await fetch(url, {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRFToken": csrf,
                 },
-                body: JSON.stringify(data),
+                // body: JSON.stringify(data),
             })
             if (response.ok) {
                 return await response.json()
@@ -607,7 +613,7 @@
             this._init()
         }
 
-        set changeLangEventClickCallback(callback){
+        set changeLangEventClickCallback(callback) {
             this.options.forEach(option => {
                 option.addEventListener('click', () => callback(option))
             });
@@ -664,7 +670,7 @@
                 alert(`not empty next card: ${this.state.nextCardData}`)
             }
             var langDirection = this.state.langDirection
-            var cardData = await this.cardsApi.getCardData(langDirection, 'default_vocabulary', 'A1')
+            var cardData = await this.cardsApi.getCardData(langDirection, vocabularyType, level)
             this.state.nextCardData = cardData
         }
 
@@ -710,7 +716,7 @@
             await this.nextCard()
         }
 
-         async nextCard(){
+        async nextCard() {
             await this.cardView.hide()
             this.cardView.showFront(true)
             this.showCard()
@@ -739,13 +745,13 @@
             this.buttonView._removeAnswers()
         }
 
-        setLangDirection(langDirection){
+        setLangDirection(langDirection) {
             this.langDirectionView.setOption(langDirection)
             this.state.langDirection = langDirection
         }
 
-        handleChangeLangDirection(optionElem){
-            var langDirection  = optionElem.dataset.direction
+        handleChangeLangDirection(optionElem) {
+            var langDirection = optionElem.dataset.direction
             this.setLangDirection(langDirection)
             this.state.nextCardData = null
             this.buttonView.unlockNextButton()
@@ -853,6 +859,8 @@
         }
     }
     const startLangDirection = 'en_ru'
+    const vocabularyType = '{{vocabulary_type}}'
+    const level = '{{level}}'
     const cardElem = document.getElementById('card')
     const controlButtonsBlock = document.getElementById('control-buttons')
     const langDirectionSelect = document.getElementById('lang-direction-select')
@@ -873,7 +881,8 @@
     buttonsView.nextCardClickEventCallback = cardTrainer.handleEventNextCard.bind(cardTrainer) /// ask about probkems with event async func
     langDirectionView.changeLangEventClickCallback = cardTrainer.handleChangeLangDirection.bind(cardTrainer)
 
-    cardTrainer.setLangDirection('en_ru')
+
+    cardTrainer.setLangDirection(startLangDirection)
     cardTrainer.showCard()
 </script>
 {%endblock%}

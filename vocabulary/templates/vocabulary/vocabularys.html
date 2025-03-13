@@ -2,6 +2,10 @@
 
 {%block content%}
 <style>
+    a:hover {
+        text-decoration: none;
+    }
+
     .standart-vocabulary .card {
         cursor: pointer;
         transition: 0.3s;
@@ -79,46 +83,60 @@
 
         <div class="">
             <h2 class="title">Мой словарь</h2>
+            {%if user.is_authenticated %}
+            {%if user.is_create_vocabulary%}
 
+            <div class="user-vocabulary">
+                <div class="d-flex flex-row gap-2 align-items-center">
+                    <i class="fa-solid fa-book" aria-hidden="true"></i>
+                    <p class=""><b>Мой словарь:</b> {{words_count}} слов</p>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-2">
+                    <div class="col">
+                        <a href="{%url 'vocabulary:user_vocabulary'%}" class="btn btn-light h-100">Карточки словаря</a>
+                    </div>
+                    <div class="col">
+                        <a href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{USER_VOCABULARY}}" class="btn btn-primary h-100"><i
+                                class="fa-solid fa-brain" aria-hidden="true"></i>Тренировать</a>
+                    </div>
+                </div>
+            </div>
+            {%else%}
             <div class="user-vocabulary">
                 <div class="d-flex flex-row gap-2 align-items-center">
                     <i class="fa-solid fa-square-plus"></i>
                     <p class="">Создайте словарь чтоб тренировать свои слова</p>
                 </div>
-                
-                <a class="btn btn-primary">Создать словарь</a>
+
+                <a href="{%url 'vocabulary:create_vocabulary'%}" class="btn btn-primary">Создать словарь</a>
             </div>
-            <br>
+            {%endif%}
+            {%else%}
             <div class="user-vocabulary">
                 <div class="d-flex flex-row gap-2 align-items-center">
-                    <i class="fa-solid fa-book" aria-hidden="true"></i>
-                    <p class=""><b>Мой словарь:</b> 20 слов</p>
+                    <i class="fa-solid fa-square-plus"></i>
+                    <p class="">Создайте словарь чтоб тренировать свои слова</p>
                 </div>
-                <div class="row row-cols-1 row-cols-md-2 g-2">
-                    <div class="col">
-                        <a class="btn btn-light h-100">Карточки словаря</a>
-                    </div>
-                    <div class="col">
-                        <a class="btn btn-primary h-100"><i class="fa-solid fa-brain" aria-hidden="true"></i>Тренировать</a>
-                    </div>
-                </div>
+
+                <a href="{%url 'users:sign_up'%}" class="btn btn-primary">Создать словарь</a>
             </div>
+            {%endif%}
         </div>
 
-        <div class=" standart-vocabulary">
-            <h2 class="title">Тренировать готовые словари</h2>
+        <div class=" standart-vocabulary mt-5">
+            <h2 class="title my-4">Тренировать готовые словари</h2>
             <div class="row row-cols-1 row-cols-md-3 g-3">
                 {%for level, color in levels%}
                 <div class="col">
-                    <a href="some" class="text-reset text-decoration-none">
+                    
                         <div class="card h-100" style="background-color: {{color}};">
                             <div class="card-body">
                                 <p class="card-title text-center">{{level.id}}</p>
                                 <p class="card-text text-center">{{level.name}} ({{level.start}} - {{level.end}})</p>
-                                <button class="btn btn-light">Тренировать</button>
+                                <a class="btn btn-light" href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{DEFAULT_VOCABULARY}}&level={{level.id}}">Тренировать</a>
                             </div>
                         </div>
-                    </a>
+                    
                 </div>
                 {%endfor%}
             </div>
