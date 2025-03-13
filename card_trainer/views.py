@@ -7,6 +7,21 @@ from .serializers import CardSerializer, CardTrainerSerializer
 import random
 from vocabulary.models import DefaultWord
 
+def vocabularys(request):
+    eng =  EnglishLevel.objects.all()
+    colors = [
+        '#90CAF9',
+        '#81D4FA',
+        '#A5D6A7',
+        '#C5E1A5',
+        '#FFF59D',
+        '#FFE082',
+        '#FFAB91',
+    ]
+    content = {
+        'levels': list( zip(eng, colors)),
+    }
+    return render(request, 'card_trainer/vocabularys.html', content)
 
 def card_trainer(request):
     content = {

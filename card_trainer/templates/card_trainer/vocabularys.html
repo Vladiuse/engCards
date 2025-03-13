@@ -1,0 +1,129 @@
+{%extends 'base.html'%}
+
+{%block content%}
+<style>
+    .standart-vocabulary .card {
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .standart-vocabulary .card-title {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .standart-vocabulary .card:hover {
+        scale: 1.05;
+    }
+
+    .standart-vocabulary .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+
+    .standart-vocabulary .card-text {
+        margin-bottom: 0rem;
+    }
+
+    .user-vocabulary {
+        background-color: rgb(192, 223, 255);
+        border-radius: 16px;
+        padding: 16px;
+        color: black;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px
+    }
+
+    .user-vocabulary a {
+        text-decoration: none;
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        align-items: center;
+        text-wrap: nowrap;
+        justify-content: center;
+        font-size: 1rem;
+        min-height: 50px;
+    }
+
+    .user-vocabulary p {
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .user-vocabulary i {
+        font-size: 30px;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .standart-vocabulary .card-body {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-vocabulary {
+            flex-direction: column;
+        }
+    }
+</style>
+<div class="content-center">
+    <div class="content-inner">
+
+        <div class="">
+            <h2 class="title">Мой словарь</h2>
+
+            <div class="user-vocabulary">
+                <div class="d-flex flex-row gap-2 align-items-center">
+                    <i class="fa-solid fa-square-plus"></i>
+                    <p class="">Создайте словарь чтоб тренировать свои слова</p>
+                </div>
+                
+                <a class="btn btn-primary">Создать словарь</a>
+            </div>
+            <br>
+            <div class="user-vocabulary">
+                <div class="d-flex flex-row gap-2 align-items-center">
+                    <i class="fa-solid fa-book" aria-hidden="true"></i>
+                    <p class=""><b>Мой словарь:</b> 20 слов</p>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-2">
+                    <div class="col">
+                        <a class="btn btn-light h-100">Карточки словаря</a>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-primary h-100"><i class="fa-solid fa-brain" aria-hidden="true"></i>Тренировать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" standart-vocabulary">
+            <h2 class="title">Тренировать готовые словари</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-3">
+                {%for level, color in levels%}
+                <div class="col">
+                    <a href="some" class="text-reset text-decoration-none">
+                        <div class="card h-100" style="background-color: {{color}};">
+                            <div class="card-body">
+                                <p class="card-title text-center">{{level.id}}</p>
+                                <p class="card-text text-center">{{level.name}} ({{level.start}} - {{level.end}})</p>
+                                <button class="btn btn-light">Тренировать</button>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
