@@ -417,7 +417,6 @@
         }
 
         set flipTransition(time) {
-            console.log(time)
             this.frontCard.style.transition = time
             this.backCard.style.transition = time
         }
@@ -534,7 +533,6 @@
         addAnswersButtons(answers) { // Cards list
             if (this._answerClickCallback != null) {
                 answers.forEach(card => {
-                    console.log('CARD')
                     if (!(card instanceof Card)) {
                         throw new Error('Answers must be Card instatce')
                     }
@@ -665,7 +663,8 @@
             if (this.state.nextCardData) {
                 alert(`not empty next card: ${this.state.nextCardData}`)
             }
-            var cardData = await this.cardsApi.getCardData('en_ru', 'default_vocabulary', 'A1')
+            var langDirection = this.state.langDirection
+            var cardData = await this.cardsApi.getCardData(langDirection, 'default_vocabulary', 'A1')
             this.state.nextCardData = cardData
         }
 
@@ -704,7 +703,14 @@
         //     });
         // }
 
-        async nextCard() {
+        async handleEventNextCard() {
+            // await this.cardView.hide()
+            // this.cardView.showFront(true)
+            // this.showCard()
+            await this.nextCard()
+        }
+
+         async nextCard(){
             await this.cardView.hide()
             this.cardView.showFront(true)
             this.showCard()
@@ -741,6 +747,10 @@
         handleChangeLangDirection(optionElem){
             var langDirection  = optionElem.dataset.direction
             this.setLangDirection(langDirection)
+            this.state.nextCardData = null
+            this.buttonView.unlockNextButton()
+            this.buttonView._removeAnswers()
+            this.nextCard()
         }
 
         getcardById(cardId) {
@@ -860,7 +870,7 @@
     buttonsView.button5050ClickEventCallback = cardTrainer.handle5050.bind(cardTrainer)
     buttonsView.answerClickEventCallback = cardTrainer.handleUserAnswer.bind(cardTrainer)
     buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
-    buttonsView.nextCardClickEventCallback = cardTrainer.nextCard.bind(cardTrainer) /// ask about probkems with event async func
+    buttonsView.nextCardClickEventCallback = cardTrainer.handleEventNextCard.bind(cardTrainer) /// ask about probkems with event async func
     langDirectionView.changeLangEventClickCallback = cardTrainer.handleChangeLangDirection.bind(cardTrainer)
 
     cardTrainer.setLangDirection('en_ru')
