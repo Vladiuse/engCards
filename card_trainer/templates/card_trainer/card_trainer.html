@@ -19,6 +19,8 @@
         flex: 66;
         align-items: center;
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .screen-bottom {
@@ -152,6 +154,80 @@
         gap: 10px;
     }
 
+    /* CUSTOM SELECT  */
+    .custom-select {
+        font-size: 1rem;
+        font-family: Arial, sans-serif;
+        position: relative;
+        width: 250px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .selected-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .selected-option .flag-icon {
+        /* margin-right: 10px; */
+        font-size: 20px;
+    }
+
+    .selected-option .arrow {
+        font-size: 16px;
+        transition: transform 0.3s;
+    }
+
+    .options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        z-index: 10;
+    }
+
+    .option {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .option:hover {
+        background-color: #f1f1f1;
+    }
+
+    .option .flag-icon {
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    .option span {
+        font-size: 14px;
+    }
+
+    .custom-select.open .options {
+        display: block;
+    }
+
+    .custom-select.open .selected-option .arrow {
+        transform: rotate(180deg);
+    }
+
+    .option.hidden {
+        display: none;
+    }
+
+    /* CUSTOM SELECT  */
 
     @media screen and (max-width: 1000px) {
         .card-word-text {
@@ -171,6 +247,28 @@
 
 <div id="card-screen">
     <div class="screen-top">
+        <div class="lang-direction-wrapper d-flex justify-content-center my-4">
+            <div class="custom-select" id="lang-direction-select">
+                <div class="selected-option">
+                    <span class="flag-icon selected-flag"></span>
+                    <span class="selected-text">Выберете язык</span>
+                    <span class="arrow">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </span>
+
+                </div>
+                <div class="options">
+                    <div class="option" data-direction="ru_en" data-flag="🇷🇺" data-text="Русский - Английский">
+                        <span class="flag-icon">🇷🇺</span>
+                        <span>Русский - Английский</span>
+                    </div>
+                    <div class="option" data-direction="en_ru" data-flag="🇬🇧" data-text="Английский - Русский">
+                        <span class="flag-icon">🇬🇧</span>
+                        <span>Английский - Русский</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <div class="card-wraper" id="card" style="display: none;">
                 <div class="front-card">
@@ -203,6 +301,7 @@
                 </div>
             </div>
         </div>
+        <div class="container"></div>
     </div>
     <div class="screen-bottom">
         <!-- CARD TRAINER CONTROL BYUTTONS -->
@@ -501,6 +600,55 @@
             button.classList.add('btn-primary')
         }
     }
+    class LangDirectionView {
+        constructor(elem, defaultOption) {
+            this.elem = elem
+            this.defaultOption = defaultOption
+            this.options = this.elem.querySelectorAll('.option')
+
+            this._init()
+        }
+
+        _init() {
+            if (this.defaultOption) {
+                this.setOption(this.defaultOption)
+            }
+            this.elem.querySelector('.selected-option').addEventListener('click', () => {
+                this.elem.classList.add('open');
+            });
+            this.options.forEach(option => {
+                option.addEventListener('click', () => this.setOption(option))
+            });
+        }
+
+        setOption(option) {
+            console.log(option)
+            if (typeof option === "string") {
+                option = this.elem.querySelector(`.option[data-direction="${option}"]`)
+                if (option == undefined) {
+                    throw new Error(`Option direction ${option} not found`)
+                }
+            }
+            const direction = option.dataset.direction;
+            const flag = option.dataset.flag;
+            const text = option.dataset.text;
+
+            this.elem.querySelector('.selected-option .selected-flag').textContent = flag;
+            this.elem.querySelector('.selected-option .selected-text').textContent = text;
+            this.updateOptionVisibility(direction);
+            document.querySelector('.custom-select').classList.remove('open');
+        }
+
+        updateOptionVisibility(selectedDirection) {
+            this.options.forEach(option => {
+                if (option.dataset.direction === selectedDirection) {
+                    option.classList.add('hidden');
+                } else {
+                    option.classList.remove('hidden');
+                }
+            });
+        }
+    }
 
     class CardTrainer {
         constructor(state, buttonView, cardView, cardsApi) {
@@ -684,8 +832,11 @@
     const cardElem = document.getElementById('card')
     const cardView = new CardView(cardElem)
     const controlButtonsBlock = document.getElementById('control-buttons')
+    const langDirectionSelect = document.getElementById('lang-direction-select')
+
     const cardTrainerApi = new CardTrainerApi()
     const buttonsView = new CardTrainerButtonsView(controlButtonsBlock)
+    var langDirectionView = new LangDirectionView(langDirectionSelect, 'en_ru')
     const trainerState = new StateManager()
     const cardTrainer = new CardTrainer(trainerState, buttonsView, cardView, cardTrainerApi)
 
