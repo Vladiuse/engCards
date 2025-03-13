@@ -609,6 +609,12 @@
             this._init()
         }
 
+        set changeLangEventClickCallback(callback){
+            this.options.forEach(option => {
+                option.addEventListener('click', () => callback(option))
+            });
+        }
+
         _init() {
             if (this.defaultOption) {
                 this.setOption(this.defaultOption)
@@ -616,13 +622,9 @@
             this.elem.querySelector('.selected-option').addEventListener('click', () => {
                 this.elem.classList.add('open');
             });
-            this.options.forEach(option => {
-                option.addEventListener('click', () => this.setOption(option))
-            });
         }
 
         setOption(option) {
-            console.log(option)
             if (typeof option === "string") {
                 option = this.elem.querySelector(`.option[data-direction="${option}"]`)
                 if (option == undefined) {
@@ -651,12 +653,12 @@
     }
 
     class CardTrainer {
-        constructor(state, buttonView, cardView, cardsApi) {
+        constructor(state, buttonView, cardView, cardsApi, langDirectionView) {
             this.state = state
             this.cardsApi = cardsApi
             this.buttonView = buttonView
             this.cardView = cardView
-            this._nextCardData = null
+            this.langDirectionView = langDirectionView
         }
 
         async loadCardData() {
@@ -731,6 +733,16 @@
             this.buttonView._removeAnswers()
         }
 
+        setLangDirection(langDirection){
+            this.langDirectionView.setOption(langDirection)
+            this.state.langDirection = langDirection
+        }
+
+        handleChangeLangDirection(optionElem){
+            var langDirection  = optionElem.dataset.direction
+            this.setLangDirection(langDirection)
+        }
+
         getcardById(cardId) {
             var answers = this.state.getAnswers()
             var resultCard = null
@@ -767,6 +779,7 @@
     class StateManager {
         constructor() {
             this.nextCardData = null
+            this.langDirection = null
             this.state = {
                 currentCard: null,
                 answers: [],
@@ -829,22 +842,28 @@
             this.state.isUse5050 = null;
         }
     }
+    const startLangDirection = 'en_ru'
     const cardElem = document.getElementById('card')
-    const cardView = new CardView(cardElem)
     const controlButtonsBlock = document.getElementById('control-buttons')
     const langDirectionSelect = document.getElementById('lang-direction-select')
 
-    const cardTrainerApi = new CardTrainerApi()
+    // Views
+    const cardView = new CardView(cardElem)
     const buttonsView = new CardTrainerButtonsView(controlButtonsBlock)
-    var langDirectionView = new LangDirectionView(langDirectionSelect, 'en_ru')
-    const trainerState = new StateManager()
-    const cardTrainer = new CardTrainer(trainerState, buttonsView, cardView, cardTrainerApi)
+    const langDirectionView = new LangDirectionView(langDirectionSelect)
 
+    const cardTrainerApi = new CardTrainerApi()
+    const trainerState = new StateManager()
+    const cardTrainer = new CardTrainer(trainerState, buttonsView, cardView, cardTrainerApi, langDirectionView)
+
+    // Events
     buttonsView.button5050ClickEventCallback = cardTrainer.handle5050.bind(cardTrainer)
     buttonsView.answerClickEventCallback = cardTrainer.handleUserAnswer.bind(cardTrainer)
     buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
     buttonsView.nextCardClickEventCallback = cardTrainer.nextCard.bind(cardTrainer) /// ask about probkems with event async func
+    langDirectionView.changeLangEventClickCallback = cardTrainer.handleChangeLangDirection.bind(cardTrainer)
 
+    cardTrainer.setLangDirection('en_ru')
     cardTrainer.showCard()
 </script>
 {%endblock%}
