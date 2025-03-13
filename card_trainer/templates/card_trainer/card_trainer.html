@@ -501,7 +501,7 @@
         }
 
         disable5050button() {
-            this.button5050.disabled = true
+            this._disableButton(this.button5050)
         }
 
         unlockNextButton() {
@@ -605,6 +605,8 @@
 
         hanleDontKnow() {
             this.cardView.showBack()
+            this.buttonView.unlockNextButton()
+            this.buttonView._removeAnswers()
         }
 
         getcardById(cardId) {
