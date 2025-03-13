@@ -7,10 +7,10 @@ from vocabulary.models import DefaultWord, EnglishLevel, WordPair
 
 from card_trainer.types import LangDirection, RuEnPair
 
-from .converter import ConverterByLangDirection
+from .converter import CardWordCreator
 from .dto import Card
 
-converter = ConverterByLangDirection()
+converter = CardWordCreator()
 
 
 class CardTrainer:
@@ -47,13 +47,15 @@ class CardTrainer:
         word = self._get_word()
         answers = self._get_answers(word_to_exclude=word)
         self._add_target_word_to_answers_and_shufle(answers=answers, target_word=word)
-        card_word = converter.convert(item=word, lang_direction=self.lang_direction)
+        card = converter.convert(item=word, lang_direction=self.lang_direction)
         card_answers = []
         for answer in answers:
-            card_word = converter.convert(item=answer, lang_direction=self.lang_direction.reverse())
-            card_answers.append(card_word)
+            lang_direction = self.lang_direction.reverse()
+            answer_card = converter.convert(item=answer, lang_direction=lang_direction)
+            card_answers.append(answer_card)
+        random.shuffle(card_answers)
         return Card(
-            card=card_word,
+            card=card,
             answers=card_answers,
             lang_direction=self.lang_direction,
         )
