@@ -17,7 +17,7 @@
     }
 
     .screen-top {
-        flex: 7;
+        flex: 66;
         align-items: center;
         display: flex;
     }
@@ -26,7 +26,7 @@
         display: flex;
         justify-content: center;
         background-color: var(--fds-gray-05);
-        flex: 3;
+        flex: 34;
         margin-top: auto;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
@@ -439,7 +439,7 @@
             this.lockNextButton()
         }
 
-        set nextCardClickEventCallback(callback){
+        set nextCardClickEventCallback(callback) {
             this.nextCardButton.addEventListener('click', callback)
         }
 
@@ -455,9 +455,14 @@
             this.dontKnowButton.addEventListener('click', callback)
         }
 
+        get answersButtons() {
+            return this.answersButtonsContainer.querySelectorAll('button')
+        }
+
         addAnswersButtons(answers) { // Cards list
             if (this._answerClickCallback != null) {
                 answers.forEach(card => {
+                    console.log('CARD')
                     if (!(card instanceof Card)) {
                         throw new Error('Answers must be Card instatce')
                     }
@@ -466,15 +471,22 @@
                     button.classList.add('btn-grey')
                     button.dataset.cardId = card.cardId
                     button.textContent = card.word + ' ' + card.cardId
-                    this.answersButtonsContainer.append(button)
+                    button.style.display = 'none'
                     button.addEventListener('click', this._answerClickCallback)
+                    this.answersButtonsContainer.append(button)
                 });
+                $(this.answersButtons).fadeOut(0)
+                $(this.answersButtons).fadeIn()
+                
             } else {
                 alert('No callback for answer button')
             }
         }
         _removeAnswers() {
-            this.answersButtonsContainer.innerHTML = ''
+            $(this.answersButtons).fadeOut(() => {
+                this.answersButtonsContainer.innerHTML = ''
+            })
+
         }
 
         hideAnswerButtonsByIds(ids) { // list
@@ -493,15 +505,26 @@
         }
 
         unlockNextButton() {
-            this.nextCardButton.disabled = false
-            this.dontKnowButton.disabled = true
-            this.button5050.disabled = true
+            this._disableButton(this.dontKnowButton)
+            this._disableButton(this.button5050)
+            this._enableButton(this.nextCardButton)
         }
 
         lockNextButton() {
-            this.nextCardButton.disabled = true
-            this.dontKnowButton.disabled = false
-            this.button5050.disabled = false
+            this._enableButton(this.dontKnowButton)
+            this._enableButton(this.button5050)
+            this._disableButton(this.nextCardButton)
+        }
+
+        _disableButton(button) {
+            button.disabled = true
+            button.classList.remove('btn-primary')
+            button.classList.add('btn-secondary')
+        }
+        _enableButton(button) {
+            button.disabled = false
+            button.classList.remove('btn-secondary')
+            button.classList.add('btn-primary')
         }
     }
     class CardTrainer {
@@ -515,23 +538,22 @@
 
 
         async loadCardData() {
-            if (this._nextCardData) {
-                alert(`not empty next card: ${this._nextCardData}`)
+            if (this.state.nextCardData) {
+                alert(`not empty next card: ${this.state.nextCardData}`)
             }
             var cardData = await this.cardsApi.getCardData('en_ru', 'default_vocabulary', 'A1')
-            this._nextCardData = cardData
+            this.state.nextCardData = cardData
         }
 
         async getCardData() {
-            var cardData;
-            if (this._nextCardData == null) {
+            if (this.state.nextCardData == null) {
                 console.info('Load Card')
                 await this.loadCardData()
             } else {
                 console.info('GET EXISTS Card')
             }
-            cardData = this._nextCardData
-            this._nextCardData = null
+            var cardData = this.state.nextCardData
+            this.state.nextCardData = null
             return cardData
         }
 
@@ -621,6 +643,7 @@
     }
     class StateManager {
         constructor() {
+            this.nextCardData = null
             this.state = {
                 currentCard: null,
                 answers: [],

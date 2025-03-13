@@ -64,7 +64,7 @@ class CardTrainer:
         return self._get_queryset().order_by('?').first()
 
     def _get_answers(self, word_to_exclude: RuEnPair) -> list[RuEnPair]:
-        words_qs = self._get_queryset().exclude(pk=word_to_exclude.pk).order_by('?')[:5]
+        words_qs = self._get_queryset().exclude(pk=word_to_exclude.pk).order_by('?')[:6]
         return list(words_qs)
 
     def _add_target_word_to_answers_and_shufle(self, answers: list[RuEnPair], target_word: RuEnPair) -> None:
