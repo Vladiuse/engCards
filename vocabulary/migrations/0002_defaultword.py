@@ -2,12 +2,16 @@
 
 from django.db import migrations, models
 import csv
+import os
+from django.conf import settings
 
 
 def create_default_words(apps, schema_editor):
     DefaultWord = apps.get_model('vocabulary', 'DefaultWord')
     words_to_create = []
-    with open('_data/clean.csv') as csv_file:
+    file_name = '_data/clean.csv'
+    file_path = os.path.join(settings.BASE_DIR, file_name)
+    with open(file_path) as csv_file:
         reader = csv.reader(csv_file)
         for number_in_dict, en, ru in reader:
             default_word = DefaultWord(
