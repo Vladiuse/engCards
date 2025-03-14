@@ -134,27 +134,28 @@
     #next-card-button{
         transition: 0.3s;
     }
-    #control-buttons {
+    .control-buttons-wraper {
         height: 100%;
         width: 500px;
         max-width: 100%;
         padding: 0 10px;
     }
 
-    #action-buttons {
+    .action-buttons-wrapper {
         width: 100%;
     }
 
-    #action-buttons button {
-        width: 100%;
-    }
 
-    #answers-buttons {
+    .answers-buttons-wrapper{
         width: 100%;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
         gap: 10px;
+    }
+    .control-button{
+        border: none;
+        width: 100%;
     }
 
     /* CUSTOM SELECT  */
@@ -308,20 +309,20 @@
     </div>
     <div class="screen-bottom">
         <!-- CARD TRAINER CONTROL BYUTTONS -->
-        <div id="control-buttons" class="d-flex flex-column align-items-center justify-content-between">
-            <div id="answers-buttons" class="my-4"></div>
-            <div id="action-buttons">
+        <div id="control-buttons" class="control-buttons-wraper d-flex flex-column align-items-center justify-content-between">
+            <div class="answers-buttons-wrapper my-4"></div>
+            <div class="action-buttons-wrapper">
                 <div class="row gx-2">
                     <div class="col">
-                        <button class="btn btn-secondary" id="dont-know-btn">Не знаю</button>
+                        <button class="btn btn-secondary control-button" id="dont-know-btn">Не знаю</button>
                     </div>
                     <div class="col">
-                        <button class="btn btn-secondary" id="5050-btn">50 на 50</button>
+                        <button class="btn btn-secondary control-button" id="5050-btn">50 на 50</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <button id="next-card-button" href="#" class="btn btn-primary my-2"><i class="fas fa-forward"
+                        <button id="next-card-button" href="#" class="btn btn-primary control-button my-2"><i class="fas fa-forward"
                                 aria-hidden="true"></i></button>
                     </div>
                 </div>
@@ -510,7 +511,7 @@
     class CardTrainerButtonsView {
         constructor(elem) {
             this.elem = elem
-            this.answersButtonsContainer = document.getElementById('answers-buttons')
+            this.answersButtonsContainer = this.elem.querySelector('.answers-buttons-wrapper')
             this.nextCardButton = document.getElementById('next-card-button')
             this.dontKnowButton = document.getElementById('dont-know-btn')
             this.button5050 = document.getElementById('5050-btn')
@@ -705,17 +706,7 @@
 
         }
 
-        // nextCard() {  /// как вариант сделать просто так
-        //     $(this.cardView.elem).slideUp(() => {
-        //         this.cardView.showFront(true);
-        //         this.showCard();
-        //     });
-        // }
-
         async handleEventNextCard() {
-            // await this.cardView.hide()
-            // this.cardView.showFront(true)
-            // this.showCard()
             await this.nextCard()
         }
 
