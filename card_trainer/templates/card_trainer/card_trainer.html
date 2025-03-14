@@ -132,9 +132,9 @@
 
     /* BOTTOM INTERFACE */
     #next-card-button{
-        transition: 0.3s;
+        
     }
-    .control-buttons-wraper {
+    .bottom-interface-wrapper {
         height: 100%;
         width: 500px;
         max-width: 100%;
@@ -156,6 +156,7 @@
     .control-button{
         border: none;
         width: 100%;
+        transition: 0.3s;
     }
 
     /* CUSTOM SELECT  */
@@ -309,7 +310,7 @@
     </div>
     <div class="screen-bottom">
         <!-- CARD TRAINER CONTROL BYUTTONS -->
-        <div id="control-buttons" class="control-buttons-wraper d-flex flex-column align-items-center justify-content-between">
+        <div id="control-buttons" class="bottom-interface-wrapper d-flex flex-column align-items-center justify-content-between">
             <div class="answers-buttons-wrapper my-4"></div>
             <div class="action-buttons-wrapper">
                 <div class="row gx-2">
@@ -706,9 +707,11 @@
             this.state.setCardData(card, answersCards, cardData.lang_direction)
             this.cardView.setCard(card)
             this.cardView.show()
-            this.buttonView.addAnswersButtons(answersCards)
             this.buttonView.lockNextButton()
-
+            this.buttonView.addAnswersButtons(answersCards)
+            if (answersCards.length <=2){
+                this.buttonView.disable5050button()
+            }
         }
 
         async backClickEvent(){

@@ -139,11 +139,17 @@
   }
 }
 @media screen and (max-width: 1000px) {
-  #header-search-block{
+  #header-search{
+    display: none;
+  }
+  #lang-button-temp{
     display: none;
   }
   #open-close-left-bar-mobile{
     display: block;
+  }
+  #header-settings-window{
+    right: 0;
   }
 }
 

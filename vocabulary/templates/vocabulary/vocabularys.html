@@ -89,15 +89,27 @@
             <div class="user-vocabulary">
                 <div class="d-flex flex-row gap-2 align-items-center">
                     <i class="fa-solid fa-book" aria-hidden="true"></i>
-                    <p class=""><b>Мой словарь:</b> {{words_count}} слов</p>
+                    <p class=""><b>Мой словарь:</b>
+                        {{words_count}}
+                        {%if words_count < 5%} слова {%else%} слов {%endif%} </p>
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 g-2">
                     <div class="col">
                         <a href="{%url 'vocabulary:user_vocabulary'%}" class="btn btn-light h-100">Карточки словаря</a>
                     </div>
                     <div class="col">
-                        <a href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{USER_VOCABULARY}}" class="btn btn-primary h-100"><i
-                                class="fa-solid fa-brain" aria-hidden="true"></i>Тренировать</a>
+                        {%if words_count <= 1%} <a
+                            href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{USER_VOCABULARY}}"
+                            class="btn btn-primary h-100 disabled">
+                            <i class="fa-solid fa-brain" aria-hidden="true"></i>Тренировать
+                            </a>
+                        {%else%}
+                        <a
+                        href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{USER_VOCABULARY}}"
+                        class="btn btn-primary h-100">
+                        <i class="fa-solid fa-brain" aria-hidden="true"></i>Тренировать
+                        </a>
+                        {%endif%}
                     </div>
                 </div>
             </div>
@@ -128,15 +140,16 @@
             <div class="row row-cols-1 row-cols-md-3 g-3">
                 {%for level, color in levels%}
                 <div class="col">
-                    
-                        <div class="card h-100" style="background-color: {{color}};">
-                            <div class="card-body">
-                                <p class="card-title text-center">{{level.id}}</p>
-                                <p class="card-text text-center">{{level.name}} ({{level.start}} - {{level.end}})</p>
-                                <a class="btn btn-light" href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{DEFAULT_VOCABULARY}}&level={{level.id}}">Тренировать</a>
-                            </div>
+
+                    <div class="card h-100" style="background-color: {{color}};">
+                        <div class="card-body">
+                            <p class="card-title text-center">{{level.id}}</p>
+                            <p class="card-text text-center">{{level.name}} ({{level.start}} - {{level.end}})</p>
+                            <a class="btn btn-light"
+                                href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{DEFAULT_VOCABULARY}}&level={{level.id}}">Тренировать</a>
                         </div>
-                    
+                    </div>
+
                 </div>
                 {%endfor%}
             </div>

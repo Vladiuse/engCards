@@ -50,7 +50,8 @@
                     </div>
                 </div>
             </div>
-            <div class="item-link ">
+            <!-- NOT NEED NOW -->
+            <!-- <div class="item-link ">
                 <div class="item-inner">
                     <div class="item-link-content">
                         <div class="icon-wrap">
@@ -64,7 +65,7 @@
                         <i class="_img_pack_4 w-24" style="background-position: 0px -108px"></i>
                     </div>
                 </div>
-            </div>
+            </div> -->
             {%if user.is_authenticated%}
             <div class="item-link " data-href="{%url 'users:logout'%}">
                 <div class="item-inner">
@@ -73,7 +74,7 @@
                             <i class="_img_pack_7" style="background-position:0px -155px"></i>
                         </div>
                         <div class="text-block">
-                            <p>Log Out</p>{{user}}
+                            <p>Выйти</p>{{user}}
                         </div>
                     </div>
                 </div>
@@ -86,7 +87,7 @@
                             <i class="_img_pack_7" style="background-position:0px -155px"></i>
                         </div>
                         <div class="text-block">
-                            <p>Login</p>
+                            <p>Войти</p>
                         </div>
                     </div>
                 </div>
@@ -94,7 +95,7 @@
             {%endif%}
 
         </div>
-        <div class="link-group">
+        <!-- <div class="link-group">
             <a href="#" class="grey">Privacy</a><span class="dot"><span></span></span>
             <a href="#" class="grey">Terms</a><span class="dot"><span></span></span>
             <a href="#" class="grey">Advertising</a><span class="dot"><span></span></span>
@@ -105,7 +106,7 @@
             <a href="#" class="grey">Cookies</a><span class="dot"><span></span></span>
             <a href="#" class="grey">More</a><span class="dot"><span></span></span>
             <p>English Cards© 2025</p>
-        </div>
+        </div> -->
     </div>
 
     <header>
@@ -139,7 +140,7 @@
                     </svg>
                     <input type="text" placeholder="Search help articles…">
                 </div>
-                <button class="btn-grey btn-large">
+                <button class="btn-grey btn-large" id="lang-button-temp">
                     <h3>English (US)</h3>
                 </button>
                 <div id="header-settings" class="grey-hover">
@@ -780,6 +781,10 @@
 
         var firstForm = document.getElementById('first-form')
 
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
 
     </script>
     <script src="{%static 'js/main.js'%}"></script>
