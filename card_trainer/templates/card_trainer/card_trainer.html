@@ -430,6 +430,11 @@
             this.frontCard.style.transition = time
             this.backCard.style.transition = time
         }
+
+        set backCardSideClickEvent(callback){
+            this.backCard.addEventListener('click', callback)
+        }
+
         flip(quick = false) {
             if (this._currentSide == CardView.FRONT_SIDE) {
                 this.showBack(quick)
@@ -706,6 +711,10 @@
 
         }
 
+        async backClickEvent(){
+            await this.nextCard()
+        }
+
         async handleEventNextCard() {
             await this.nextCard()
         }
@@ -874,6 +883,7 @@
     buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
     buttonsView.nextCardClickEventCallback = cardTrainer.handleEventNextCard.bind(cardTrainer) /// ask about probkems with event async func
     langDirectionView.changeLangEventClickCallback = cardTrainer.handleChangeLangDirection.bind(cardTrainer)
+    cardView.backCardSideClickEvent = cardTrainer.backClickEvent.bind(cardTrainer)
 
 
     cardTrainer.setLangDirection(startLangDirection)
