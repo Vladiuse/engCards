@@ -11,7 +11,7 @@
         cursor: pointer;
         position: relative;
         background-size: 300px;
-        background-image: url('/static/vocabulary/img/card_background.jpg'); 
+        background-image: url('/static/vocabulary/img/card_background.jpg');
     }
 
     .card:hover {
@@ -34,7 +34,13 @@
     }
 
     .modal-footer {
-        justify-content: space-between;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+    }
+
+    .modal-footer button {
+        flex: 1;
     }
 
     .card .edit {
@@ -58,7 +64,8 @@
             opacity: 1;
             /* Видимое состояние */
         }
-        .vocabulary-buttons{
+
+        .vocabulary-buttons {
             text-align: center;
         }
     }
@@ -102,15 +109,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <div>
-                        <button type="button" class="btn btn-light" id="delete-card-button">Удалить</button>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                            data-bs-target="#cardModal">Закрыть</button>
-                            <button type="submit" class="btn btn-primary" id="save-card-and-add-another">Сохранить и добавить еще</button>
-                        <button type="submit" class="btn btn-primary" id="save-card">Сохранить</button>
-                    </div>
+                    <button type="button" class="btn btn-light" id="delete-card-button">Удалить</button>
+                    <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#cardModal">Закрыть</button> -->
+                    <button type="submit" class="btn btn-primary" id="save-card-and-add-another">Сохранить и добавить
+                        еще</button>
+                    <button type="submit" class="btn btn-primary" id="save-card">Сохранить</button>
+
                 </div>
             </form>
         </div>
@@ -347,7 +352,7 @@
                 }
             });
         }
-        showCreateModal(submitCallback){
+        showCreateModal(submitCallback) {
             this.cardModalBlock.querySelector('.modal-title').textContent = 'Создать карточку'
             this.cardModalBlock.querySelector('#delete-card-button').style.display = 'none'
             this.saveCardAndAddAnotherButton.style.display = 'inline-block'
@@ -422,12 +427,12 @@
             if (response.ok) {
                 this.cardsView.addCardElemToContainer(responce_json, this.handleEdit.bind(this))
                 form.was_changed = false
-                if (e.submitter.id == this.modalController.saveCardAndAddAnotherButton.id){
+                if (e.submitter.id == this.modalController.saveCardAndAddAnotherButton.id) {
                     form.clearFields()
                 } else {
                     modalController.cardModal.hide()
                 }
-                
+
             } else {
                 form.showErrors(responce_json)
             }
@@ -453,7 +458,7 @@
     var createModalButton = document.getElementById('add-new-card')
     var deleteCardButton = document.getElementById('delete-card-button')
     const cardsApi = new CardsAPI()
-    const modalController = new ModalController('cardModal','deleteCardModal', 'cardForm','deleteCardForm', 'confirmCloseEditeedModal')
+    const modalController = new ModalController('cardModal', 'deleteCardModal', 'cardForm', 'deleteCardForm', 'confirmCloseEditeedModal')
     const cardsView = new CardView('card-template', 'cards-list')
     const cardManager = new CardManager(cardsApi, cardsView, modalController)
     cardsView.addCardsFromPage(cardManager.handleEdit.bind(cardManager))
