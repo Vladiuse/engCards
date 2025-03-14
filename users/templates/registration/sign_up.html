@@ -6,6 +6,7 @@
 {%block content%}
 <div class="login-form-wrap">
   <form method="POST" action="{%url 'users:sign_up'%}">
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
     {%csrf_token%}
     <div class="invalid-feedback" {%if form.non_field_errors %}style="display:block"{%endif%}>
       <div class="invalid-feedback">

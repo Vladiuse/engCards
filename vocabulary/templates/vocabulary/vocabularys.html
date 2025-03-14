@@ -83,9 +83,7 @@
 
         <div class="">
             <h2 class="title">Мой словарь</h2>
-            {%if user.is_authenticated %}
             {%if user.is_create_vocabulary%}
-
             <div class="user-vocabulary">
                 <div class="d-flex flex-row gap-2 align-items-center">
                     <i class="fa-solid fa-book" aria-hidden="true"></i>
@@ -121,16 +119,6 @@
                 </div>
 
                 <a href="{%url 'vocabulary:create_vocabulary'%}" class="btn btn-primary">Создать словарь</a>
-            </div>
-            {%endif%}
-            {%else%}
-            <div class="user-vocabulary">
-                <div class="d-flex flex-row gap-2 align-items-center">
-                    <i class="fa-solid fa-square-plus"></i>
-                    <p class="">Создайте словарь чтоб тренировать свои слова</p>
-                </div>
-
-                <a href="{%url 'users:sign_up'%}" class="btn btn-primary">Создать словарь</a>
             </div>
             {%endif%}
         </div>

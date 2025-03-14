@@ -49,7 +49,7 @@
 {%endblock%}
 {%block bottom%}
 <script>
-    var createVocabularyUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:create_vocabulary'%}"
+    var createVocabularyUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:create_vocabulary_add_card'%}"
     var redirectUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:user_vocabulary'%}"
     var userCardsCount = {{ cards_count }}
     var cards_need = {{ cards_need }}

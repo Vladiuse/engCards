@@ -13,6 +13,7 @@ urlpatterns = [
     path('api-root/', views.api_root,name='api_root'),
     path('',include(router.urls)),
     path('test/', views.test),
-    path('create_vocabulary/', views.CreateVocabularyView.as_view(), name='create_vocabulary'),
+    path('create-vocabulary/', views.create_vocabulary, name='create_vocabulary'),
+    path('create-vocabulary-add-card/', views.CreateVocabularyView.as_view(), name='create_vocabulary_add_card'),
 ]
 
