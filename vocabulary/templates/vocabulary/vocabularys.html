@@ -132,7 +132,7 @@
                     <div class="card h-100" style="background-color: {{color}};">
                         <div class="card-body">
                             <p class="card-title text-center">{{level.id}}</p>
-                            <p class="card-text text-center">{{level.name}} ({{level.start}} - {{level.end}})</p>
+                            <p class="card-text text-center">{{level.name}} <span style="text-wrap: nowrap;">({{level.start}} - {{level.end}})</span></p>
                             <a class="btn btn-light"
                                 href="{%url 'card_trainer:card_trainer'%}?vocabulary_type={{DEFAULT_VOCABULARY}}&level={{level.id}}">Тренировать</a>
                         </div>
