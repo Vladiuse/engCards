@@ -471,7 +471,7 @@
   --yellow-tertiary: rgb(255,246,161);
 
 }
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 8px;
 }
 
@@ -487,17 +487,17 @@
   background: #d4d7da;
   border-radius: 4px;
 }
-/* Handle */
+
 ::-webkit-scrollbar-thumb:hover {
   background: #BCC0C4;
 }
-/* Handle on hover */
+
 ::-webkit-scrollbar-thumb:hover {
   background: #a5a8ac;
 }
 ::-webkit-scrollbar-track:hover {
   background: #F0F0F1;
-}
+} */
 
 @font-face {
   font-family: "header";
