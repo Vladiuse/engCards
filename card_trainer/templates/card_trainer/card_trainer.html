@@ -595,15 +595,21 @@
             this._disableButton(this.button5050)
         }
 
-        unlockNextButton() {
+        lockActionButtons(){
             this._disableButton(this.dontKnowButton)
             this._disableButton(this.button5050)
+        }
+
+        unlockActionButtons(){
+            this._enableButton(this.dontKnowButton)
+            this._enableButton(this.button5050)
+        }
+
+        unlockNextButton() {
             this._enableButton(this.nextCardButton)
         }
 
         lockNextButton() {
-            this._enableButton(this.dontKnowButton)
-            this._enableButton(this.button5050)
             this._disableButton(this.nextCardButton)
         }
 
@@ -711,8 +717,8 @@
             this.state.setCardData(card, answersCards, cardData.lang_direction)
             this.cardView.setCard(card)
             this.cardView.show()
-            this.buttonView.lockNextButton()
             this.buttonView.addAnswersButtons(answersCards)
+            this.buttonView.unlockActionButtons()
             if (answersCards.length <=2){
                 this.buttonView.disable5050button()
             }
@@ -727,6 +733,8 @@
         }
 
         async nextCard() {
+            this.buttonView.lockNextButton()
+            this.buttonView.lockActionButtons()
             await this.cardView.hide()
             this.cardView.showFront(true)
             this.showCard()
@@ -751,6 +759,7 @@
 
         hanleDontKnow() {
             this.cardView.showBack()
+            this.buttonView.lockActionButtons()
             this.buttonView.unlockNextButton()
             this.buttonView._removeAnswers()
         }
@@ -761,10 +770,11 @@
         }
 
         handleChangeLangDirection(optionElem) {
+            this.buttonView.lockNextButton()
+            this.buttonView.lockActionButtons()
             var langDirection = optionElem.dataset.direction
             this.setLangDirection(langDirection)
             this.state.nextCardData = null
-            this.buttonView.unlockNextButton()
             this.buttonView._removeAnswers()
             this.nextCard()
         }
@@ -798,6 +808,7 @@
             }
             this.cardView.showBack()
             this.buttonView.unlockNextButton()
+            this.buttonView.lockActionButtons()
             this.buttonView._removeAnswers()
         }
     }
