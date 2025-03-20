@@ -104,23 +104,23 @@ WSGI_APPLICATION = "engCards.wsgi.application"
 
 # for MySql database remote server
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 # DATABASES = {
-#      'default': {
-#          'ENGINE': 'django.db.backends.mysql',
-#          'NAME': SECRETS['DB_NAME'],
-#          'USER': SECRETS['DB_USER'],
-#          'PASSWORD': SECRETS['DB_PASSWORD'],
-#          'HOST': SECRETS['DB_HOST'],
-#          'PORT': '3306',
-#
-#      },
-#  }
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME': SECRETS['DB_NAME'],
+         'USER': SECRETS['DB_USER'],
+         'PASSWORD': SECRETS['DB_PASSWORD'],
+         'HOST': SECRETS['DB_HOST'],
+         'PORT': '3306',
+
+     },
+ }
 
 
 # Password validation
