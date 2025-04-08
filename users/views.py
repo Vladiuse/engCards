@@ -27,6 +27,9 @@ class RegisterView(TemplateView):
             form.save()
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, user)
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)
             return HttpResponseRedirect('/')
         content = {
             'form': form,
