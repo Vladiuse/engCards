@@ -60,7 +60,7 @@
         var dataToSend = form.toDict()
         e.preventDefault()
         form.disable()
-        var responce = await requestJson(form.elem.action, 'POST', dataToSend)
+        var responce = await requestJson(createVocabularyUrl, 'POST', dataToSend)
         form.enable()
         if (responce.ok) {
             form.was_changed = false
@@ -76,7 +76,7 @@
     })
 
     function redirectInVocabulary() {
-        window.location.href = createVocabularyUrl
+        window.location.href = redirectUrl
     }
     function success() {
         $('#create-block').fadeOut(function () {
