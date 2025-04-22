@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register(r'words', views.UserVocabularyView, basename='words')
+router.register(r'words', views.WordPairView, basename='words')
 
 app_name = 'vocabulary'
 

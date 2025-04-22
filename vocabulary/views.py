@@ -92,7 +92,7 @@ def user_vocabulary(request):
     return render(request, 'vocabulary/user_vocabulary.html', content)
 
 
-class UserVocabularyView(ModelViewSet):
+class WordPairView(ModelViewSet):
     serializer_class = WordPairSerializer
     permission_classes = [IsAuthenticated, IsOwnerPermission]
 
