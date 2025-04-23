@@ -323,7 +323,7 @@
         <div id="control-buttons" class="bottom-interface-wrapper d-flex flex-column align-items-center justify-content-between">
             <div class="answers-buttons-wrapper my-4"></div>
             <div class="action-buttons-wrapper">
-                <div class="row gx-2" id="back-buttons">
+                <div class="row gx-2" id="back-buttons" style="display: none;">
                     <div class="col">
                         <button  class="btn btn-secondary control-button" id="card-postponed" data-btn-class="btn-secondary">Отложить</button>
                     </div>
@@ -794,11 +794,11 @@
             this.cardView.setCard(card)
             this.cardView.show()
             this.buttonView.addAnswersButtons(answersCards)
-            this.buttonView.unlockActionButtons()
             this.buttonView.showFrontButtons()
             if (answersCards.length <=2){
                 this.buttonView.disable5050button()
             }
+            this.buttonView.unlockActionButtons()
         }
 
         async backClickEvent(){
@@ -852,8 +852,7 @@
 
         hanleDontKnow() {
             this.cardView.showBack()
-            this.buttonView.showBackButtons()
-            // this.buttonView.lockActionButtons()
+            this.buttonView.lockActionButtons()
             this.buttonView.unlockNextButton()
             this.buttonView._removeAnswers()
         }
@@ -865,7 +864,6 @@
 
         handleChangeLangDirection(optionElem) {
             this.buttonView.lockNextButton()
-            // this.buttonView.lockActionButtons()
             var langDirection = optionElem.dataset.direction
             this.setLangDirection(langDirection)
             this.state.nextCardData = null
@@ -900,19 +898,24 @@
             } else {
                 this.state.setIsCorrect(false)
                 this.cardView.setWrongAnswer(answerCardcard)
+                this.buttonView._disableButton(this.buttonView.learningButton)
             }
             this.cardView.showBack()
             this.buttonView.unlockNextButton()
-            // this.buttonView.lockActionButtons()
-            this.buttonView.showBackButtons()
+            if (this.state.vocabularyType != DEFAULT_VOCABULARY){
+                this.buttonView.showBackButtons()
+            } else {
+                this.buttonView.lockActionButtons()
+            }
             this.buttonView._removeAnswers()
         }
     }
 
     class StateManager {
-        constructor() {
+        constructor(vocabularyType) {
             this.nextCardData = null
             this.langDirection = null
+            this.vocabularyType = vocabularyType
             this.state = {
                 currentCard: null,
                 answers: [],
@@ -975,6 +978,7 @@
             this.state.isUse5050 = null;
         }
     }
+    const DEFAULT_VOCABULARY = '{{DEFAULT_VOCABULARY}}'
     const startLangDirection = 'en_ru'
     const vocabularyType = '{{vocabulary_type}}'
     const level = '{{level}}'
@@ -988,7 +992,7 @@
     const langDirectionView = new LangDirectionView(langDirectionSelect)
 
     const cardTrainerApi = new CardTrainerApi()
-    const trainerState = new StateManager()
+    const trainerState = new StateManager(vocabularyType)
     const cardTrainer = new CardTrainer(trainerState, buttonsView, cardView, cardTrainerApi, langDirectionView)
 
     // Events
