@@ -323,12 +323,20 @@
         <div id="control-buttons" class="bottom-interface-wrapper d-flex flex-column align-items-center justify-content-between">
             <div class="answers-buttons-wrapper my-4"></div>
             <div class="action-buttons-wrapper">
-                <div class="row gx-2">
+                <div class="row gx-2" id="back-buttons">
                     <div class="col">
-                        <button class="btn btn-secondary control-button" id="dont-know-btn">Не знаю</button>
+                        <button  class="btn btn-secondary control-button" id="card-postponed" data-btn-class="btn-secondary">Отложить</button>
                     </div>
                     <div class="col">
-                        <button class="btn btn-secondary control-button" id="5050-btn">50 на 50</button>
+                        <button data-btn-class="btn-success" class="btn btn-success control-button" id="card-learned" >Изучил</button>
+                    </div>
+                </div>
+                <div class="row gx-2" id="front-buttons">
+                    <div class="col">
+                        <button data-btn-class="btn-primary" class="btn btn-primary control-button" id="dont-know-btn">Не знаю</button>
+                    </div>
+                    <div class="col">
+                        <button data-btn-class="btn-primary" class="btn btn-primary control-button" id="5050-btn">50 на 50</button>
                     </div>
                 </div>
                 <div class="row">
@@ -531,9 +539,18 @@
             this.nextCardButton = document.getElementById('next-card-button')
             this.dontKnowButton = document.getElementById('dont-know-btn')
             this.button5050 = document.getElementById('5050-btn')
+            this.learningButton = document.getElementById('card-learned')
+            this.postponedButton = document.getElementById('card-postponed')
+            this.backButtonsContainer = document.getElementById('back-buttons')
+            this.frontButtonsContainer = document.getElementById('front-buttons')
             this._answerClickCallback = null
 
             this.lockNextButton()
+            this.showFrontButtons()
+        }
+
+        set setCardLearnedEventCallback(callback){
+            this.learningButton.addEventListener('click', callback)
         }
 
         set nextCardClickEventCallback(callback) {
@@ -578,7 +595,16 @@
                 alert('No callback for answer button')
             }
         }
-
+        showFrontButtons(){
+            $(this.backButtonsContainer).fadeOut(250, () =>{
+                $(this.frontButtonsContainer).fadeIn(250)
+            })
+        }
+        showBackButtons(){
+            $(this.frontButtonsContainer).fadeOut(500, () =>{
+                $(this.backButtonsContainer).fadeIn(500)
+            })
+        }
         _removeAnswers() {
             $(this.answersButtons).fadeOut(() => {
                 this.answersButtonsContainer.innerHTML = ''
@@ -604,11 +630,15 @@
         lockActionButtons(){
             this._disableButton(this.dontKnowButton)
             this._disableButton(this.button5050)
+            this._disableButton(this.learningButton)
+            this._disableButton(this.postponedButton)
         }
 
         unlockActionButtons(){
             this._enableButton(this.dontKnowButton)
             this._enableButton(this.button5050)
+            this._enableButton(this.learningButton)
+            this._enableButton(this.postponedButton)
         }
 
         unlockNextButton() {
@@ -620,14 +650,26 @@
         }
 
         _disableButton(button) {
+            if (button.dataset.btnClass){
+                var origClass = button.dataset.btnClass
+            }
+            else {
+                var origClass = 'btn-primary'
+            }
             button.disabled = true
-            button.classList.remove('btn-primary')
+            button.classList.remove(origClass)
             button.classList.add('btn-secondary')
         }
         _enableButton(button) {
+            if (button.dataset.btnClass){
+                var origClass = button.dataset.btnClass
+            }
+            else {
+                var origClass = 'btn-primary'
+            }
             button.disabled = false
             button.classList.remove('btn-secondary')
-            button.classList.add('btn-primary')
+            button.classList.add(origClass)
         }
     }
     class LangDirectionView {
@@ -725,6 +767,7 @@
             this.cardView.show()
             this.buttonView.addAnswersButtons(answersCards)
             this.buttonView.unlockActionButtons()
+            this.buttonView.showFrontButtons()
             if (answersCards.length <=2){
                 this.buttonView.disable5050button()
             }
@@ -763,9 +806,14 @@
             }
         }
 
+        handleLearned(){
+            console.log('learned')
+        }
+
         hanleDontKnow() {
             this.cardView.showBack()
-            this.buttonView.lockActionButtons()
+            this.buttonView.showBackButtons()
+            // this.buttonView.lockActionButtons()
             this.buttonView.unlockNextButton()
             this.buttonView._removeAnswers()
         }
@@ -777,12 +825,13 @@
 
         handleChangeLangDirection(optionElem) {
             this.buttonView.lockNextButton()
-            this.buttonView.lockActionButtons()
+            // this.buttonView.lockActionButtons()
             var langDirection = optionElem.dataset.direction
             this.setLangDirection(langDirection)
             this.state.nextCardData = null
             this.buttonView._removeAnswers()
             this.nextCard()
+            this.buttonView.showFrontButtons()
         }
 
         getcardById(cardId) {
@@ -814,7 +863,8 @@
             }
             this.cardView.showBack()
             this.buttonView.unlockNextButton()
-            this.buttonView.lockActionButtons()
+            // this.buttonView.lockActionButtons()
+            this.buttonView.showBackButtons()
             this.buttonView._removeAnswers()
         }
     }
@@ -906,6 +956,7 @@
     buttonsView.answerClickEventCallback = cardTrainer.handleUserAnswer.bind(cardTrainer)
     buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
     buttonsView.nextCardClickEventCallback = cardTrainer.handleEventNextCard.bind(cardTrainer) /// ask about probkems with event async func
+    buttonsView.setCardLearnedEventCallback = cardTrainer.handleLearned.bind(cardTrainer)
     langDirectionView.changeLangEventClickCallback = cardTrainer.handleChangeLangDirection.bind(cardTrainer)
     cardView.backCardSideClickEvent = cardTrainer.backClickEvent.bind(cardTrainer)
 
