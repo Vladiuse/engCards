@@ -427,6 +427,10 @@
         }
     }
     class Card {
+        static CARD_STATUS_LEARNED = '{{CARD_STATUS_LEARNED}}'
+        static CARD_STATUS_POSTPONED = '{{CARD_STATUS_POSTPONED}}'
+        static CARD_STATUS_LEARNING = '{{CARD_STATUS_LEARNING}}'
+
         constructor(cardId, word, translation, langDirection) {
             this.cardId = cardId
             this.word = word
@@ -839,11 +843,11 @@
         }
 
         async handleCardLearned(){
-            this.handleChangeCardStatus('learned')
+            this.handleChangeCardStatus(Card.CARD_STATUS_LEARNED)
         }
 
         async handleCardPostponed(){
-            this.handleChangeCardStatus('postponed')
+            this.handleChangeCardStatus(Card.CARD_STATUS_POSTPONED)
         }
 
         hanleDontKnow() {
