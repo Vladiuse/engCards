@@ -402,7 +402,27 @@
             if (response.ok) {
                 return await response.json()
             } else {
-                await alert(response.json)
+                await alert(response.text())
+            }
+        }
+
+        async updateCardStatus(cardId, status){
+            const url = new URL(`{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:words-list'%}${cardId}/`);
+            var data  = {
+                'status': status,
+            }
+            var response = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrf,
+                },
+                body: JSON.stringify(data),
+            })
+            if (response.ok) {
+                return await response.json()
+            } else {
+                await alert(await response.text())
             }
         }
     }
@@ -551,6 +571,9 @@
 
         set setCardLearnedEventCallback(callback){
             this.learningButton.addEventListener('click', callback)
+        }
+        set setCardPostponedButtonEventCallback(callback){
+            this.postponedButton.addEventListener('click', callback)
         }
 
         set nextCardClickEventCallback(callback) {
@@ -757,6 +780,7 @@
         async showCard() {
             var cardData = await this.getCardData()
             var card = Card.dataToCard(cardData.card)
+            console.info('Current card:', card)
             var answersCards = []
             cardData.answers.forEach(answerCardData => {
                 var answerCard = Card.dataToCard(answerCardData)
@@ -806,8 +830,20 @@
             }
         }
 
-        handleLearned(){
-            console.log('learned')
+        async handleChangeCardStatus(status){
+            var cardId = this.state.getCurrentCard().cardId
+            this.buttonView.lockActionButtons()
+            await this.cardsApi.updateCardStatus(cardId, status)
+            this.nextCard()
+            this.buttonView.showFrontButtons()
+        }
+
+        async handleCardLearned(){
+            this.handleChangeCardStatus('learned')
+        }
+
+        async handleCardPostponed(){
+            this.handleChangeCardStatus('postponed')
         }
 
         hanleDontKnow() {
@@ -956,7 +992,8 @@
     buttonsView.answerClickEventCallback = cardTrainer.handleUserAnswer.bind(cardTrainer)
     buttonsView.dontKnowClickEventCallBack = cardTrainer.hanleDontKnow.bind(cardTrainer)
     buttonsView.nextCardClickEventCallback = cardTrainer.handleEventNextCard.bind(cardTrainer) /// ask about probkems with event async func
-    buttonsView.setCardLearnedEventCallback = cardTrainer.handleLearned.bind(cardTrainer)
+    buttonsView.setCardLearnedEventCallback = cardTrainer.handleCardLearned.bind(cardTrainer)
+    buttonsView.setCardPostponedButtonEventCallback = cardTrainer.handleCardPostponed.bind(cardTrainer)
     langDirectionView.changeLangEventClickCallback = cardTrainer.handleChangeLangDirection.bind(cardTrainer)
     cardView.backCardSideClickEvent = cardTrainer.backClickEvent.bind(cardTrainer)
 
