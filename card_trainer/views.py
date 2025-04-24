@@ -1,14 +1,12 @@
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.http import HttpResponse
-from vocabulary.models import EnglishLevel
-from vocabulary.constants import USER_VOCABULARY, DEFAULT_VOCABULARY
-from .serializers import CardSerializer, CardTrainerSerializer
-import random
-from vocabulary.models import DefaultWord, WordPair
-from django.views.decorators.http import require_http_methods
+
 from vocabulary.constants import DEFAULT_VOCABULARY
+from vocabulary.models import WordPair
+
+from .serializers import CardSerializer, CardTrainerSerializer
 
 
 @require_http_methods(['GET'])
@@ -35,9 +33,3 @@ def get_card(request):
     card = card_trainer.create_card()
     card_serializer = CardSerializer(card)
     return Response(card_serializer.data)
-    # try:
-    #     card = card_trainer.get_card(user=request.user, lang_direction=lang_direction)
-    #     card_serializer = CardSerializer(card)
-    #     return Response(card_serializer.data)
-    # except :
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
