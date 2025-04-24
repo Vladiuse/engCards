@@ -9,11 +9,12 @@ app_name = 'vocabulary'
 
 urlpatterns = [
     path('', views.vocabularys,name='vocabularys'),
-    path('user-vocabulary', views.user_vocabulary, name='user_vocabulary'),
+    path('user-vocabulary/', views.user_vocabulary, name='user_vocabulary'),
+    path('user-vocabulary-stat/', views.UserVocabularyStatView.as_view(), name='user_vocabulary_stat'),
     path('api-root/', views.api_root,name='api_root'),
     path('',include(router.urls)),
     path('test/', views.test),
     path('create-vocabulary/', views.create_vocabulary, name='create_vocabulary'),
-    path('create-vocabulary-add-card/', views.CreateVocabularyView.as_view(), name='create_vocabulary_add_card'),
+    path('create-vocabulary-add-card/', views.AddCardToCreateVocabularyView.as_view(), name='create_vocabulary_add_card'),
 ]
 

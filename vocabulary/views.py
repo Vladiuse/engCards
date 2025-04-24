@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from config import config
+from vocabulary.user_vocabulary_stat import UserVocabularyStatCreator, UserVocabularyStatSerializer
 
 from .constants import DEFAULT_VOCABULARY, USER_VOCABULARY
 from .forms import WordPairForm
@@ -65,7 +66,7 @@ def create_vocabulary(request):
     return render(request, 'vocabulary/create_vocabulary.html', content)
 
 
-class CreateVocabularyView(APIView):
+class AddCardToCreateVocabularyView(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -90,6 +91,18 @@ def user_vocabulary(request):
         'form': WordPairForm(),
     }
     return render(request, 'vocabulary/user_vocabulary.html', content)
+
+
+class UserVocabularyStatView(APIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def get(self, request, format=None):
+        stat_creator = UserVocabularyStatCreator()
+        user_vocabulary_stat = stat_creator.create_stat(user=request.user)
+        serializer = UserVocabularyStatSerializer(user_vocabulary_stat)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class WordPairView(ModelViewSet):
