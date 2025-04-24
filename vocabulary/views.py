@@ -71,7 +71,7 @@ class AddCardToCreateVocabularyView(APIView):
         IsAuthenticated,
     ]
 
-    def post(self, request, format=None):
+    def post(self, request, format=None): # noqa: A002
         serializer = WordPairSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -98,7 +98,7 @@ class UserVocabularyStatView(APIView):
         IsAuthenticated,
     ]
 
-    def get(self, request, format=None):
+    def get(self, request, format=None): # noqa: A002
         stat_creator = UserVocabularyStatCreator()
         user_vocabulary_stat = stat_creator.create_stat(user=request.user)
         serializer = UserVocabularyStatSerializer(user_vocabulary_stat)
