@@ -58,7 +58,15 @@
         opacity: 1;
         /* Видимое состояние */
     }
-
+    .vocabulary-buttons{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    #status-filter{
+        max-width: 300px;
+        cursor: pointer;
+    }
     @media screen and (max-width: 1000px) {
         .card .edit {
             opacity: 1;
@@ -67,6 +75,11 @@
 
         .vocabulary-buttons {
             text-align: center;
+            flex-direction: column;
+        }
+        #status-filter{
+            max-width: 100%;
+            width: 100%;
         }
     }
 </style>
@@ -189,6 +202,12 @@
         <i class="fa-solid fa-square-plus" aria-hidden="true"></i>
         Добавить новую карточку
     </button>
+    <select name="" id="status-filter" class="form-select">
+        <option value="all">Все карточки</option>
+        {%for en, ru in word_statuses%}
+        <option value="{{en}}">{{ru}}</option>
+        {%endfor%}
+    </select>
 </div>
 <div class="container ">
     <div class="my-5">
@@ -261,6 +280,10 @@
             return this.elem.dataset.cardId;
         }
 
+        get status(){
+            return this.elem.dataset.cardStatus;
+        }
+
         edit() {
             this.onEditCallback(this.id);
         }
@@ -272,6 +295,15 @@
         update(data) {
             this.elem.querySelector('[data-card-en]').textContent = data.en;
             this.elem.querySelector('[data-card-ru]').textContent = data.ru;
+            this.elem.dataset.cardStatus = data.status
+        }
+
+        hide(){
+            this.elem.style.display = 'none';
+        }
+
+        show(){
+            this.elem.style.display = 'block'
         }
     }
     class CardView {
@@ -329,6 +361,22 @@
         _addCardInstance(elem, onEditCallback) {
             const card = new Card(elem, onEditCallback);
             this.cards.set(card.id, card);
+        }
+
+        filterByStatus(status){
+            if (status == 'all'){
+                for (let card of this.cards.values()){
+                    card.show()
+                }
+            } else {
+                for (let card of this.cards.values()){
+                    if (status == card.status){
+                        card.show()
+                    } else {
+                        card.hide()
+                    }
+                }
+            }
         }
     }
 
@@ -469,5 +517,22 @@
         const formData = BsJsonForm.getInstance(modalController.cardForm)
         modalController.showDeleteModal(formData.toDict(), cardManager.delete.bind(cardManager))
     })    
+</script>
+<script>
+    // CARD STATUS FILTER SELECT
+    var statusFilterOptions = document.getElementById('status-filter').querySelectorAll('option')
+    statusFilterOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            hideOption(option)
+            cardsView.filterByStatus(option.value)
+        })
+    })
+
+    function hideOption(target_option) {
+        statusFilterOptions.forEach(option => {
+            option.style.display = 'block'
+        })
+        target_option.style.display = 'none'
+    }
 </script>
 {%endblock%}

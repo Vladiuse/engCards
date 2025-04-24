@@ -1,7 +1,8 @@
-<div class="col" data-card-id="{{word.pk}}">
-    <div class="card" data-card-id="{{word.pk}}">
+<div class="col" data-card-id="{{word.pk}}" data-card-status="{{word.status}}">
+    <div class="card" data-card-id="{{word.pk}}" >
         <i class="edit fa-solid fa-pen-to-square"></i>
         <div class="card-body">
+            <!-- {{word.status}} -->
             <p class="card-text"><b data-card-en="">{{word.en}}</b></p>
             <p class="card-text" data-card-ru="">{{word.ru}}</p>
         </div>
