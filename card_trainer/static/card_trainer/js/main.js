@@ -13,7 +13,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-const csrf = getCookie('csrftoken');
+var csrf = getCookie('csrftoken');
 
 function getRandomElementsFromArray(arr, num) {
     if (typeof num !== 'number') {
