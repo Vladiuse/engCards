@@ -114,4 +114,4 @@ class WordPairView(ModelViewSet):
 
 
 def test(request):
-    return render(request, 'base.html')
+    return render(request, 'test.html')
