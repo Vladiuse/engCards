@@ -1,3 +1,11 @@
+document.querySelectorAll('*[data-href]').forEach(elem => {
+    elem.addEventListener('click', function (e) {
+        var link_elem = e.currentTarget
+        var link = link_elem.dataset.href
+        window.location.href = link
+    })
+})
+
 // HEADER SETTINGS
 // setting tool
 var headerSettingsBtn = document.getElementById('header-settings')

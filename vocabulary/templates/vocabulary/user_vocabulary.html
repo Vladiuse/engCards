@@ -58,15 +58,45 @@
         opacity: 1;
         /* Видимое состояние */
     }
-    .vocabulary-buttons{
+
+    .vocabulary-buttons {
         display: flex;
         flex-direction: row;
         gap: 10px;
     }
-    #status-filter{
+
+    #status-filter {
         max-width: 300px;
         cursor: pointer;
     }
+
+    .card-footer {
+        border-top: none;
+        background-color: initial;
+        text-align: center;
+    }
+
+    .card_status {
+        font-size: 15px;
+        padding: 3px 6px;
+        border-radius: 10px;
+    }
+
+    .card_status.learned {
+        background-color: #d6eaf8;
+        color: #3498db;
+    }
+
+    .card_status.learning {
+        color: #2ecc71;
+        background-color: #d5f5e3;
+    }
+
+    .card_status.postponed {
+        color: #909497;
+        background-color: #eaeded;
+    }
+
     @media screen and (max-width: 1000px) {
         .card .edit {
             opacity: 1;
@@ -77,7 +107,8 @@
             text-align: center;
             flex-direction: column;
         }
-        #status-filter{
+
+        #status-filter {
             max-width: 100%;
             width: 100%;
         }
@@ -280,7 +311,7 @@
             return this.elem.dataset.cardId;
         }
 
-        get status(){
+        get status() {
             return this.elem.dataset.cardStatus;
         }
 
@@ -298,11 +329,11 @@
             this.elem.dataset.cardStatus = data.status
         }
 
-        hide(){
+        hide() {
             this.elem.style.display = 'none';
         }
 
-        show(){
+        show() {
             this.elem.style.display = 'block'
         }
     }
@@ -346,6 +377,7 @@
 
         _renderTemplate(data) {
             let result = this.template;
+            console.log(result)
             for (const [key, value] of Object.entries(data)) {
                 result = result.replaceAll(`{${key}}`, value);
             }
@@ -363,14 +395,14 @@
             this.cards.set(card.id, card);
         }
 
-        filterByStatus(status){
-            if (status == 'all'){
-                for (let card of this.cards.values()){
+        filterByStatus(status) {
+            if (status == 'all') {
+                for (let card of this.cards.values()) {
                     card.show()
                 }
             } else {
-                for (let card of this.cards.values()){
-                    if (status == card.status){
+                for (let card of this.cards.values()) {
+                    if (status == card.status) {
                         card.show()
                     } else {
                         card.hide()

@@ -11,6 +11,8 @@ class EnglishLevelSerializer(serializers.ModelSerializer):
 
 
 class WordPairSerializer(serializers.ModelSerializer):
+    status_text = serializers.SerializerMethodField()
+
     class Meta:
         model = WordPair
         fields = '__all__'
@@ -20,6 +22,10 @@ class WordPairSerializer(serializers.ModelSerializer):
                 fields=['owner', 'ru', 'en'],
             ),
         ]
+
+
+    def get_status_text(self, obj) -> str:
+        return obj.get_status_display()
 
     def to_internal_value(self, data) -> dict:
         data['owner'] = self.context['request'].user.pk
