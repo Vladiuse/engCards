@@ -36,7 +36,7 @@ class CardTrainer:
         return CardTrainer.default_words_queryset.filter(number_in_dict__range=[self.level.start, self.level.end])
 
     def _get_user_vocabulary_queryset(self) -> QuerySet[WordPair]:
-        return CardTrainer.user_queryset.filter(owner=self.user)
+        return CardTrainer.user_queryset.filter(owner=self.user, status=WordPair.LEARNING)
 
     def _get_queryset(self) -> QuerySet:
         if self.vocabulary_type == DEFAULT_VOCABULARY:
