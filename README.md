@@ -1,7 +1,7 @@
 ![Creating your first README hero image](readme_images/main.png)
 
 # ENG CARDS LEARN
-- - -
+
 ### Сервис для изучения английского по карточкам
 
 Ссылка: https://eng-cards.vim-store.ru/
