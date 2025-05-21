@@ -1,5 +1,4 @@
 /* global getCookie, bootstrap, BsJsonForm */
-
 var csrf = getCookie('csrftoken');
 
 class CardsAPI {

@@ -49,10 +49,11 @@
 {%endblock%}
 {%block bottom%}
 <script>
+    /* global StepsProgress,BsJsonForm, requestJson, $  */
     var createVocabularyUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:create_vocabulary_add_card'%}"
     var redirectUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:user_vocabulary'%}"
-    var userCardsCount = {{ cards_count }}
-    var cards_need = {{ cards_need }}
+    var userCardsCount = parseInt("{{ cards_count }}", 10);
+    var cards_need = parseInt("{{ cards_need }}", 10);
     var progress = new StepsProgress(document.getElementById('progress'), userCardsCount, cards_need)
     const createWordPairForm = document.getElementById('create-word-form')
     let form = new BsJsonForm(createWordPairForm)
