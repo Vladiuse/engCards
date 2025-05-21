@@ -30,7 +30,13 @@ SECRET_KEY = SECRETS['django-secret-key']
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['eng-cards.vim-store.ru', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'eng-cards.vim-store.ru',
+    '127.0.0.1',
+    'localhost',
+    'localhost:8001',
+    '192.168.100.26',
+    ]
 
 
 # Application definition

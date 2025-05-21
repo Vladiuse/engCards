@@ -12,9 +12,8 @@
       {{ form.non_field_errors }}
     </div>
     <div class="mb-3">
-      {%csrf_token%}
       <label for="exampleInputEmail1" class="form-label">Login</label>
-      <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required name="username">
+      <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" class="form-control" id="exampleInputEmail1">
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Password</label>
