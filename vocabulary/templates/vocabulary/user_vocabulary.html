@@ -552,16 +552,17 @@
 </script>
 <script>
     // CARD STATUS FILTER SELECT
-    var statusFilterOptions = document.getElementById('status-filter').querySelectorAll('option')
-    statusFilterOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            hideOption(option)
-            cardsView.filterByStatus(option.value)
-        })
+    const statusFilter = document.getElementById('status-filter')
+
+    statusFilter.addEventListener('change', () => {
+        const selectedOption = statusFilter.options[statusFilter.selectedIndex]
+        hideOption(selectedOption)
+        cardsView.filterByStatus(selectedOption.value)
     })
 
     function hideOption(target_option) {
-        statusFilterOptions.forEach(option => {
+        const options = statusFilter.querySelectorAll('option')
+        options.forEach(option => {
             option.style.display = 'block'
         })
         target_option.style.display = 'none'
