@@ -28,6 +28,7 @@
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{%static 'js/django_csrf.js'%}"></script>
 
     <!--ICONS-->
     <script src="https://kit.fontawesome.com/da43c2ea11.js" crossorigin="anonymous"></script>
@@ -265,9 +266,6 @@
             {%endblock%}
         </div>
     </div>
-    {%block bottom%}
-    {%endblock%}
-
     <script>
         var csrf = '{{csrf_token}}'
         async function requestJson(url, method, data) {
@@ -305,6 +303,9 @@
 
     </script>
     <script src="{%static 'js/main.js'%}"></script>
+
+    {%block bottom%}
+    {%endblock%}
 </body>
 
 </html>
