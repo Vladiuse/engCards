@@ -1,18 +1,5 @@
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+/* global $, getCookie */
+
 var csrf = getCookie('csrftoken');
 
 function getRandomElementsFromArray(arr, num) {
@@ -44,7 +31,6 @@ class CardTrainerApi {
         this.updateCardStatusUrl = updateCardStatusUrl
     }
     async getCardData(langDirection, vocabulary_type, level) {
-        // const url = new URL(`{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'card_trainer:get_card'%}`);
         const url = new URL(this.getCardUrl);
         var data = {
             lang_direction: langDirection,
@@ -63,7 +49,6 @@ class CardTrainerApi {
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrf,
             },
-            // body: JSON.stringify(data),
         })
         if (response.ok) {
             return await response.json()
@@ -73,7 +58,6 @@ class CardTrainerApi {
     }
 
     async updateCardStatus(cardId, status) {
-        // const url = new URL(`{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:words-list'%}${cardId}/`);
         const url = new URL(`${this.updateCardStatusUrl}${cardId}/`);
         var data = {
             'status': status,
@@ -94,9 +78,6 @@ class CardTrainerApi {
     }
 }
 class Card {
-    // static CARD_STATUS_LEARNED = '{{CARD_STATUS_LEARNED}}'
-    // static CARD_STATUS_POSTPONED = '{{CARD_STATUS_POSTPONED}}'
-    // static CARD_STATUS_LEARNING = '{{CARD_STATUS_LEARNING}}'
     static CARD_STATUS_LEARNED = window.cardStatuses.LEARNED;
     static CARD_STATUS_POSTPONED = window.cardStatuses.POSTPONED;
     static CARD_STATUS_LEARNING = window.cardStatuses.LEARNING;
