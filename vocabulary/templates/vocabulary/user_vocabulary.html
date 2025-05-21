@@ -252,5 +252,8 @@
 <div id="card-template" style="display: none;">
     {%show_card%}
 </div>
+<script>
+    window.cardApiUrl = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{%url 'vocabulary:words-list'%}"
+</script>
 <script src="{% static 'vocabulary/js/main.js' %}"></script>
 {%endblock%}
