@@ -4,7 +4,7 @@
 
 ### Сервис для изучения английского по карточкам
 
-Ссылка: https://eng-cards.vim-store.ru/
+Ссылка: https://eng-cards.sladkievody.com/
 
 ## Функционал
 
