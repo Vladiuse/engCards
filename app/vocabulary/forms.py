@@ -5,7 +5,7 @@ from django import forms
 from .models import WordPair
 
 
-class WordPairForm(forms.ModelForm):
+class WordPairForm(forms.ModelForm[WordPair]):
 
     class Meta:
         model = WordPair

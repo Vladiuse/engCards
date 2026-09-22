@@ -6,13 +6,13 @@ from rest_framework.validators import UniqueTogetherValidator
 from .models import EnglishLevel, WordPair
 
 
-class EnglishLevelSerializer(serializers.ModelSerializer):
+class EnglishLevelSerializer(serializers.ModelSerializer[EnglishLevel]):
     class Meta:
         model = EnglishLevel
         fields = "__all__"
 
 
-class WordPairSerializer(serializers.ModelSerializer):
+class WordPairSerializer(serializers.ModelSerializer[WordPair]):
     status_text = serializers.SerializerMethodField()
 
     class Meta:
@@ -31,4 +31,5 @@ class WordPairSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data: dict[str, Any]) -> dict[str, Any]:
         data["owner"] = self.context["request"].user.pk
-        return super().to_internal_value(data=data)
+        internal_value: dict[str, Any] = super().to_internal_value(data=data)
+        return internal_value

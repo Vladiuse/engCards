@@ -1,4 +1,4 @@
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar, cast
 
 from config import config
 from django.contrib.auth.decorators import login_required
@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from users.request import AuthenticatedHttpRequest, AuthenticatedRequest
 
 from vocabulary.user_vocabulary_stat import UserVocabularyStatCreator, UserVocabularyStatSerializer
 
@@ -23,6 +24,9 @@ from .models import EnglishLevel, WordPair
 from .permisions import IsOwnerPermission
 from .serializers import WordPairSerializer
 from .start_vocabulary_creator import StartVocabularyCreator
+
+if TYPE_CHECKING:
+    from users.models import User
 
 
 @api_view()
@@ -45,19 +49,19 @@ def vocabularys(request: HttpRequest) -> HttpResponse:
         "#FFE082",
         "#FFAB91",
     ]
-    content = {
+    content: dict[str, Any] = {
         "levels": list(zip(eng, colors, strict=False)),
         "USER_VOCABULARY": USER_VOCABULARY,
         "DEFAULT_VOCABULARY": DEFAULT_VOCABULARY,
     }
     if request.user.is_authenticated:
-        words_count = WordPair.objects.filter(owner=request.user).count
+        words_count = WordPair.objects.filter(owner=request.user).count()
         content["words_count"] = words_count
     return render(request, "vocabulary/vocabularys.html", content)
 
 
 @login_required(redirect_field_name="next", login_url=reverse_lazy("users:sign_up"))
-def create_vocabulary(request: HttpRequest) -> HttpResponse:
+def create_vocabulary(request: AuthenticatedHttpRequest) -> HttpResponse:
     if request.user.is_create_vocabulary:
         return redirect(reverse("vocabulary:user_vocabulary"))
     if request.user.words.count() >= config.VOCABULARY_CREATE_CARDS_COUNT:
@@ -72,11 +76,11 @@ def create_vocabulary(request: HttpRequest) -> HttpResponse:
 
 
 class AddCardToCreateVocabularyView(APIView):
-    permission_classes: ClassVar[list[Any]] = [
+    permission_classes: ClassVar[list[Any]] = [  # type: ignore[misc]  # ruff RUF012 requires ClassVar here
         IsAuthenticated,
     ]
 
-    def post(self, request: Request, format: str | None = None) -> Response:  # noqa: ARG002
+    def post(self, request: AuthenticatedRequest, format: str | None = None) -> Response:  # noqa: ARG002
         serializer = WordPairSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
@@ -87,7 +91,7 @@ class AddCardToCreateVocabularyView(APIView):
 
 
 @login_required
-def user_vocabulary(request: HttpRequest) -> HttpResponse:
+def user_vocabulary(request: AuthenticatedHttpRequest) -> HttpResponse:
     if not request.user.is_create_vocabulary:
         return redirect(reverse("vocabulary:create_vocabulary"))
     content = {
@@ -99,23 +103,24 @@ def user_vocabulary(request: HttpRequest) -> HttpResponse:
 
 
 class UserVocabularyStatView(APIView):
-    permission_classes: ClassVar[list[Any]] = [
+    permission_classes: ClassVar[list[Any]] = [  # type: ignore[misc]  # ruff RUF012 requires ClassVar here
         IsAuthenticated,
     ]
 
-    def get(self, request: Request, format: str | None = None) -> Response:  # noqa: ARG002
+    def get(self, request: AuthenticatedRequest, format: str | None = None) -> Response:  # noqa: ARG002
         stat_creator = UserVocabularyStatCreator()
         user_vocabulary_stat = stat_creator.create_stat(user=request.user)
         serializer = UserVocabularyStatSerializer(user_vocabulary_stat)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class WordPairView(ModelViewSet):
+class WordPairView(ModelViewSet[WordPair]):
     serializer_class = WordPairSerializer
-    permission_classes: ClassVar[list[Any]] = [IsAuthenticated, IsOwnerPermission]
+    permission_classes: ClassVar[list[Any]] = [IsAuthenticated, IsOwnerPermission]  # type: ignore[misc]  # ruff RUF012 requires ClassVar here
 
     def get_queryset(self) -> QuerySet[WordPair]:
-        return WordPair.objects.filter(owner=self.request.user)
+        user = cast("User", self.request.user)
+        return WordPair.objects.filter(owner=user)
 
 
 def test(request: HttpRequest) -> HttpResponse:

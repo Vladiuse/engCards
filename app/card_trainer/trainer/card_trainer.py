@@ -1,7 +1,8 @@
 import random
 
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser
 from django.db.models.query import QuerySet
+from users.models import User
 from vocabulary.constants import DEFAULT_VOCABULARY
 from vocabulary.models import DefaultWord, EnglishLevel, WordPair
 
@@ -29,16 +30,20 @@ class CardTrainer:
         self.vocabulary_type = vocabulary_type
         self.lang_direction = lang_direction
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"CardTrainer:{self.__dict__}"
 
     def _get_default_vocabulary_queryset(self) -> QuerySet[DefaultWord]:
+        if self.level is None:
+            raise ValueError("level is required for the default vocabulary")
         return CardTrainer.default_words_queryset.filter(number_in_dict__range=[self.level.start, self.level.end])
 
     def _get_user_vocabulary_queryset(self) -> QuerySet[WordPair]:
+        if isinstance(self.user, AnonymousUser):
+            raise TypeError("Anonymous user has no personal vocabulary")
         return CardTrainer.user_queryset.filter(owner=self.user, status=WordPair.LEARNING)
 
-    def _get_queryset(self) -> QuerySet:
+    def _get_queryset(self) -> QuerySet[DefaultWord] | QuerySet[WordPair]:
         if self.vocabulary_type == DEFAULT_VOCABULARY:
             return self._get_default_vocabulary_queryset()
         return self._get_user_vocabulary_queryset()
@@ -61,7 +66,10 @@ class CardTrainer:
         )
 
     def _get_word(self) -> RuEnPair:
-        return self._get_queryset().order_by("?").first()
+        word = self._get_queryset().order_by("?").first()
+        if word is None:
+            raise ValueError("Vocabulary is empty")
+        return word
 
     def _get_answers(self, word_to_exclude: RuEnPair) -> list[RuEnPair]:
         words_qs = self._get_queryset().exclude(pk=word_to_exclude.pk).order_by("?")[:4]

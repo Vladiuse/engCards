@@ -41,7 +41,7 @@ class WordPair(models.Model):
     class Meta:
         unique_together = ("owner", "en", "ru")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.en} - {self.ru}"
 
 
@@ -57,5 +57,5 @@ class Sentence(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.en)

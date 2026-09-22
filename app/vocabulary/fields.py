@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from . import validators
 
 
-class EngCharField(models.CharField):
-    default_validators: ClassVar[list[Any]] = [
+class EngCharField(models.CharField[str, str]):
+    default_validators: ClassVar[list[Any]] = [  # type: ignore[misc]  # ruff RUF012 requires ClassVar here
         validators.eng_chars_validator,
     ]
     description = _("English text")
@@ -17,8 +17,8 @@ class EngCharField(models.CharField):
         super().__init__(*args, **kwargs)
 
 
-class RuCharField(models.CharField):
-    default_validators: ClassVar[list[Any]] = [
+class RuCharField(models.CharField[str, str]):
+    default_validators: ClassVar[list[Any]] = [  # type: ignore[misc]  # ruff RUF012 requires ClassVar here
         validators.ru_chars_validator,
     ]
     description = _("Russian text")

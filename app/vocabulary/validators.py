@@ -1,6 +1,6 @@
 import re
 
-from django.core.validators import ValidationError
+from django.core.exceptions import ValidationError
 
 ENG_CHARS_REGEX = r"^[A-Za-z]+$"
 RU_CHARS_REGEX = r"^[А-Яа-яЁё]+$"

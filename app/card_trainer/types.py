@@ -13,12 +13,13 @@ class LangDirection(Enum):
         return LangDirection.RU_EN
 
     @classmethod
-    @property
-    def choices(cls) -> list[str]:
+    def get_choices(cls) -> list[str]:
         return [item.value for item in cls]
 
 
 class RuEnPair(Protocol):
-    pk: int | str
     ru: str
     en: str
+
+    @property
+    def pk(self) -> int: ...

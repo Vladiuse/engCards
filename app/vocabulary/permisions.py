@@ -8,4 +8,4 @@ from rest_framework.views import APIView
 class IsOwnerPermission(BasePermission):
 
     def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:  # noqa: ANN401, ARG002
-        return request.user == obj.owner
+        return bool(request.user == obj.owner)

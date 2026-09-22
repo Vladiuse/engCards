@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render, reverse
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
 
 def index(request: HttpRequest) -> HttpResponse:  # noqa: ARG001

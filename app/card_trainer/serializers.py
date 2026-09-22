@@ -8,11 +8,12 @@ from vocabulary.models import EnglishLevel
 
 from card_trainer.trainer.card_trainer import CardTrainer
 
+from .trainer.dto import Card, CardWord
 from .types import LangDirection
 
 
-class CardTrainerSerializer(serializers.Serializer):
-    lang_direction = serializers.ChoiceField(choices=LangDirection.choices)
+class CardTrainerSerializer(serializers.Serializer[CardTrainer]):
+    lang_direction = serializers.ChoiceField(choices=LangDirection.get_choices())
     vocabulary_type = serializers.ChoiceField(choices=VOCABULARY_TYPES)
     level = serializers.PrimaryKeyRelatedField(queryset=EnglishLevel.objects.all(), required=False, allow_null=True)
 
@@ -40,13 +41,13 @@ class CardTrainerSerializer(serializers.Serializer):
         return attrs
 
 
-class CardWordSerializer(serializers.Serializer):
+class CardWordSerializer(serializers.Serializer[CardWord]):
     id = serializers.CharField()
     word = serializers.CharField()
     translation = serializers.CharField()
 
 
-class CardSerializer(serializers.Serializer):
+class CardSerializer(serializers.Serializer[Card]):
     card = CardWordSerializer()
     answers = CardWordSerializer(many=True)
-    lang_direction = serializers.ChoiceField(choices=LangDirection.choices)
+    lang_direction = serializers.ChoiceField(choices=LangDirection.get_choices())
