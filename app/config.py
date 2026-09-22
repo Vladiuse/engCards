@@ -27,4 +27,4 @@ class Config(BaseSettings):
     VOCABULARY_CREATE_CARDS_COUNT: int
 
 
-config = Config()
+config = Config()  # type: ignore[call-arg]
