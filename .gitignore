@@ -183,4 +183,4 @@ package.json
 x.*
 x_.*
 
-staticfiles
+static
