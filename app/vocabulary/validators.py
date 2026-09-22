@@ -10,7 +10,7 @@ def remove_not_alpha_chars(string: str) -> str:
     return "".join(char for char in string if char.isalpha())
 
 
-def eng_chars_validator(value) -> None:
+def eng_chars_validator(value: str) -> None:
     value = remove_not_alpha_chars(string=value)
     if value == "":
         raise ValidationError("Слово должно быть из английских букв")
@@ -18,7 +18,7 @@ def eng_chars_validator(value) -> None:
         raise ValidationError("Должны быть только английские буквы и символы")
 
 
-def ru_chars_validator(value) -> None:
+def ru_chars_validator(value: str) -> None:
     value = remove_not_alpha_chars(string=value)
     if value == "":
         raise ValidationError("Слово должно быть из русских букв")

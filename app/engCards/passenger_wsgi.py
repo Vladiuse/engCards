@@ -13,6 +13,6 @@ site_user_root_dir = "/home/v/vladiuse/eng-cards.vim-store.ru/public_html"
 sys.path.insert(0, site_user_root_dir + "/engCards")
 sys.path.insert(1, site_user_root_dir + "/venv/lib/python3.11/site-packages")
 os.environ["DJANGO_SETTINGS_MODULE"] = "engCards.settings"
-from django.core.wsgi import get_wsgi_application
+from django.core.wsgi import get_wsgi_application  # noqa: E402
 
 application = get_wsgi_application()

@@ -1,3 +1,5 @@
+from typing import Any, ClassVar
+
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -16,7 +18,7 @@ class WordPairSerializer(serializers.ModelSerializer):
     class Meta:
         model = WordPair
         fields = "__all__"
-        validators = [
+        validators: ClassVar[list[Any]] = [
             UniqueTogetherValidator(
                 queryset=WordPair.objects.all(),
                 fields=["owner", "ru", "en"],
@@ -24,9 +26,9 @@ class WordPairSerializer(serializers.ModelSerializer):
         ]
 
 
-    def get_status_text(self, obj) -> str:
+    def get_status_text(self, obj: WordPair) -> str:
         return obj.get_status_display()
 
-    def to_internal_value(self, data) -> dict:
+    def to_internal_value(self, data: dict[str, Any]) -> dict[str, Any]:
         data["owner"] = self.context["request"].user.pk
         return super().to_internal_value(data=data)

@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -15,10 +17,10 @@ class CardTrainerSerializer(serializers.Serializer):
     level = serializers.PrimaryKeyRelatedField(queryset=EnglishLevel.objects.all(), required=False, allow_null=True)
 
 
-    def create(self, validated_data) -> CardTrainer:
+    def create(self, validated_data: dict[str, Any]) -> CardTrainer:
         lang_direction = LangDirection(validated_data["lang_direction"])
         user = self.context["request"].user
-        level = validated_data.get("level", None)
+        level = validated_data.get("level")
         vocabulary_type = validated_data["vocabulary_type"]
         return CardTrainer(
             lang_direction=lang_direction,
@@ -27,8 +29,8 @@ class CardTrainerSerializer(serializers.Serializer):
             vocabulary_type=vocabulary_type,
         )
 
-    def validate(self, attrs) -> dict:
-        level = attrs.get("level", None)
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        level = attrs.get("level")
         vocabulary_type = attrs.get("vocabulary_type")
         user = self.context["request"].user
         if isinstance(user, AnonymousUser) and vocabulary_type != DEFAULT_VOCABULARY:

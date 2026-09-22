@@ -1,3 +1,4 @@
+# ruff: noqa: A005
 from enum import Enum
 from typing import Protocol
 

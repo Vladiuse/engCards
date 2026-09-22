@@ -10,11 +10,17 @@ class EnglishLevel(models.Model):
     start = models.PositiveIntegerField()
     end = models.PositiveIntegerField()
 
+    def __str__(self) -> str:
+        return str(self.name)
+
 
 class DefaultWord(models.Model):
     number_in_dict = models.PositiveIntegerField()
     en = EngCharField(max_length=100)
     ru = RuCharField(max_length=100)
+
+    def __str__(self) -> str:
+        return f"{self.en} - {self.ru}"
 
 
 class WordPair(models.Model):

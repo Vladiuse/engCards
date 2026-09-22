@@ -1,6 +1,8 @@
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
 from vocabulary.constants import DEFAULT_VOCABULARY
 from vocabulary.models import WordPair
@@ -9,7 +11,7 @@ from .serializers import CardSerializer, CardTrainerSerializer
 
 
 @require_http_methods(["GET"])
-def card_trainer(request):
+def card_trainer(request: HttpRequest) -> HttpResponse:
     vocabulary_type = request.GET.get("vocabulary_type")
     level = request.GET.get("level")
     level = "" if level is None else level
@@ -25,7 +27,7 @@ def card_trainer(request):
 
 
 @api_view(["GET"])
-def get_card(request):
+def get_card(request: Request) -> Response:
     serializer = CardTrainerSerializer(data=request.query_params, context={"request": request})
     serializer.is_valid(raise_exception=True)
     card_trainer = serializer.save()

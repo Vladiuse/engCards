@@ -1,10 +1,15 @@
+from typing import Any, ClassVar
+
 from config import config
 from django.contrib.auth.decorators import login_required
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
@@ -21,7 +26,7 @@ from .start_vocabulary_creator import StartVocabularyCreator
 
 
 @api_view()
-def api_root(request, format=None):
+def api_root(request: Request, format: str | None = None) -> Response:
     data = {
         "some": reverse("vocabulary:api_root", request=request, format=format),
         "words": reverse("vocabulary:words-list", request=request, format=format),
@@ -29,7 +34,7 @@ def api_root(request, format=None):
     return Response(data)
 
 
-def vocabularys(request):
+def vocabularys(request: HttpRequest) -> HttpResponse:
     eng = EnglishLevel.objects.all()
     colors = [
         "#90CAF9",
@@ -52,7 +57,7 @@ def vocabularys(request):
 
 
 @login_required(redirect_field_name="next", login_url=reverse_lazy("users:sign_up"))
-def create_vocabulary(request):
+def create_vocabulary(request: HttpRequest) -> HttpResponse:
     if request.user.is_create_vocabulary:
         return redirect(reverse("vocabulary:user_vocabulary"))
     if request.user.words.count() >= config.VOCABULARY_CREATE_CARDS_COUNT:
@@ -67,11 +72,11 @@ def create_vocabulary(request):
 
 
 class AddCardToCreateVocabularyView(APIView):
-    permission_classes = [
+    permission_classes: ClassVar[list[Any]] = [
         IsAuthenticated,
     ]
 
-    def post(self, request, format=None):
+    def post(self, request: Request, format: str | None = None) -> Response:  # noqa: ARG002
         serializer = WordPairSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
@@ -82,7 +87,7 @@ class AddCardToCreateVocabularyView(APIView):
 
 
 @login_required
-def user_vocabulary(request):
+def user_vocabulary(request: HttpRequest) -> HttpResponse:
     if not request.user.is_create_vocabulary:
         return redirect(reverse("vocabulary:create_vocabulary"))
     content = {
@@ -94,11 +99,11 @@ def user_vocabulary(request):
 
 
 class UserVocabularyStatView(APIView):
-    permission_classes = [
+    permission_classes: ClassVar[list[Any]] = [
         IsAuthenticated,
     ]
 
-    def get(self, request, format=None):
+    def get(self, request: Request, format: str | None = None) -> Response:  # noqa: ARG002
         stat_creator = UserVocabularyStatCreator()
         user_vocabulary_stat = stat_creator.create_stat(user=request.user)
         serializer = UserVocabularyStatSerializer(user_vocabulary_stat)
@@ -107,11 +112,11 @@ class UserVocabularyStatView(APIView):
 
 class WordPairView(ModelViewSet):
     serializer_class = WordPairSerializer
-    permission_classes = [IsAuthenticated, IsOwnerPermission]
+    permission_classes: ClassVar[list[Any]] = [IsAuthenticated, IsOwnerPermission]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[WordPair]:
         return WordPair.objects.filter(owner=self.request.user)
 
 
-def test(request):
+def test(request: HttpRequest) -> HttpResponse:
     return render(request, "test.html")

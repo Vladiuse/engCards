@@ -1,7 +1,9 @@
+from typing import Any
+
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
@@ -13,7 +15,7 @@ from .forms import UserRegisterForm
 @require_http_methods(
     ["GET"],
 )
-def logout_view(request):
+def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect(settings.LOGOUT_REDIRECT_URL)
 
@@ -21,7 +23,7 @@ def logout_view(request):
 class RegisterView(TemplateView):
     template_name = "registration/sign_up.html"
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:  # noqa: ANN401, ARG002
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
