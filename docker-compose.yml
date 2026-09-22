@@ -1,21 +1,25 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: engcards_postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "${DB_PORT}:5432"
+  db:
+    image: postgres:15
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
+      - eng_cards_pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    env_file:
+      - ./.env
+  web:
+    build: .
+    volumes:
+      - ./app:/app
+      - ./.env:/app/.env
+    env_file:
+      - ./.env
+    ports:
+      - "127.0.0.1:8006:8000"
+    depends_on:
+      - db
 volumes:
-  postgres_data:
+  eng_cards_pgdata:
