@@ -26,6 +26,9 @@ class Config(BaseSettings):
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
 
+    DJANGO_SUPERUSER_USERNAME: str = ""
+    DJANGO_SUPERUSER_PASSWORD: str = ""
+
     VOCABULARY_CREATE_CARDS_COUNT: int
 
 

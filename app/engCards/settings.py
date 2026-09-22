@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "vocabulary.apps.VocabularyConfig",
     "card_trainer.apps.CardTrainerConfig",
     "users.apps.UsersConfig",
+    "common.apps.CommonConfig",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -127,6 +128,9 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 AUTH_USER_MODEL = "users.User"
+
+DJANGO_SUPERUSER_USERNAME = config.DJANGO_SUPERUSER_USERNAME
+DJANGO_SUPERUSER_PASSWORD = config.DJANGO_SUPERUSER_PASSWORD
 
 
 # Static files (CSS, JavaScript, Images)
