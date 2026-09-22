@@ -1,17 +1,18 @@
-from django.contrib import admin
-from django.urls import include, path
-from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import include, path
+
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('users.urls')),
-    path('', views.index, name='index'),
-    path('elements/', views.elements),
-    path('vocabulary/', include('vocabulary.urls')),
-    path('card-trainer/', include('card_trainer.urls')),
+    path("admin/", admin.site.urls),
+    path("", include("users.urls")),
+    path("", views.index, name="index"),
+    path("elements/", views.elements),
+    path("vocabulary/", include("vocabulary.urls")),
+    path("card-trainer/", include("card_trainer.urls")),
 ]
 # Serving the media files in development mode
 if settings.DEBUG:

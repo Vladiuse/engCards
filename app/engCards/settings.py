@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from config import config
@@ -27,13 +26,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    'rest_framework',
-    'django_extensions',
+    "rest_framework",
+    "django_extensions",
     "corsheaders",
     #apps
-    'vocabulary.apps.VocabularyConfig',
-    'card_trainer.apps.CardTrainerConfig',
-    'users.apps.UsersConfig',
+    "vocabulary.apps.VocabularyConfig",
+    "card_trainer.apps.CardTrainerConfig",
+    "users.apps.UsersConfig",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -51,15 +50,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 
 ]
-# if DEBUG:
-#     MIDDLEWARE.append('users.middleware.DisableCacheMiddleware')
 
 ROOT_URLCONF = "engCards.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [BASE_DIR /  "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -79,13 +76,13 @@ WSGI_APPLICATION = "engCards.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config.DB_NAME,
-        'USER': config.DB_USER,
-        'PASSWORD': config.DB_PASSWORD,
-        'HOST': config.DB_HOST,
-        'PORT': config.DB_PORT,
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config.DB_NAME,
+        "USER": config.DB_USER,
+        "PASSWORD": config.DB_PASSWORD,
+        "HOST": config.DB_HOST,
+        "PORT": config.DB_PORT,
     },
 }
 
@@ -120,19 +117,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOGIN_URL = '/login/'
+LOGIN_URL = "/login/"
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = '/home/v/vladiuse/eng-cards.vim-store.ru/public_html/static'
+STATIC_ROOT = "/home/v/vladiuse/eng-cards.vim-store.ru/public_html/static"
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # BASE_DIR — это путь к корню проекта

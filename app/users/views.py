@@ -11,7 +11,7 @@ from .forms import UserRegisterForm
 
 @login_required
 @require_http_methods(
-    ['GET'],
+    ["GET"],
 )
 def logout_view(request):
     logout(request)
@@ -19,19 +19,19 @@ def logout_view(request):
 
 
 class RegisterView(TemplateView):
-    template_name = 'registration/sign_up.html'
+    template_name = "registration/sign_up.html"
 
     def post(self, request, *args, **kwargs):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+            user = authenticate(username=form.cleaned_data["username"], password=form.cleaned_data["password1"])
             login(request, user)
-            next_url = request.POST.get('next')
+            next_url = request.POST.get("next")
             if next_url:
                 return redirect(next_url)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect("/")
         content = {
-            'form': form,
+            "form": form,
         }
         return render(request, self.template_name, content)

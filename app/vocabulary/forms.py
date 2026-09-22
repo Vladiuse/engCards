@@ -7,4 +7,4 @@ class WordPairForm(forms.ModelForm):
 
     class Meta:
         model = WordPair
-        fields = '__all__'
+        fields = "__all__"

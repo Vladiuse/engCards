@@ -1,6 +1,8 @@
-from users.models import User
 from config import config
+from users.models import User
+
 from vocabulary.models import WordPair
+
 
 class StartVocabularyCreator:
 

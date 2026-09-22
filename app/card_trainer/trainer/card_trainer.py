@@ -30,7 +30,7 @@ class CardTrainer:
         self.lang_direction = lang_direction
 
     def __str__(self):
-        return f'CardTrainer:{self.__dict__}'
+        return f"CardTrainer:{self.__dict__}"
 
     def _get_default_vocabulary_queryset(self) -> QuerySet[DefaultWord]:
         return CardTrainer.default_words_queryset.filter(number_in_dict__range=[self.level.start, self.level.end])
@@ -61,10 +61,10 @@ class CardTrainer:
         )
 
     def _get_word(self) -> RuEnPair:
-        return self._get_queryset().order_by('?').first()
+        return self._get_queryset().order_by("?").first()
 
     def _get_answers(self, word_to_exclude: RuEnPair) -> list[RuEnPair]:
-        words_qs = self._get_queryset().exclude(pk=word_to_exclude.pk).order_by('?')[:4]
+        words_qs = self._get_queryset().exclude(pk=word_to_exclude.pk).order_by("?")[:4]
         return list(words_qs)
 
     def _add_target_word_to_answers_and_shufle(self, answers: list[RuEnPair], target_word: RuEnPair) -> None:

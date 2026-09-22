@@ -1,4 +1,5 @@
-from card_trainer.types import RuEnPair, LangDirection
+from card_trainer.types import LangDirection, RuEnPair
+
 from .dto import CardWord
 
 

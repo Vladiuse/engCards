@@ -1,3 +1,4 @@
+from config import config
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -9,7 +10,6 @@ from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from config import config
 from vocabulary.user_vocabulary_stat import UserVocabularyStatCreator, UserVocabularyStatSerializer
 
 from .constants import DEFAULT_VOCABULARY, USER_VOCABULARY
@@ -21,10 +21,10 @@ from .start_vocabulary_creator import StartVocabularyCreator
 
 
 @api_view()
-def api_root(request, format=None):  # noqa: A002
+def api_root(request, format=None):
     data = {
-        'some': reverse('vocabulary:api_root', request=request, format=format),
-        'words': reverse('vocabulary:words-list', request=request, format=format),
+        "some": reverse("vocabulary:api_root", request=request, format=format),
+        "words": reverse("vocabulary:words-list", request=request, format=format),
     }
     return Response(data)
 
@@ -32,38 +32,38 @@ def api_root(request, format=None):  # noqa: A002
 def vocabularys(request):
     eng = EnglishLevel.objects.all()
     colors = [
-        '#90CAF9',
-        '#81D4FA',
-        '#A5D6A7',
-        '#C5E1A5',
-        '#FFF59D',
-        '#FFE082',
-        '#FFAB91',
+        "#90CAF9",
+        "#81D4FA",
+        "#A5D6A7",
+        "#C5E1A5",
+        "#FFF59D",
+        "#FFE082",
+        "#FFAB91",
     ]
     content = {
-        'levels': list(zip(eng, colors)),
-        'USER_VOCABULARY': USER_VOCABULARY,
-        'DEFAULT_VOCABULARY': DEFAULT_VOCABULARY,
+        "levels": list(zip(eng, colors, strict=False)),
+        "USER_VOCABULARY": USER_VOCABULARY,
+        "DEFAULT_VOCABULARY": DEFAULT_VOCABULARY,
     }
     if request.user.is_authenticated:
         words_count = WordPair.objects.filter(owner=request.user).count
-        content['words_count'] = words_count
-    return render(request, 'vocabulary/vocabularys.html', content)
+        content["words_count"] = words_count
+    return render(request, "vocabulary/vocabularys.html", content)
 
 
-@login_required(redirect_field_name='next', login_url=reverse_lazy('users:sign_up'))
+@login_required(redirect_field_name="next", login_url=reverse_lazy("users:sign_up"))
 def create_vocabulary(request):
     if request.user.is_create_vocabulary:
-        return redirect(reverse('vocabulary:user_vocabulary'))
+        return redirect(reverse("vocabulary:user_vocabulary"))
     if request.user.words.count() >= config.VOCABULARY_CREATE_CARDS_COUNT:
         request.user.mark_create_start_vocabulary()
-        return redirect(reverse('vocabulary:user_vocabulary'))
+        return redirect(reverse("vocabulary:user_vocabulary"))
     cards_count = WordPair.objects.filter(owner=request.user).count()
     content = {
-        'cards_count': cards_count,
-        'cards_need': config.VOCABULARY_CREATE_CARDS_COUNT,
+        "cards_count": cards_count,
+        "cards_need": config.VOCABULARY_CREATE_CARDS_COUNT,
     }
-    return render(request, 'vocabulary/create_vocabulary.html', content)
+    return render(request, "vocabulary/create_vocabulary.html", content)
 
 
 class AddCardToCreateVocabularyView(APIView):
@@ -71,8 +71,8 @@ class AddCardToCreateVocabularyView(APIView):
         IsAuthenticated,
     ]
 
-    def post(self, request, format=None): # noqa: A002
-        serializer = WordPairSerializer(data=request.data, context={'request': request})
+    def post(self, request, format=None):
+        serializer = WordPairSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
             creator = StartVocabularyCreator()
@@ -84,13 +84,13 @@ class AddCardToCreateVocabularyView(APIView):
 @login_required
 def user_vocabulary(request):
     if not request.user.is_create_vocabulary:
-        return redirect(reverse('vocabulary:create_vocabulary'))
+        return redirect(reverse("vocabulary:create_vocabulary"))
     content = {
-        'words': WordPair.objects.filter(owner=request.user),
-        'word_statuses': WordPair.STATUSES,
-        'form': WordPairForm(),
+        "words": WordPair.objects.filter(owner=request.user),
+        "word_statuses": WordPair.STATUSES,
+        "form": WordPairForm(),
     }
-    return render(request, 'vocabulary/user_vocabulary.html', content)
+    return render(request, "vocabulary/user_vocabulary.html", content)
 
 
 class UserVocabularyStatView(APIView):
@@ -98,7 +98,7 @@ class UserVocabularyStatView(APIView):
         IsAuthenticated,
     ]
 
-    def get(self, request, format=None): # noqa: A002
+    def get(self, request, format=None):
         stat_creator = UserVocabularyStatCreator()
         user_vocabulary_stat = stat_creator.create_stat(user=request.user)
         serializer = UserVocabularyStatSerializer(user_vocabulary_stat)
@@ -114,4 +114,4 @@ class WordPairView(ModelViewSet):
 
 
 def test(request):
-    return render(request, 'test.html')
+    return render(request, "test.html")

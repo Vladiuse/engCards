@@ -7,7 +7,7 @@ from .models import EnglishLevel, WordPair
 class EnglishLevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnglishLevel
-        fields = '__all__'
+        fields = "__all__"
 
 
 class WordPairSerializer(serializers.ModelSerializer):
@@ -15,11 +15,11 @@ class WordPairSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WordPair
-        fields = '__all__'
+        fields = "__all__"
         validators = [
             UniqueTogetherValidator(
                 queryset=WordPair.objects.all(),
-                fields=['owner', 'ru', 'en'],
+                fields=["owner", "ru", "en"],
             ),
         ]
 
@@ -28,5 +28,5 @@ class WordPairSerializer(serializers.ModelSerializer):
         return obj.get_status_display()
 
     def to_internal_value(self, data) -> dict:
-        data['owner'] = self.context['request'].user.pk
+        data["owner"] = self.context["request"].user.pk
         return super().to_internal_value(data=data)

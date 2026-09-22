@@ -1,11 +1,12 @@
 from enum import Enum
 from typing import Protocol
 
-class LangDirection(Enum):
-    RU_EN = 'ru_en'
-    EN_RU = 'en_ru'
 
-    def reverse(self) -> 'LangDirection':
+class LangDirection(Enum):
+    RU_EN = "ru_en"
+    EN_RU = "en_ru"
+
+    def reverse(self) -> "LangDirection":
         if self == LangDirection.RU_EN:
             return LangDirection.EN_RU
         return LangDirection.RU_EN

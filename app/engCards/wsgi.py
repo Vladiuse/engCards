@@ -1,5 +1,4 @@
-"""
-WSGI config for engCards project.
+"""WSGI config for engCards project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

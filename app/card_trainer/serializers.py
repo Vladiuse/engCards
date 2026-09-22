@@ -16,10 +16,10 @@ class CardTrainerSerializer(serializers.Serializer):
 
 
     def create(self, validated_data) -> CardTrainer:
-        lang_direction = LangDirection(validated_data['lang_direction'])
-        user = self.context['request'].user
-        level = validated_data.get('level', None)
-        vocabulary_type = validated_data['vocabulary_type']
+        lang_direction = LangDirection(validated_data["lang_direction"])
+        user = self.context["request"].user
+        level = validated_data.get("level", None)
+        vocabulary_type = validated_data["vocabulary_type"]
         return CardTrainer(
             lang_direction=lang_direction,
             user=user,
@@ -28,11 +28,11 @@ class CardTrainerSerializer(serializers.Serializer):
         )
 
     def validate(self, attrs) -> dict:
-        level = attrs.get('level', None)
-        vocabulary_type = attrs.get('vocabulary_type')
-        user = self.context['request'].user
+        level = attrs.get("level", None)
+        vocabulary_type = attrs.get("vocabulary_type")
+        user = self.context["request"].user
         if isinstance(user, AnonymousUser) and vocabulary_type != DEFAULT_VOCABULARY:
-            raise ValidationError(f'AnonymousUser cat use only {DEFAULT_VOCABULARY}')
+            raise ValidationError(f"AnonymousUser cat use only {DEFAULT_VOCABULARY}")
         if vocabulary_type == DEFAULT_VOCABULARY and not level:
             raise ValidationError(f'Set "level" for {DEFAULT_VOCABULARY}')
         return attrs
