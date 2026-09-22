@@ -20,7 +20,6 @@ ALLOWED_HOSTS = config.ALLOWED_HOSTS
 
 CSRF_TRUSTED_ORIGINS = config.CSRF_TRUSTED_ORIGINS
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -133,11 +132,12 @@ AUTH_USER_MODEL = "users.User"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = "/home/v/vladiuse/eng-cards.vim-store.ru/public_html/static"
+STATIC_URL = "static/"
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # BASE_DIR — это путь к корню проекта
+    BASE_DIR / "static",
 ]
 
 # Default primary key field type
