@@ -18,6 +18,7 @@ class Config(BaseSettings):
     SECRET_KEY: str
     DEBUG: bool = False
     ALLOWED_HOSTS: list[str] = ["127.0.0.1", "localhost"]
+    CSRF_TRUSTED_ORIGINS: list[str] = []
 
     POSTGRES_DB: str
     POSTGRES_USER: str
