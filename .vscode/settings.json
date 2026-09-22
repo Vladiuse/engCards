@@ -1,0 +1,10 @@
+{
+    "mypy-type-checker.cwd": "${workspaceFolder}/app/",
+    "evenBetterToml.schema.enabled": false,
+    "python.analysis.extraPaths": [
+        "./app"
+    ],
+    "python.autoComplete.extraPaths": [
+        "./app"
+    ]
+}
