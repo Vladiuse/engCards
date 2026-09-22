@@ -1,42 +1,20 @@
-import json
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
+from config import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-def get_secrets() -> dict:
-    file_name = 'secrets.json'
-    secrets_path = os.path.join(BASE_DIR, file_name)
-    with open(secrets_path) as file:
-        return json.load(file)
-
-SECRETS = get_secrets()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SECRETS['django-secret-key']
+SECRET_KEY = config.SECRET_KEY
 
+DEBUG = config.DEBUG
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
-DEBUG = True
-
-ALLOWED_HOSTS = [
-    'eng-cards.vim-store.ru',
-    '127.0.0.1',
-    'localhost',
-    'localhost:8001',
-    '192.168.100.26',
-    ]
+ALLOWED_HOSTS = config.ALLOWED_HOSTS
 
 
 # Application definition
@@ -100,26 +78,16 @@ WSGI_APPLICATION = "engCards.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# for MySql database remote server
-if os.environ.get('DB') == 'sqlite':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        },
-    }
-else:
-    DATABASES = {
-         'default': {
-             'ENGINE': 'django.db.backends.mysql',
-             'NAME': SECRETS['DB_NAME'],
-             'USER': SECRETS['DB_USER'],
-             'PASSWORD': SECRETS['DB_PASSWORD'],
-             'HOST': SECRETS['DB_HOST'],
-             'PORT': '3306',
-
-         },
-     }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config.DB_NAME,
+        'USER': config.DB_USER,
+        'PASSWORD': config.DB_PASSWORD,
+        'HOST': config.DB_HOST,
+        'PORT': config.DB_PORT,
+    },
+}
 
 
 # Password validation

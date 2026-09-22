@@ -129,6 +129,7 @@ celerybeat.pid
 
 # Environments
 .env
+!.env.example
 .venv
 env/
 venv/
@@ -172,11 +173,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-engCards/secrets.json
 
 
 node_modules
-secrets.json
 package-lock.json
 .eslint.config.mjs
 package.json
