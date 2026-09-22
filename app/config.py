@@ -19,11 +19,11 @@ class Config(BaseSettings):
     DEBUG: bool = False
     ALLOWED_HOSTS: list[str] = ["127.0.0.1", "localhost"]
 
-    DB_NAME: str
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_HOST: str = "localhost"
-    DB_PORT: int = 5432
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: int = 5432
 
     VOCABULARY_CREATE_CARDS_COUNT: int
 
